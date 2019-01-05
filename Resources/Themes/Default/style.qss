@@ -1,0 +1,227 @@
+/*主窗口*/
+#widgetMain {
+    border-radius: 4px;    /*窗口最外层圆角*/
+    background: rgba(39, 174, 97, 255);    /*背景颜色*/
+}
+
+/*标题栏*/
+#widgetTitlebar {
+    min-height: 36px;
+    max-height: 36px;
+    /*标题栏左上角右上角圆角(保持和主窗口的圆角一致)*/
+    border-top-right-radius: 4px;
+    border-top-left-radius: 4px;
+}
+
+/*标题栏中的按钮*/
+#buttonSkin, #buttonMinimum, #buttonMaximum, #buttonNormal, #buttonClose {
+    /*定义最小最大宽高*/
+    min-width: 36px;
+    max-width: 36px;
+    min-height: 36px;
+    max-height: 36px;
+    font-family: "pyqtclient";    /*使用自定义字体*/
+    border: none;    /*无边框*/
+    color: white;   /*文字颜色*/
+    font-size: 16px;
+    background: transparent; /*背景透明*/
+}
+/*标题栏中的按钮悬停效果*/
+#buttonSkin:hover, #buttonMinimum:hover, #buttonMaximum:hover, #buttonNormal:hover, #buttonClose:hover {
+    background-color: rgba(255, 255, 255, 100); /*带透明度白色背景*/
+}
+
+/*关闭按钮悬停显示其它颜色*/
+#buttonClose:hover {
+    background-color: rgba(212, 64, 39, 255); /*红色*/
+}
+
+/*修改标题栏中按钮的文字*/
+#buttonSkin {
+    font-size: 20px;
+    qproperty-text: "\2104";
+}
+#buttonMinimum {
+    qproperty-text: "\2100";
+}
+#buttonMaximum {
+    qproperty-text: "\2101";
+}
+#buttonNormal {
+    qproperty-text: "\2102";
+}
+#buttonClose {
+    qproperty-text: "\2103";
+    /*关闭按钮右上角有个圆角(保持和主窗口一致)*/
+    border-top-right-radius: 4px;
+}
+
+/*左侧目录区域*/
+#widgetCatalogs {
+    min-width: 260px;
+    max-width: 260px;
+    /*左下角有个圆角(保持和主窗口一致)*/
+    border-bottom-left-radius: 4px;
+}
+
+/*圆形头像*/
+#buttonHead {
+    min-width: 130px;
+    min-height: 130px;
+    max-width: 130px;
+    max-height: 130px;
+    background: transparent;
+    qproperty-shadowColor: #212121;
+    qproperty-image: "Resources/Images/avatar.jpg";
+}
+
+/*搜索框*/
+#widgetSearch {
+    min-height: 32px;
+    max-height: 32px;
+    background-color: rgba(255, 255, 255, 255);
+    border-radius: 15px;
+}
+
+/*搜索框中的输入框*/
+#lineEditSearch {
+    width: 220px;
+    height: 32px;
+    border: none;
+    color: rgba(102, 102, 102, 255);
+    background: rgba(255, 255, 255, 255);
+    outline: none;
+    /*设置左右边距*/
+    padding-left: 10px;
+    padding-right: 5px;
+    /*设置圆角和父控件一致*/
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+}
+/*搜索框中的按钮*/
+#buttonSearch {
+    min-width: 26px;
+    max-width: 26px;
+    min-height: 26px;
+    max-height: 26px;
+    border: none;
+    color: white;
+    qproperty-bgColor: #27AE61;
+    outline: none;
+    font-family: "pyqtclient";
+    qproperty-text: "\5100";
+}
+
+/*目录树*/
+#treeViewCatalogs {
+    outline: none;  /*去掉虚线框*/
+    border: none;       /*无边框*/
+    background: transparent;    /*背景透明*/
+}
+
+/*工具栏*/
+#widgetTools {
+    min-width: 60px;
+    max-width: 60px;
+    background-color: rgba(38, 38, 38, 255);
+}
+/*工具栏中的按钮*/
+#buttonGithub, #buttonQQ, #buttonGroup {
+    min-width: 36px;
+    max-width: 36px;
+    min-height: 36px;
+    max-height: 36px;
+    border-radius: 18px;
+    border: none;
+    color: white;
+    outline: none;
+    font-family: "pyqtclient";
+    font-size: 20px;
+    background: rgba(46, 46, 46, 255);
+    qproperty-shadowColor: #FFFFFF;
+}
+
+/*github按钮*/
+#buttonGithub {
+    qproperty-text: "\5102";
+}
+#buttonGithub:hover {
+    background: rgba(14, 134, 174, 255);
+}
+/*QQ按钮*/
+#buttonQQ {
+    font-weight: bold;
+    qproperty-text: "\4101";
+}
+#buttonQQ:hover {
+    background: rgba(255, 180, 97, 255);
+}
+/*QQ群按钮*/
+#buttonGroup {
+    font-weight: bold;
+    qproperty-text: "\4100";
+}
+#buttonGroup:hover { 
+    background: rgba(232, 76, 61, 255);
+}
+
+/*返回顶部按钮*/
+#buttonBackup {
+    min-width: 36px;
+    max-width: 36px;
+    min-height: 36px;
+    max-height: 36px;
+    border: none;
+    color: rgba(255, 255, 255, 255);
+    qproperty-bgColor: #27AE61;
+    outline: none;
+    font-family: "pyqtclient";
+    qproperty-text: "\5101";
+}
+
+/*内容区域进度条*/
+#progressBar {
+    min-height: 2px;
+    max-height: 2px;
+    border-color: transparent;
+    background-color: transparent;
+}
+#progressBar::chunk {
+    /*进度条滑块颜色*/
+    background-color: rgba(255, 180, 97, 255);
+}
+
+/*网页控件*/
+#webViewContent {
+    background: transparent;    /*背景透明*/
+}
+
+/*仿ToolTip窗口*/
+ToolTip > QLabel {
+    color: white;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: rgba(77, 77, 77, 180);
+}
+
+/*登录窗口*/
+#widgetLogin {
+    border: 1px solid white;
+    border-radius: 4px;    /*窗口最外层圆角*/
+    background: rgba(39, 174, 97, 255);    /*背景颜色*/
+}
+/*激活状态*/
+#widgetLogin[_active="true"] {
+    border: 1px solid white;
+}
+/*非激活状态*/
+#widgetLogin[_active="false"] {
+    border: 1px solid transparent; /*透明边框*/
+}
+
+/*登录窗口标题栏*/
+#widgetLoginTitlebar {
+    /*标题栏左上角右上角圆角(保持和主窗口的圆角一致)*/
+    border-top-right-radius: 4px;
+    border-top-left-radius: 4px;
+}
