@@ -212,7 +212,7 @@ ToolTip > QLabel {
 }
 /*激活状态*/
 #widgetLogin[_active="true"] {
-    border: 1px solid white;
+    border: 1px solid transparent;
 }
 /*非激活状态*/
 #widgetLogin[_active="false"] {
