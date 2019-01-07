@@ -15,7 +15,7 @@ from pathlib import Path
 import sys
 import webbrowser
 
-from PyQt5.QtCore import QEvent, Qt, pyqtSlot, QThread
+from PyQt5.QtCore import QEvent, Qt, pyqtSlot, QThread, QTimer
 
 from UiFiles.Ui_MainWindow import Ui_FormMainWindow
 from Utils.Application import QSingleApplication
@@ -26,6 +26,7 @@ from Utils.Repository import Repository
 from Utils.ThemeManager import ThemeManager
 from Widgets.FramelessWindow import FramelessWindow
 from Widgets.LoginDialog import LoginDialog
+
 
 __Author__ = """By: Irony
 QQ: 892768447
@@ -47,8 +48,10 @@ class MainWindow(FramelessWindow, Ui_FormMainWindow):
         self.widgetMain.installEventFilter(self)
         # 加载主题
         ThemeManager.loadTheme(self)
-        # 200毫秒后执行
-#         QTimer.singleShot(200, self.initCatalog)
+        # 加载鼠标样式
+        ThemeManager.loadCursor(self.widgetMain)
+        # 200毫秒后显示登录对话框
+        QTimer.singleShot(200, self.initLogin)
 
     def closeEvent(self, event):
         if hasattr(self, '_repoThread'):
@@ -93,6 +96,12 @@ class MainWindow(FramelessWindow, Ui_FormMainWindow):
         self.showProgressBar()
         self._repoThread.start()
         AppLog.info('start update local repository')
+
+    def initLogin(self):
+        dialog = LoginDialog(self)
+        dialog.exec_()
+        # 遍历本地缓存目录
+#         self.initCatalog()
 
     def initCatalog(self):
         """初始化本地仓库结构树

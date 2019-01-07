@@ -12,10 +12,11 @@ Created on 2019年1月3日
 import os
 
 from PyQt5.QtCore import QSettings, QTextCodec
-from PyQt5.QtGui import QFontDatabase
+from PyQt5.QtGui import QFontDatabase, QCursor, QPixmap
 from PyQt5.QtWidgets import QApplication
 
 from Utils.CommonUtil import AppLog
+
 
 __Author__ = """By: Irony
 QQ: 892768447
@@ -39,20 +40,6 @@ class ThemeManager:
                             QSettings.IniFormat, parent)
         setting.setIniCodec(QTextCodec.codecForName('utf-8'))
         cls.ThemeName = setting.value('theme', 'Default', str)
-        # 加载动态光标(windows)
-#         path = cls.cursorPath()
-#         AppLog.info('cursorPath: {}'.format(path))
-#         if os.path.exists(path) and os.name == 'nt':
-#             import win32gui
-#             import win32api
-#             import win32con
-#             cursor = win32gui.LoadImage(
-#                 None, path,
-#                 win32con.IMAGE_CURSOR, 0, 0, win32con.LR_LOADFROMFILE
-#             )
-#             AppLog.info('cursor handle: {}'.format(cursor))
-#             if cursor != None and cursor > 0:
-#                 win32api.SetClassLong(int(QApplication.instance().allWidgets()[0].winId()), win32con.GCL_HCURSOR, cursor)
         # 加载主题中的字体
         path = cls.fontPath()
         AppLog.info('fontPath: {}'.format(path))
@@ -67,12 +54,21 @@ class ThemeManager:
             AppLog.error(str(e))
 
     @classmethod
+    def loadCursor(cls, parent):
+        # 加载光标
+        path = cls.cursorPath()
+        AppLog.info('cursorPath: {}'.format(path))
+        if os.path.exists(path):
+            # 设置自定义鼠标样式,并以0,0为原点
+            parent.setCursor(QCursor(QPixmap(path), 0, 0))
+
+    @classmethod
     def cursorPath(cls):
         """
         :param cls:
         :return: 主题中 cursor.ani 的绝对路径
         """
-        return os.path.abspath(os.path.join(cls.ThemeDir, cls.ThemeName, 'cursor.ani'))
+        return os.path.abspath(os.path.join(cls.ThemeDir, cls.ThemeName, 'cursor.png'))
 
     @classmethod
     def fontPath(cls):

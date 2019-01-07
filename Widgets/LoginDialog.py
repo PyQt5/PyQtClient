@@ -15,6 +15,7 @@ from UiFiles.Ui_LoginDialog import Ui_FormLoginDialog
 from Widgets.MoveDialog import MoveDialog
 from Widgets.TwinkleDialog import TwinkleDialog
 
+
 __Author__ = """By: Irony
 QQ: 892768447
 Email: 892768447@qq.com"""
@@ -42,9 +43,9 @@ class LoginDialog(MoveDialog, TwinkleDialog, Ui_FormLoginDialog):
         account = self.lineEditAccount.text().strip()
         password = self.lineEditPassword.text().strip()
         if not account:
-            self.labelNotice(self.tr('Incorrect account'))
+            self.labelNotice.setText(self.tr('Incorrect account'))
             return
         if not password:
-            self.labelNotice(self.tr('Incorrect password'))
+            self.labelNotice.setText(self.tr('Incorrect password'))
             return
         self.labelNotice.setText('')
