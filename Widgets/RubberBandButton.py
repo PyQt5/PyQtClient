@@ -67,7 +67,7 @@ class RubberBandButton(QPushButton):
         self._height = self.minimumHeight() * 7 / 8
 #         self._width=175
 #         self._height=175
-        wanimate = QPropertyAnimation(self, b'width')
+        wanimate = QPropertyAnimation(self, b'rWidth')
         wanimate.setEasingCurve(QEasingCurve.OutElastic)
         wanimate.setDuration(700)
         wanimate.valueChanged.connect(self.update)
@@ -82,7 +82,7 @@ class RubberBandButton(QPushButton):
 #         wanimate.setKeyValueAt(0.8, 185)
 #         wanimate.setKeyValueAt(0.9, 180)
         wanimate.setKeyValueAt(1, self._width)
-        hanimate = QPropertyAnimation(self, b'height')
+        hanimate = QPropertyAnimation(self, b'rHeight')
         hanimate.setEasingCurve(QEasingCurve.OutElastic)
         hanimate.setDuration(700)
         hanimate.setKeyValueAt(0, self._height)
@@ -103,19 +103,19 @@ class RubberBandButton(QPushButton):
         self._animate.start()
 
     @pyqtProperty(int)
-    def width(self):
+    def rWidth(self):
         return self._width
 
-    @width.setter
-    def width(self, value):
+    @rWidth.setter
+    def rWidth(self, value):
         self._width = value
 
     @pyqtProperty(int)
-    def height(self):
+    def rHeight(self):
         return self._height
 
-    @height.setter
-    def height(self, value):
+    @rHeight.setter
+    def rHeight(self, value):
         self._height = value
 
     @pyqtProperty(str)

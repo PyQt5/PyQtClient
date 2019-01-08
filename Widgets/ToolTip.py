@@ -10,6 +10,7 @@ Created on 2019年1月2日
 @description: 仿QToolTip
 """
 from PyQt5.QtCore import Qt, QTimer, QPoint, QEvent
+from PyQt5.QtGui import QHelpEvent
 from PyQt5.QtWidgets import QLabel, QWidget, QVBoxLayout
 
 
@@ -50,7 +51,8 @@ class ToolTip(QWidget):
         self.label.setText(text)
 
     def eventFilter(self, widget, event):
-        #         if isinstance(event, QHelpEvent):
+        if isinstance(event, QHelpEvent):
+            return True
         #             self.hide()
         #             self._hideTimer.stop()
         #             self.setText(widget.toolTip())

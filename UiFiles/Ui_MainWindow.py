@@ -128,11 +128,11 @@ class Ui_FormMainWindow(object):
         self.verticalLayout_5.addWidget(self.buttonGroup)
         spacerItem3 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_5.addItem(spacerItem3)
-        self.buttonBackup = RubberBandButton(self.widgetTools)
-        self.buttonBackup.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.buttonBackup.setText("")
-        self.buttonBackup.setObjectName("buttonBackup")
-        self.verticalLayout_5.addWidget(self.buttonBackup)
+        self.buttonBacktoUp = RubberBandButton(self.widgetTools)
+        self.buttonBacktoUp.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.buttonBacktoUp.setText("")
+        self.buttonBacktoUp.setObjectName("buttonBacktoUp")
+        self.verticalLayout_5.addWidget(self.buttonBacktoUp)
         self.horizontalLayout_2.addWidget(self.widgetTools)
         self.widgetContents = QtWidgets.QWidget(self.widgetCentral)
         self.widgetContents.setObjectName("widgetContents")
@@ -163,6 +163,7 @@ class Ui_FormMainWindow(object):
         self.buttonGithub.setToolTip(_translate("FormMainWindow", "Project Url"))
         self.buttonQQ.setToolTip(_translate("FormMainWindow", "QQ Chat"))
         self.buttonGroup.setToolTip(_translate("FormMainWindow", "QQ Group"))
+        self.buttonBacktoUp.setToolTip(_translate("FormMainWindow", "Back to Top"))
 
 from PyQt5 import QtWebKitWidgets
 from Widgets.RotateButton import RotateButton

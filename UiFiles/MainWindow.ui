@@ -343,9 +343,12 @@
              </spacer>
             </item>
             <item>
-             <widget class="RubberBandButton" name="buttonBackup">
+             <widget class="RubberBandButton" name="buttonBacktoUp">
               <property name="cursor">
                <cursorShape>PointingHandCursor</cursorShape>
+              </property>
+              <property name="toolTip">
+               <string>Back to Top</string>
               </property>
               <property name="text">
                <string/>

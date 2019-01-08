@@ -27,6 +27,7 @@ from Utils.Repository import Repository
 from Utils.ThemeManager import ThemeManager
 from Widgets.FramelessWindow import FramelessWindow
 from Widgets.LoginDialog import LoginDialog
+from Widgets.ToolTip import ToolTip
 
 
 __Author__ = """By: Irony
@@ -41,6 +42,8 @@ class MainWindow(FramelessWindow, Ui_FormMainWindow):
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
         self.setupUi(self)
+        # 绑定返回顶部提示框
+        ToolTip.bind(self.buttonBacktoUp)
         # 隐藏进度条
         self.progressBar.setVisible(False)
         # 隐藏还原按钮
@@ -102,9 +105,10 @@ class MainWindow(FramelessWindow, Ui_FormMainWindow):
         dialog = LoginDialog(self)
         dialog.exec_()
         # 刷新头像样式
-        self.style().polish(self.buttonHead)
+        if Constants._Github != None:
+            self.style().polish(self.buttonHead)
         # 遍历本地缓存目录
-#         self.initCatalog()
+        self.initCatalog()
 
     def initCatalog(self):
         """初始化本地仓库结构树
@@ -112,7 +116,7 @@ class MainWindow(FramelessWindow, Ui_FormMainWindow):
         for path in Path(DirProjects).rglob('*'):
             print(path)
         # 开启后台自动更新线程
-        self.updateLocalRepository()
+#         self.updateLocalRepository()
 
     @pyqtSlot()
     def on_buttonSkin_clicked(self):
@@ -152,7 +156,8 @@ class MainWindow(FramelessWindow, Ui_FormMainWindow):
             dialog = LoginDialog(self)
             dialog.exec_()
             # 刷新头像样式
-            self.style().polish(self.buttonHead)
+            if Constants._Github != None:
+                self.style().polish(self.buttonHead)
 
     @pyqtSlot()
     def on_buttonSearch_clicked(self):
