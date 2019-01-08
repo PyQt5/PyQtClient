@@ -101,6 +101,8 @@ class MainWindow(FramelessWindow, Ui_FormMainWindow):
     def initLogin(self):
         dialog = LoginDialog(self)
         dialog.exec_()
+        # 刷新头像样式
+        self.style().polish(self.buttonHead)
         # 遍历本地缓存目录
 #         self.initCatalog()
 
@@ -149,6 +151,8 @@ class MainWindow(FramelessWindow, Ui_FormMainWindow):
         if Constants._Github == None:
             dialog = LoginDialog(self)
             dialog.exec_()
+            # 刷新头像样式
+            self.style().polish(self.buttonHead)
 
     @pyqtSlot()
     def on_buttonSearch_clicked(self):

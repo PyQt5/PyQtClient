@@ -21,6 +21,8 @@ __Version__ = "Version 1.0"
 ProjectRepo = 'PyQt5/PyQt'
 ConfigFile = 'Resources/Data/Config.ini'
 
+ImageAvatar = 'Resources/Images/avatar.jpg'
+
 LogName = 'PyQtClient'
 LogFormatterDebug = '[%(asctime)s %(name)s %(module)s:%(funcName)s:%(lineno)s] %(levelname)-8s %(message)s'
 LogFormatter = '[%(asctime)s %(name)s] %(levelname)-8s %(message)s'

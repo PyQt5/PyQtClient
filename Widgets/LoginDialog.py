@@ -12,11 +12,14 @@ Created on 2019年1月5日
 import base64
 
 from PyQt5.QtCore import Qt, pyqtSlot, QThread, pyqtSignal
+from PyQt5.QtGui import QImage
 from github import Github
+import requests
 
 from UiFiles.Ui_LoginDialog import Ui_FormLoginDialog
 from Utils import Constants
 from Utils.CommonUtil import AppLog, Setting
+from Utils.Constants import ImageAvatar
 from Utils.ThemeManager import ThemeManager
 from Widgets.MoveDialog import MoveDialog
 from Widgets.TwinkleDialog import TwinkleDialog
@@ -44,6 +47,19 @@ class LoginThread(QThread):
             g = Github(self.account, self.password)
             user = g.get_user()
             if user.login:
+                AppLog.info('login: {}'.format(user.login))
+                # 获取头像
+                req = requests.get(user.avatar_url)
+                if req.status_code == 200:
+                    with open(ImageAvatar, 'wb') as fp:
+                        fp.write(req.content)
+                # 缩放图片
+                image = QImage(ImageAvatar)
+                if not image.isNull():
+                    AppLog.debug('save new avatar.jpg')
+                    image = image.scaled(130, 130, Qt.IgnoreAspectRatio,
+                                         Qt.SmoothTransformation)
+                    image.save(ImageAvatar)
                 # 登录成功
                 self.loginSuccessed.emit()
         except Exception as e:
