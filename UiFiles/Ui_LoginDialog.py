@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'F:\Workspace\PyQtClient\UiFiles\LoginDialog.ui'
+# Form implementation generated from reading ui file 'D:\Workspace\PyQtClient\UiFiles\LoginDialog.ui'
 #
 # Created by: PyQt5 UI code generator 5.5.1
 #
@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_FormLoginDialog(object):
     def setupUi(self, FormLoginDialog):
         FormLoginDialog.setObjectName("FormLoginDialog")
-        FormLoginDialog.resize(300, 436)
+        FormLoginDialog.resize(314, 422)
         self.verticalLayout = QtWidgets.QVBoxLayout(FormLoginDialog)
         self.verticalLayout.setContentsMargins(2, 2, 2, 2)
         self.verticalLayout.setSpacing(0)
@@ -40,20 +40,22 @@ class Ui_FormLoginDialog(object):
         self.lineEditAccount = QtWidgets.QLineEdit(self.widgetLoginEdit)
         self.lineEditAccount.setMinimumSize(QtCore.QSize(0, 30))
         self.lineEditAccount.setMaximumSize(QtCore.QSize(16777215, 30))
-        self.lineEditAccount.setClearButtonEnabled(True)
+        self.lineEditAccount.setAlignment(QtCore.Qt.AlignCenter)
         self.lineEditAccount.setObjectName("lineEditAccount")
         self.verticalLayout_2.addWidget(self.lineEditAccount)
         self.lineEditPassword = QtWidgets.QLineEdit(self.widgetLoginEdit)
         self.lineEditPassword.setMinimumSize(QtCore.QSize(0, 30))
         self.lineEditPassword.setMaximumSize(QtCore.QSize(16777215, 30))
         self.lineEditPassword.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.lineEditPassword.setAlignment(QtCore.Qt.AlignCenter)
         self.lineEditPassword.setObjectName("lineEditPassword")
         self.verticalLayout_2.addWidget(self.lineEditPassword)
         self.labelNotice = QtWidgets.QLabel(self.widgetLoginEdit)
+        self.labelNotice.setMinimumSize(QtCore.QSize(0, 20))
         self.labelNotice.setText("")
         self.labelNotice.setObjectName("labelNotice")
         self.verticalLayout_2.addWidget(self.labelNotice)
-        self.buttonLogin = QtWidgets.QPushButton(self.widgetLoginEdit)
+        self.buttonLogin = ProgressButton(self.widgetLoginEdit)
         self.buttonLogin.setMinimumSize(QtCore.QSize(0, 36))
         self.buttonLogin.setMaximumSize(QtCore.QSize(16777215, 36))
         self.buttonLogin.setObjectName("buttonLogin")
@@ -110,9 +112,10 @@ class Ui_FormLoginDialog(object):
         self.lineEditAccount.setPlaceholderText(_translate("FormLoginDialog", "Github Account"))
         self.lineEditPassword.setPlaceholderText(_translate("FormLoginDialog", "Github Password"))
         self.buttonLogin.setText(_translate("FormLoginDialog", "Login"))
-        self.labelRegister.setText(_translate("FormLoginDialog", "<html><head/><body><p><a href=\"https://github.com/join?source=login\"><span style=\" text-decoration: none; color:#24afff;\">Register</span></a></p></body></html>"))
-        self.labelForgot.setText(_translate("FormLoginDialog", "<html><head/><body><p><a href=\"https://github.com/password_reset\"><span style=\" text-decoration: none; color:#787878;\">Forgot?</span></a></p></body></html>"))
+        self.labelRegister.setText(_translate("FormLoginDialog", "<html><head/><body><p><a href=\"https://github.com/join?source=login\"><span style=\" text-decoration: none; color:#ffffff;\">Register</span></a></p></body></html>"))
+        self.labelForgot.setText(_translate("FormLoginDialog", "<html><head/><body><p><a href=\"https://github.com/password_reset\"><span style=\" text-decoration: none; color:#e6e6e6;\">Forgot?</span></a></p></body></html>"))
 
+from Widgets.ProgressButton import ProgressButton
 from Widgets.RotateButton import RotateButton
 
 if __name__ == "__main__":

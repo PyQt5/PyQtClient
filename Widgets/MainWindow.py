@@ -18,6 +18,7 @@ import webbrowser
 from PyQt5.QtCore import QEvent, Qt, pyqtSlot, QThread, QTimer
 
 from UiFiles.Ui_MainWindow import Ui_FormMainWindow
+from Utils import Constants
 from Utils.Application import QSingleApplication
 from Utils.CommonUtil import initLog, AppLog
 from Utils.Constants import LogName, DirErrors, DirProjects, LogFile, UrlProject, \
@@ -145,8 +146,9 @@ class MainWindow(FramelessWindow, Ui_FormMainWindow):
     def on_buttonHead_clicked(self):
         """点击头像
         """
-        dialog = LoginDialog(self)
-        dialog.exec_()
+        if Constants._Github == None:
+            dialog = LoginDialog(self)
+            dialog.exec_()
 
     @pyqtSlot()
     def on_buttonSearch_clicked(self):

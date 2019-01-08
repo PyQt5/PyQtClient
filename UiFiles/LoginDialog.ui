@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>300</width>
-    <height>436</height>
+    <width>314</width>
+    <height>422</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -140,11 +140,11 @@
              <height>30</height>
             </size>
            </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
            <property name="placeholderText">
             <string>Github Account</string>
-           </property>
-           <property name="clearButtonEnabled">
-            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -165,6 +165,9 @@
            <property name="echoMode">
             <enum>QLineEdit::Password</enum>
            </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
            <property name="placeholderText">
             <string>Github Password</string>
            </property>
@@ -172,13 +175,19 @@
          </item>
          <item>
           <widget class="QLabel" name="labelNotice">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>20</height>
+            </size>
+           </property>
            <property name="text">
             <string/>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="buttonLogin">
+          <widget class="ProgressButton" name="buttonLogin">
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -267,7 +276,7 @@
          <item>
           <widget class="QLabel" name="labelRegister">
            <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/join?source=login&quot;&gt;&lt;span style=&quot; text-decoration: none; color:#24afff;&quot;&gt;Register&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/join?source=login&quot;&gt;&lt;span style=&quot; text-decoration: none; color:#ffffff;&quot;&gt;Register&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="openExternalLinks">
             <bool>true</bool>
@@ -290,7 +299,7 @@
          <item>
           <widget class="QLabel" name="labelForgot">
            <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/password_reset&quot;&gt;&lt;span style=&quot; text-decoration: none; color:#787878;&quot;&gt;Forgot?&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/password_reset&quot;&gt;&lt;span style=&quot; text-decoration: none; color:#e6e6e6;&quot;&gt;Forgot?&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -333,6 +342,11 @@
    <class>RotateButton</class>
    <extends>QPushButton</extends>
    <header location="global">Widgets.RotateButton</header>
+  </customwidget>
+  <customwidget>
+   <class>ProgressButton</class>
+   <extends>QPushButton</extends>
+   <header location="global">Widgets.ProgressButton</header>
   </customwidget>
  </customwidgets>
  <resources/>

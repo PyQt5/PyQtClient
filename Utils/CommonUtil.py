@@ -13,7 +13,10 @@ import hashlib
 import logging
 import os
 
-from Utils.Constants import LogName, LogFormatterDebug, LogFormatter
+from PyQt5.QtCore import QSettings, QTextCodec
+
+from Utils.Constants import LogName, LogFormatterDebug, LogFormatter, ConfigFile
+
 
 __Author__ = """By: Irony
 QQ: 892768447
@@ -61,3 +64,39 @@ def initLog(name, file=None, level=logging.DEBUG, formatter=None):
 
 
 AppLog = logging.getLogger(LogName)
+
+
+class Setting:
+
+    _Setting = None
+
+    @classmethod
+    def init(cls, parent=None):
+        """初始化配置实例
+        :param cls:
+        :param parent:
+        """
+        if not cls._Setting:
+            cls._Setting = QSettings(ConfigFile, QSettings.IniFormat, parent)
+            cls._Setting.setIniCodec(QTextCodec.codecForName('utf-8'))
+
+    @classmethod
+    def value(cls, key, default=None, typ=None):
+        """获取配置中的值
+        :param cls:
+        :param key:        键名
+        :param default:    默认值
+        :param typ:        类型
+        """
+        cls.init()
+        return cls._Setting.value(key, default, typ)
+
+    @classmethod
+    def setValue(cls, key, value):
+        """更新配置中的值
+        :param cls:
+        :param key:        键名
+        :param value:      键值
+        """
+        cls.init()
+        cls._Setting.setValue(key, value)

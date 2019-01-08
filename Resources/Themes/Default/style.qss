@@ -66,6 +66,7 @@
 
 /*圆形头像*/
 #buttonHead {
+    border: none;
     min-width: 130px;
     min-height: 130px;
     max-width: 130px;
@@ -193,7 +194,7 @@
 
 /*网页控件*/
 #webViewContent {
-    background: transparent;    /*背景透明*/
+    background: rgba(208, 208, 208, 255);
 }
 
 /*仿ToolTip窗口*/
@@ -208,11 +209,11 @@ ToolTip > QLabel {
 #widgetLogin {
     border: 1px solid white;
     border-radius: 4px;    /*窗口最外层圆角*/
-    background: rgba(39, 174, 97, 255);    /*背景颜色*/
+    background: rgba(64, 187, 107, 255);    /*背景颜色*/
 }
 /*激活状态*/
 #widgetLogin[_active="true"] {
-    border: 1px solid transparent;
+    border: 1px solid rgba(44, 144, 92, 255);
 }
 /*非激活状态*/
 #widgetLogin[_active="false"] {
@@ -224,4 +225,34 @@ ToolTip > QLabel {
     /*标题栏左上角右上角圆角(保持和主窗口的圆角一致)*/
     border-top-right-radius: 4px;
     border-top-left-radius: 4px;
+}
+/*登录窗口输入框*/
+#lineEditAccount, #lineEditPassword {
+    /*设置左右边距*/
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: rgba(255, 255, 255, 255);
+    border-radius: 12px;
+}
+
+/*登录框消息提示文字*/
+#labelNotice {
+    color: red;
+    font-size: 16px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+/*登录按钮*/
+#buttonLogin {
+    border: none;
+    background-color: rgba(255, 255, 255, 255);
+    border-radius: 12px;
+    qproperty-circleColor: rgb(230, 230, 230);
+}
+#buttonLogin:hover {
+    background-color: rgba(240, 240, 240, 255);
+}
+#buttonLogin:pressed {
+    background-color: rgba(230, 230, 230, 255);
 }

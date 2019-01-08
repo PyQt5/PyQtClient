@@ -16,6 +16,7 @@ from PyQt5.QtGui import QFontDatabase, QCursor, QPixmap
 from PyQt5.QtWidgets import QApplication
 
 from Utils.CommonUtil import AppLog
+from Utils.Constants import ConfigFile
 
 
 __Author__ = """By: Irony
@@ -36,7 +37,7 @@ class ThemeManager:
         :param cls:
         :param parent:
         """
-        setting = QSettings('Resources/Data/Config.ini',
+        setting = QSettings(ConfigFile,
                             QSettings.IniFormat, parent)
         setting.setIniCodec(QTextCodec.codecForName('utf-8'))
         cls.ThemeName = setting.value('theme', 'Default', str)

@@ -228,7 +228,11 @@
                 <number>0</number>
                </property>
                <item>
-                <widget class="QLineEdit" name="lineEditSearch"/>
+                <widget class="QLineEdit" name="lineEditSearch">
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
                </item>
                <item>
                 <widget class="RubberBandButton" name="buttonSearch">

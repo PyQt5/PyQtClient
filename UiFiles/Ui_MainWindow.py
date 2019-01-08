@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'F:\Workspace\PyQtClient\UiFiles\MainWindow.ui'
+# Form implementation generated from reading ui file 'D:\Workspace\PyQtClient\UiFiles\MainWindow.ui'
 #
 # Created by: PyQt5 UI code generator 5.5.1
 #
@@ -86,6 +86,7 @@ class Ui_FormMainWindow(object):
         self.horizontalLayout_3.setSpacing(0)
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.lineEditSearch = QtWidgets.QLineEdit(self.widgetSearch)
+        self.lineEditSearch.setAlignment(QtCore.Qt.AlignCenter)
         self.lineEditSearch.setObjectName("lineEditSearch")
         self.horizontalLayout_3.addWidget(self.lineEditSearch)
         self.buttonSearch = RubberBandButton(self.widgetSearch)
