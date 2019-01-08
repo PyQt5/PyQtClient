@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'D:\Workspace\PyQtClient\UiFiles\MainWindow.ui'
+# Form implementation generated from reading ui file 'G:\Workspace\PyQtClient\UiFiles\MainWindow.ui'
 #
 # Created by: PyQt5 UI code generator 5.5.1
 #
@@ -12,6 +12,7 @@ class Ui_FormMainWindow(object):
     def setupUi(self, FormMainWindow):
         FormMainWindow.setObjectName("FormMainWindow")
         FormMainWindow.resize(800, 600)
+        FormMainWindow.setFocusPolicy(QtCore.Qt.StrongFocus)
         self.verticalLayout = QtWidgets.QVBoxLayout(FormMainWindow)
         self.verticalLayout.setContentsMargins(2, 2, 2, 2)
         self.verticalLayout.setSpacing(0)

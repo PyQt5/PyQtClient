@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'D:\Workspace\PyQtClient\UiFiles\LoginDialog.ui'
+# Form implementation generated from reading ui file 'G:\Workspace\PyQtClient\UiFiles\LoginDialog.ui'
 #
 # Created by: PyQt5 UI code generator 5.5.1
 #
@@ -12,6 +12,7 @@ class Ui_FormLoginDialog(object):
     def setupUi(self, FormLoginDialog):
         FormLoginDialog.setObjectName("FormLoginDialog")
         FormLoginDialog.resize(314, 422)
+        FormLoginDialog.setFocusPolicy(QtCore.Qt.StrongFocus)
         self.verticalLayout = QtWidgets.QVBoxLayout(FormLoginDialog)
         self.verticalLayout.setContentsMargins(2, 2, 2, 2)
         self.verticalLayout.setSpacing(0)

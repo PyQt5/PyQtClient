@@ -118,6 +118,7 @@
 #treeViewCatalogs {
     outline: none;  /*去掉虚线框*/
     border: none;       /*无边框*/
+    color: white;
     background: transparent;    /*背景透明*/
 }
 
@@ -256,4 +257,51 @@ ToolTip > QLabel {
 }
 #buttonLogin:pressed {
     background-color: rgba(230, 230, 230, 255);
+}
+
+/*滚动条样式*/
+QScrollBar:vertical {
+    background: transparent;
+    width: 10px;
+    border-radius: 5px;
+    margin: 0px 0px 0px 0px;
+}
+
+QScrollBar::handle:vertical {
+    background: rgba(208, 208, 208, 150);
+    width: 10px;
+    border-radius: 5px;
+    border: none;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: rgba(208, 208, 208, 255);
+}
+
+/*设置滑杆上部分区域*/
+QScrollBar::sub-page:vertical {
+    width: 10px;
+    background: transparent;
+}
+
+/*设置滑杆下部分区域*/
+QScrollBar::add-page:vertical {
+    width: 10px;
+    background: transparent;
+}
+
+/*设置顶部箭头*/
+QScrollBar::sub-line:vertical {
+    height: 1px;
+    border-image: none;
+    background: transparent;
+    subcontrol-position: top;
+}
+
+/*设置底部箭头*/
+QScrollBar::add-line:vertical {
+    height: 1px;
+    border-image: none;
+    background: transparent;
+    subcontrol-position:bottom;
 }

@@ -117,7 +117,8 @@ class MainWindow(FramelessWindow, Ui_FormMainWindow):
                 if path.name.startswith('.'):  # 不显示.开头的文件夹
                     continue
                 item = QStandardItem(path.name)
-                item.setData(path)
+                item.setTextAlignment(Qt.AlignCenter)   # 文字居中显示
+                item.setData(path)                  # 添加自定义的数据
                 self._dmodel.appendRow(item)
         if Constants._Github != None:
             # 更新根目录
