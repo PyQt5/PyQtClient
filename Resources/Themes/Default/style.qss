@@ -66,6 +66,7 @@
 
 /*圆形头像*/
 #buttonHead {
+    outline: none;
     border: none;
     min-width: 130px;
     min-height: 130px;

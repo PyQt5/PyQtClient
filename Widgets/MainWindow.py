@@ -15,15 +15,17 @@ from pathlib import Path
 import sys
 import webbrowser
 
-from PyQt5.QtCore import QEvent, Qt, pyqtSlot, QThread, QTimer
+from PyQt5.QtCore import QEvent, Qt, pyqtSlot, QTimer, QThreadPool,\
+    QSortFilterProxyModel
+from PyQt5.QtGui import QStandardItemModel, QStandardItem
 
 from UiFiles.Ui_MainWindow import Ui_FormMainWindow
 from Utils import Constants
 from Utils.Application import QSingleApplication
-from Utils.CommonUtil import initLog, AppLog
+from Utils.CommonUtil import initLog, AppLog, Signals
 from Utils.Constants import LogName, DirErrors, DirProjects, LogFile, UrlProject, \
     UrlQQ, UrlGroup
-from Utils.Repository import Repository
+from Utils.Repository import RootRunnable
 from Utils.ThemeManager import ThemeManager
 from Widgets.FramelessWindow import FramelessWindow
 from Widgets.LoginDialog import LoginDialog
@@ -54,8 +56,20 @@ class MainWindow(FramelessWindow, Ui_FormMainWindow):
         ThemeManager.loadTheme(self)
         # 加载鼠标样式
         ThemeManager.loadCursor(self.widgetMain)
+        # 设置目录树Model
+        self._dmodel = QStandardItemModel(self.treeViewCatalogs)
+        self._fmodel = QSortFilterProxyModel(self.treeViewCatalogs)
+        self._fmodel.setSourceModel(self._dmodel)
+        self.treeViewCatalogs.setModel(self._fmodel)
         # 200毫秒后显示登录对话框
         QTimer.singleShot(200, self.initLogin)
+        # 创建线程池,最多5个线程
+        self._threadPool = QThreadPool(self)
+        self._threadPool.setMaxThreadCount(5)
+        # 绑定全局信号槽
+        Signals.progressBarShowed.connect(
+            self.showProgressBar, type=Qt.QueuedConnection)
+        Signals.itemAdded.connect(self.onItemAdded, type=Qt.QueuedConnection)
 
     def closeEvent(self, event):
         if hasattr(self, '_repoThread'):
@@ -76,30 +90,13 @@ class MainWindow(FramelessWindow, Ui_FormMainWindow):
                 self.buttonMaximum.setVisible(True)
                 self.buttonNormal.setVisible(False)
 
-    def showProgressBar(self):
-        """显示进度条
+    def showProgressBar(self, visible=True):
+        """显示或隐藏进度条
         """
-        self.progressBar.setVisible(True)
+        self.progressBar.setVisible(visible)
 
-    def hideProgressBar(self):
-        """隐藏进度条
-        """
-        self.progressBar.setVisible(False)
-
-    def updateLocalRepository(self):
-        """更新本地仓库
-        """
-        self._repoThread = QThread(self)
-        self._repository = Repository()
-        # 移动到线程中执行
-        self._repository.moveToThread(self._repoThread)
-        # 线程完成后隐藏进度条
-        self._repoThread.finished.connect(self.hideProgressBar)
-        # 线程执行后执行run方法进行下载数据
-        self._repoThread.started.connect(self._repository.run)
-        self.showProgressBar()
-        self._repoThread.start()
-        AppLog.info('start update local repository')
+    def onItemAdded(self, names):
+        AppLog.debug('names: {}'.format(str(names)))
 
     def initLogin(self):
         dialog = LoginDialog(self)
@@ -113,10 +110,18 @@ class MainWindow(FramelessWindow, Ui_FormMainWindow):
     def initCatalog(self):
         """初始化本地仓库结构树
         """
-        for path in Path(DirProjects).rglob('*'):
-            print(path)
-        # 开启后台自动更新线程
-#         self.updateLocalRepository()
+        if self._dmodel.rowCount() == 0:
+            for path in Path(DirProjects).rglob('*'):
+                if path.is_file():  # 跳过文件
+                    continue
+                if path.name.startswith('.'):  # 不显示.开头的文件夹
+                    continue
+                item = QStandardItem(path.name)
+                item.setData(path)
+                self._dmodel.appendRow(item)
+        if Constants._Github != None:
+            # 更新根目录
+            self._threadPool.start(RootRunnable())
 
     @pyqtSlot()
     def on_buttonSkin_clicked(self):
@@ -153,11 +158,7 @@ class MainWindow(FramelessWindow, Ui_FormMainWindow):
         """点击头像
         """
         if Constants._Github == None:
-            dialog = LoginDialog(self)
-            dialog.exec_()
-            # 刷新头像样式
-            if Constants._Github != None:
-                self.style().polish(self.buttonHead)
+            self.initLogin()
 
     @pyqtSlot()
     def on_buttonSearch_clicked(self):

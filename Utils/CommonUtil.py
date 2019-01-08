@@ -13,7 +13,7 @@ import hashlib
 import logging
 import os
 
-from PyQt5.QtCore import QSettings, QTextCodec
+from PyQt5.QtCore import QSettings, QTextCodec, QObject, pyqtSignal
 
 from Utils.Constants import LogName, LogFormatterDebug, LogFormatter, ConfigFile
 
@@ -100,3 +100,17 @@ class Setting:
         """
         cls.init()
         cls._Setting.setValue(key, value)
+
+
+class _Signals(QObject):
+
+    # 控制进度条显示和隐藏
+    progressBarShowed = pyqtSignal(bool)
+    # 添加树目录
+    itemAdded = pyqtSignal(list)
+    # 否要更新右侧内容显示
+    indexPageUpdated = pyqtSignal()
+
+
+# 说白了就是全局信号定义
+Signals = _Signals()
