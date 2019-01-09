@@ -100,6 +100,7 @@ class Setting:
         """
         cls.init()
         cls._Setting.setValue(key, value)
+        cls._Setting.sync()
 
 
 class _Signals(QObject):

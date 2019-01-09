@@ -15,17 +15,15 @@ from pathlib import Path
 import sys
 import webbrowser
 
-from PyQt5.QtCore import QEvent, Qt, pyqtSlot, QTimer, QThreadPool,\
-    QSortFilterProxyModel
-from PyQt5.QtGui import QStandardItemModel, QStandardItem
+from PyQt5.QtCore import QEvent, Qt, pyqtSlot, QTimer, QThreadPool
+from PyQt5.QtGui import QStandardItemModel, QStandardItem, QEnterEvent
 
 from UiFiles.Ui_MainWindow import Ui_FormMainWindow
 from Utils import Constants
 from Utils.Application import QSingleApplication
 from Utils.CommonUtil import initLog, AppLog, Signals
-from Utils.Constants import LogName, DirErrors, DirProjects, LogFile, UrlProject, \
-    UrlQQ, UrlGroup
 from Utils.Repository import RootRunnable
+from Utils.SortFilterModel import SortFilterModel
 from Utils.ThemeManager import ThemeManager
 from Widgets.FramelessWindow import FramelessWindow
 from Widgets.LoginDialog import LoginDialog
@@ -50,19 +48,22 @@ class MainWindow(FramelessWindow, Ui_FormMainWindow):
         self.progressBar.setVisible(False)
         # 隐藏还原按钮
         self.buttonNormal.setVisible(False)
-        # 安装事件过滤器用于还原鼠标样式
-        self.widgetMain.installEventFilter(self)
+        # 隐藏目录树的滑动条
+        self.treeViewCatalogs.verticalScrollBar().setVisible(False)
         # 加载主题
         ThemeManager.loadTheme(self)
         # 加载鼠标样式
         ThemeManager.loadCursor(self.widgetMain)
         # 设置目录树Model
         self._dmodel = QStandardItemModel(self.treeViewCatalogs)
-        self._fmodel = QSortFilterProxyModel(self.treeViewCatalogs)
+        self._fmodel = SortFilterModel(self.treeViewCatalogs)
         self._fmodel.setSourceModel(self._dmodel)
         self.treeViewCatalogs.setModel(self._fmodel)
-        # 200毫秒后显示登录对话框
-        QTimer.singleShot(200, self.initLogin)
+        # 安装事件过滤器用于还原鼠标样式
+        self.widgetMain.installEventFilter(self)
+        # 安装事件过滤器捕捉鼠标进入离开事件
+        self.treeViewCatalogs.installEventFilter(self)
+
         # 创建线程池,最多5个线程
         self._threadPool = QThreadPool(self)
         self._threadPool.setMaxThreadCount(5)
@@ -71,10 +72,28 @@ class MainWindow(FramelessWindow, Ui_FormMainWindow):
             self.showProgressBar, type=Qt.QueuedConnection)
         Signals.itemAdded.connect(self.onItemAdded, type=Qt.QueuedConnection)
 
+        # 200毫秒后显示登录对话框
+        QTimer.singleShot(200, self.initLogin)
+
     def closeEvent(self, event):
         if hasattr(self, '_repoThread'):
             self._repoThread.stoped = True
         super(MainWindow, self).closeEvent(event)
+
+    def eventFilter(self, obj, event):
+        # 事件过滤器
+        if obj == self.widgetMain and isinstance(event, QEnterEvent):
+            # 用于解决鼠标进入其它控件后还原为标准鼠标样式
+            self.setCursor(Qt.ArrowCursor)
+        elif obj == self.treeViewCatalogs:
+            types = event.type()
+            if types == QEvent.Enter:
+                # 鼠标进入显示滚动条
+                self.treeViewCatalogs.verticalScrollBar().setVisible(True)
+            elif types == QEvent.Leave:
+                # 鼠标离开隐藏滚动条
+                self.treeViewCatalogs.verticalScrollBar().setVisible(False)
+        return FramelessWindow.eventFilter(self, obj, event)
 
     def changeEvent(self, event):
         # 窗口改变事件
@@ -99,19 +118,21 @@ class MainWindow(FramelessWindow, Ui_FormMainWindow):
         AppLog.debug('names: {}'.format(str(names)))
 
     def initLogin(self):
+        # 遍历本地缓存目录
+        self.initCatalog()
         dialog = LoginDialog(self)
         dialog.exec_()
         # 刷新头像样式
         if Constants._Github != None:
-            self.style().polish(self.buttonHead)
-        # 遍历本地缓存目录
-        self.initCatalog()
+            print(Constants.ImageAvatar)
+            self.buttonHead.image = Constants.ImageAvatar
+#             self.style().polish(self.buttonHead)
 
     def initCatalog(self):
         """初始化本地仓库结构树
         """
         if self._dmodel.rowCount() == 0:
-            for path in Path(DirProjects).rglob('*'):
+            for path in Path(Constants.DirProjects).rglob('*'):
                 if path.is_file():  # 跳过文件
                     continue
                 if path.name.startswith('.'):  # 不显示.开头的文件夹
@@ -120,6 +141,8 @@ class MainWindow(FramelessWindow, Ui_FormMainWindow):
                 item.setTextAlignment(Qt.AlignCenter)   # 文字居中显示
                 item.setData(path)                  # 添加自定义的数据
                 self._dmodel.appendRow(item)
+            # 排序
+            self._fmodel.sort(0, Qt.AscendingOrder)
         if Constants._Github != None:
             # 更新根目录
             self._threadPool.start(RootRunnable())
@@ -161,6 +184,11 @@ class MainWindow(FramelessWindow, Ui_FormMainWindow):
         if Constants._Github == None:
             self.initLogin()
 
+    def on_lineEditSearch_textChanged(self, text):
+        """过滤筛选
+        """
+        self._fmodel.setFilterRegExp(text)
+
     @pyqtSlot()
     def on_buttonSearch_clicked(self):
         """点击搜索按钮
@@ -171,19 +199,19 @@ class MainWindow(FramelessWindow, Ui_FormMainWindow):
     def on_buttonGithub_clicked(self):
         """点击项目按钮
         """
-        webbrowser.open_new_tab(UrlProject)
+        webbrowser.open_new_tab(Constants.UrlProject)
 
     @pyqtSlot()
     def on_buttonQQ_clicked(self):
         """点击QQ按钮
         """
-        webbrowser.open(UrlQQ)
+        webbrowser.open(Constants.UrlQQ)
 
     @pyqtSlot()
     def on_buttonGroup_clicked(self):
         """点击群按钮
         """
-        webbrowser.open(UrlGroup)
+        webbrowser.open(Constants.UrlGroup)
 
     @pyqtSlot()
     def on_buttonBackup_clicked(self):
@@ -194,12 +222,12 @@ class MainWindow(FramelessWindow, Ui_FormMainWindow):
 
 def main():
     os.putenv('QT_DEVICE_PIXEL_RATIO', 'auto')
-    os.makedirs(DirErrors, exist_ok=True)
-    os.makedirs(DirProjects, exist_ok=True)
+    os.makedirs(Constants.DirErrors, exist_ok=True)
+    os.makedirs(Constants.DirProjects, exist_ok=True)
     # 异常捕捉
-    sys.excepthook = cgitb.Hook(1, DirErrors, 5, sys.stderr, '')
+    sys.excepthook = cgitb.Hook(1, Constants.DirErrors, 5, sys.stderr, '')
     # 初始化日志
-    initLog(LogName, LogFile)
+    initLog(Constants.LogName, Constants.LogFile)
     # 运行app
     app = QSingleApplication('qtsingleapp-pyqtclient', sys.argv)
     if app.isRunning():

@@ -69,7 +69,7 @@ class ThemeManager:
         :param cls:
         :return: 主题中 cursor.ani 的绝对路径
         """
-        return os.path.abspath(os.path.join(cls.ThemeDir, cls.ThemeName, 'cursor.png'))
+        return os.path.abspath(os.path.join(cls.ThemeDir, cls.ThemeName, 'cursor.png')).replace('\\', '/')
 
     @classmethod
     def fontPath(cls):
@@ -77,7 +77,7 @@ class ThemeManager:
         :param cls:
         :return: 主题中 font.ttf 的绝对路径
         """
-        return os.path.abspath(os.path.join(cls.ThemeDir, cls.ThemeName, 'font.ttf'))
+        return os.path.abspath(os.path.join(cls.ThemeDir, cls.ThemeName, 'font.ttf')).replace('\\', '/')
 
     @classmethod
     def stylePath(cls):
@@ -85,4 +85,4 @@ class ThemeManager:
         :param cls:
         :return: 主题中 style.qss 的绝对路径
         """
-        return os.path.abspath(os.path.join(cls.ThemeDir, cls.ThemeName, 'style.qss'))
+        return os.path.abspath(os.path.join(cls.ThemeDir, cls.ThemeName, 'style.qss')).replace('\\', '/')

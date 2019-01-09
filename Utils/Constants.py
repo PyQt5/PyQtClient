@@ -9,6 +9,7 @@ Created on 2019年1月5日
 @file: Utils.Constants
 @description:
 """
+
 from PyQt5.QtNetwork import QNetworkRequest
 
 
@@ -21,7 +22,8 @@ __Version__ = "Version 1.0"
 ProjectRepo = 'PyQt5/PyQt'
 ConfigFile = 'Resources/Data/Config.ini'
 
-ImageAvatar = 'Resources/Images/avatar.jpg'
+ImageDir = 'Resources/Images/Avatars'
+ImageAvatar = 'Resources/Images/Avatars/avatar.png'
 
 LogName = 'PyQtClient'
 LogFormatterDebug = '[%(asctime)s %(name)s %(module)s:%(funcName)s:%(lineno)s] %(levelname)-8s %(message)s'

@@ -1,3 +1,8 @@
+QLineEdit {
+    selection-background-color: darkgray;   /*选中文字背景色*/
+    lineedit-password-character: 1422;      /*密码输入框为星号*/
+}
+
 /*主窗口*/
 #widgetMain {
     border-radius: 4px;    /*窗口最外层圆角*/
@@ -74,7 +79,7 @@
     max-height: 130px;
     background: transparent;
     qproperty-shadowColor: #212121;
-    qproperty-image: "Resources/Images/avatar.jpg";
+    qproperty-image: "Resources/Images/Avatars/avatar.png";
 }
 
 /*搜索框*/
@@ -118,8 +123,32 @@
 #treeViewCatalogs {
     outline: none;  /*去掉虚线框*/
     border: none;       /*无边框*/
-    color: white;
+    color: rgba(255, 255, 255, 200);
     background: transparent;    /*背景透明*/
+}
+
+#treeViewCatalogs::item {
+    min-height: 36px;
+}
+
+#treeViewCatalogs::item:hover {
+    color: rgba(255, 255, 255, 255);
+    background: rgba(217, 217, 217, 100);
+}
+
+#treeViewCatalogs::item:selected {
+    color: rgba(255, 255, 255, 255);
+    background: rgba(217, 217, 217, 100);
+}
+
+#treeViewCatalogs::item:selected:active{
+    color: rgba(255, 255, 255, 255);
+    background: rgba(217, 217, 217, 100);
+}
+
+#treeViewCatalogs::item:selected:!active {
+    color: rgba(255, 255, 255, 200);
+    background: rgba(217, 217, 217, 50);
 }
 
 /*工具栏*/
@@ -237,6 +266,10 @@ ToolTip > QLabel {
     border-radius: 12px;
 }
 
+#lineEditPassword[echoMode="2"] {
+    lineedit-password-character: 1422;
+}
+
 /*登录框消息提示文字*/
 #labelNotice {
     color: red;
@@ -262,15 +295,15 @@ ToolTip > QLabel {
 /*滚动条样式*/
 QScrollBar:vertical {
     background: transparent;
-    width: 10px;
-    border-radius: 5px;
+    width: 8px;
+    border-radius: 4px;
     margin: 0px 0px 0px 0px;
 }
 
 QScrollBar::handle:vertical {
     background: rgba(208, 208, 208, 150);
-    width: 10px;
-    border-radius: 5px;
+    width: 8px;
+    border-radius: 4px;
     border: none;
 }
 
@@ -280,13 +313,13 @@ QScrollBar::handle:vertical:hover {
 
 /*设置滑杆上部分区域*/
 QScrollBar::sub-page:vertical {
-    width: 10px;
+    width: 8px;
     background: transparent;
 }
 
 /*设置滑杆下部分区域*/
 QScrollBar::add-page:vertical {
-    width: 10px;
+    width: 8px;
     background: transparent;
 }
 

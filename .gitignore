@@ -6,3 +6,4 @@ dist
 dist/*
 *.log
 Resources/Data/*
+Resources/Images/Avatars/*.jpg

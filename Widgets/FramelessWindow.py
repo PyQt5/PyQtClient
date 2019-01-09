@@ -10,8 +10,9 @@ Created on 2019年1月2日
 @description: 无边框窗口
 """
 from PyQt5.QtCore import Qt, QEvent
-from PyQt5.QtGui import QPainter, QPen, QColor, QEnterEvent
+from PyQt5.QtGui import QPainter, QPen, QColor
 from PyQt5.QtWidgets import QWidget
+
 
 __Author__ = """By: Irony
 QQ: 892768447
@@ -39,12 +40,6 @@ class FramelessWindow(QWidget):
         self.setAttribute(Qt.WA_TranslucentBackground, True)
         # 无边框
         self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
-
-    def eventFilter(self, obj, event):
-        # 事件过滤器,用于解决鼠标进入其它控件后还原为标准鼠标样式
-        if isinstance(event, QEnterEvent):
-            self.setCursor(Qt.ArrowCursor)
-        return super(FramelessWindow, self).eventFilter(obj, event)
 
     def paintEvent(self, event):
         # 由于是全透明背景窗口,重绘事件中绘制透明度为1的难以发现的边框,用于调整窗口大小
