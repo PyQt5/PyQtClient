@@ -35,7 +35,7 @@ class RootRunnable(QRunnable):
         contents = repo.get_contents('')
         while len(contents) > 1:
             content = contents.pop(0)
-            if content.type == 'dir':
+            if content.type == 'dir' and content.name != 'Donate':
                 # 尝试创建目录
                 os.makedirs(os.path.join(
                     DirProjects, content.path).replace('\\', '/'), exist_ok=True)

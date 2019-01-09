@@ -57,7 +57,6 @@ class ProgressButton(QPushButton):
         super(ProgressButton, self).__init__(*args, **kwargs)
         self._oldText = ''
         self._items = []
-        self._initAnimations()
 
     def showWaiting(self, show=True):
         self.setEnabled(not show)
@@ -65,6 +64,8 @@ class ProgressButton(QPushButton):
         if show:
             self._oldText = self.text()
             self.setText('')
+            self._items.clear()
+            self._initAnimations()
             for _, animation in self._items:
                 animation.start()
         else:

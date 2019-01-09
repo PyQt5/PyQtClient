@@ -132,20 +132,30 @@ class MainWindow(FramelessWindow, Ui_FormMainWindow):
         """初始化本地仓库结构树
         """
         if self._dmodel.rowCount() == 0:
-            for path in Path(Constants.DirProjects).rglob('*'):
-                if path.is_file():  # 跳过文件
+            for file in Path(Constants.DirProjects).rglob('*'):
+                if file.is_file():  # 跳过文件
                     continue
-                if path.name.startswith('.'):  # 不显示.开头的文件夹
+                if file.name.startswith('.'):  # 不显示.开头的文件夹
                     continue
-                item = QStandardItem(path.name)
+                item = QStandardItem(file.name)
                 item.setTextAlignment(Qt.AlignCenter)   # 文字居中显示
-                item.setData(path)                  # 添加自定义的数据
+                # 添加自定义的数据
+                item.setData(file.name, Constants.RoleName)
+                item.setData(file, Constants.RoleFile)
                 self._dmodel.appendRow(item)
             # 排序
             self._fmodel.sort(0, Qt.AscendingOrder)
         if Constants._Github != None:
             # 更新根目录
             self._threadPool.start(RootRunnable())
+
+    def on_treeViewCatalogs_clicked(self, modelIndex):
+        """点击目录中的item
+        :param modelIndex:        代理模型中的QModelIndex, 并不是真实的
+        """
+        print(modelIndex.data(Constants.RoleName))
+        print(modelIndex.data(Constants.RolePath))
+        print(modelIndex.data(Constants.RoleFile))
 
     @pyqtSlot()
     def on_buttonSkin_clicked(self):
