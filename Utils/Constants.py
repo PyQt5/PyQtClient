@@ -7,7 +7,7 @@ Created on 2019年1月5日
 @site: https://pyqt5.com https://github.com/892768447
 @email: 892768447@qq.com
 @file: Utils.Constants
-@description:
+@description: 常量
 """
 
 from PyQt5.QtCore import Qt
@@ -23,6 +23,8 @@ __Version__ = "Version 1.0"
 RoleFile = Qt.UserRole + 1
 RoleName = Qt.UserRole + 2
 RolePath = Qt.UserRole + 3
+
+HomeFile = 'Resources/Markdown/index.html'
 
 ProjectRepo = 'PyQt5/PyQt'
 ConfigFile = 'Resources/Data/Config.ini'

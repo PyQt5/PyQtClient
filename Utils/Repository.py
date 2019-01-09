@@ -25,23 +25,38 @@ __Copyright__ = "Copyright (c) 2019 Irony"
 __Version__ = "Version 1.0"
 
 
-class RootRunnable(QRunnable):
-    """获取根路径下的目录和文件
+class DirRunnable(QRunnable):
+    """获指定路径下的目录和文件
     """
 
+    def __init__(self, path, *args, **kwargs):
+        super(DirRunnable, self).__init__(*args, **kwargs)
+        self.path = path
+
     def run(self):
-        AppLog.info('start get root catalogs')
+        AppLog.info('start get {} catalogs'.format(self.path))
         repo = Constants._Github.get_repo(ProjectRepo)
-        contents = repo.get_contents('')
-        while len(contents) > 1:
+        contents = repo.get_contents(self.path)
+        while len(contents) > 0:
             content = contents.pop(0)
-            if content.type == 'dir' and content.name != 'Donate':
+            if content.type == 'dir':
+                if content.name == 'Donate':
+                    continue
                 # 尝试创建目录
-                os.makedirs(os.path.join(
-                    DirProjects, content.path).replace('\\', '/'), exist_ok=True)
-                if not content.path.startswith('.'):  # 文件名不以.开头
-                    # 添加到界面树中
-                    Signals.itemAdded.emit(content.path.split('/'))
+                try:
+                    os.makedirs(os.path.join(
+                        DirProjects, content.path).replace('\\', '/'), exist_ok=True)
+                    if not content.path.startswith('.'):  # 文件名不以.开头
+                        # 添加到界面树中
+                        Signals.itemAdded.emit(
+                            content.path.split('/'), content.path)
+                        # 是否需要深度遍历
+                        if self.path != '':
+                            AppLog.info(
+                                'start get {} catalogs'.format(content.path))
+                            contents.extend(repo.get_contents(content.path))
+                except Exception as e:
+                    AppLog.warn(str(e))
             else:
                 path = os.path.join(
                     DirProjects, content.path).replace('\\', '/')
@@ -54,3 +69,5 @@ class RootRunnable(QRunnable):
                 if content.name == 'README.md':
                     # 通知是否要更新右侧内容显示
                     Signals.indexPageUpdated.emit()
+
+        Signals.runnableFinished.emit(self.path)

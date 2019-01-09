@@ -19,6 +19,7 @@ encoding//Utils/ThemeManager.py=utf-8
 encoding//Widgets/FramelessWindow.py=utf-8
 encoding//Widgets/LoginDialog.py=utf-8
 encoding//Widgets/MainWindow.py=utf-8
+encoding//Widgets/MainWindowBase.py=utf-8
 encoding//Widgets/MoveDialog.py=utf-8
 encoding//Widgets/ProgressButton.py=utf-8
 encoding//Widgets/RotateButton.py=utf-8

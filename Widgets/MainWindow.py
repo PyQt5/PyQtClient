@@ -11,23 +11,19 @@ Created on 2019年1月3日
 """
 import cgitb
 import os
-from pathlib import Path
 import sys
-import webbrowser
 
-from PyQt5.QtCore import QEvent, Qt, pyqtSlot, QTimer, QThreadPool
-from PyQt5.QtGui import QStandardItemModel, QStandardItem, QEnterEvent
+from PyQt5.QtCore import QEvent, Qt, QTimer
+from PyQt5.QtGui import QStandardItem, QEnterEvent
 
 from UiFiles.Ui_MainWindow import Ui_FormMainWindow
 from Utils import Constants
 from Utils.Application import QSingleApplication
-from Utils.CommonUtil import initLog, AppLog, Signals
-from Utils.Repository import RootRunnable
-from Utils.SortFilterModel import SortFilterModel
-from Utils.ThemeManager import ThemeManager
+from Utils.CommonUtil import initLog, AppLog
+from Utils.Repository import DirRunnable
 from Widgets.FramelessWindow import FramelessWindow
 from Widgets.LoginDialog import LoginDialog
-from Widgets.ToolTip import ToolTip
+from Widgets.MainWindowBase import MainWindowBase
 
 
 __Author__ = """By: Irony
@@ -37,43 +33,122 @@ __Copyright__ = "Copyright (c) 2019 Irony"
 __Version__ = "Version 1.0"
 
 
-class MainWindow(FramelessWindow, Ui_FormMainWindow):
+class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
 
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
-        self.setupUi(self)
-        # 绑定返回顶部提示框
-        ToolTip.bind(self.buttonBacktoUp)
-        # 隐藏进度条
-        self.progressBar.setVisible(False)
-        # 隐藏还原按钮
-        self.buttonNormal.setVisible(False)
-        # 隐藏目录树的滑动条
-        self.treeViewCatalogs.verticalScrollBar().setVisible(False)
-        # 加载主题
-        ThemeManager.loadTheme(self)
-        # 加载鼠标样式
-        ThemeManager.loadCursor(self.widgetMain)
-        # 设置目录树Model
-        self._dmodel = QStandardItemModel(self.treeViewCatalogs)
-        self._fmodel = SortFilterModel(self.treeViewCatalogs)
-        self._fmodel.setSourceModel(self._dmodel)
-        self.treeViewCatalogs.setModel(self._fmodel)
-        # 安装事件过滤器用于还原鼠标样式
-        self.widgetMain.installEventFilter(self)
-        # 安装事件过滤器捕捉鼠标进入离开事件
-        self.treeViewCatalogs.installEventFilter(self)
-
-        # 创建线程池,最多5个线程
-        self._threadPool = QThreadPool(self)
-        self._threadPool.setMaxThreadCount(5)
-        # 绑定全局信号槽
-        Signals.progressBarShowed.connect(
-            self.showProgressBar, type=Qt.QueuedConnection)
-        Signals.itemAdded.connect(self.onItemAdded, type=Qt.QueuedConnection)
-
+        self._initUi()
+        self._initModel()
+        self._initThread()
+        self._initSignals()
         # 200毫秒后显示登录对话框
         QTimer.singleShot(200, self.initLogin)
+
+    def onRunnableFinished(self, path):
+        """任务运行完毕后删除该path
+        :param path:
+        """
+        AppLog.debug('finished get path: {}'.format(path))
+        if path in self._runnables:
+            self._runnables.remove(path)
+
+    def onItemAdded(self, names, rpath):
+        """线程发送信号增加Item
+        :param names:
+        :param rpath:
+        """
+        AppLog.debug('names: {}'.format(str(names)))
+        file = ''  # 路径
+        pItem = None  # 上级item
+        for name in names:
+            items = self._dmodel.findItems(name)
+            if not items:
+                # 如果没有找到上级Item则新增加一个
+                item = QStandardItem(self._dmodel.invisibleRootItem())
+                item.setText(name)
+                item.setTextAlignment(Qt.AlignCenter)
+                item.setData(name, Constants.RoleName)
+                file = os.path.join(file, name)
+                item.setData(file.replace('\\', '/'), Constants.RolePath)
+                file = os.path.join(Constants.DirProjects, file)
+                item.setData(file.replace('\\', '/'), Constants.RoleFile)
+                if pItem:
+                    pItem.appendRow(item)
+                else:
+                    self._dmodel.appendRow(item)
+                pItem = item
+            else:
+                for item in items:
+                    if item.data(Constants.RoleFile) == rpath:
+                        pItem = item
+                        break
+
+    def initLogin(self):
+        # 遍历本地缓存目录
+        self.initCatalog()
+        dialog = LoginDialog(self)
+        dialog.exec_()
+        # 刷新头像样式
+        if Constants._Github != None:
+            self.buttonHead.image = Constants.ImageAvatar
+#             self.style().polish(self.buttonHead)
+            # 更新根目录
+            self._threadPool.start(DirRunnable(''))
+
+    def initCatalog(self):
+        """初始化本地仓库结构树
+        """
+        if self._dmodel.rowCount() == 0:
+            pitem = self._dmodel.invisibleRootItem()
+            # 只遍历根目录
+            for name in os.listdir(Constants.DirProjects):
+                file = os.path.join(Constants.DirProjects,
+                                    name).replace('\\', '/')
+                if os.path.isfile(file):  # 跳过文件
+                    continue
+                if name.startswith('.') or name == 'Donate' or name == 'Test':  # 不显示.开头的文件夹
+                    continue
+                item = QStandardItem(pitem)
+                item.setText(name)
+                # 添加自定义的数据
+                item.setData(name, Constants.RoleName)        # 文件夹名字
+                item.setData(file, Constants.RoleFile)        # 本地文件夹路径
+                item.setData(name, Constants.RolePath)        # 用于请求远程的路径
+                pitem.appendRow(item)
+            # 排序
+            self._fmodel.sort(0, Qt.AscendingOrder)
+            # 初始化网页
+            self._initWebView()
+
+    def on_treeViewCatalogs_clicked(self, modelIndex):
+        """被点击的item
+        :param modelIndex:        代理模型中的QModelIndex, 并不是真实的
+        """
+        path = modelIndex.data(Constants.RolePath)
+        if path not in self._runnables:
+            AppLog.debug('path: {}'.format(path))
+            AppLog.debug('name: {}'.format(
+                modelIndex.data(Constants.RoleName)))
+            rdir = modelIndex.data(Constants.RoleFile)
+            AppLog.debug('file: {}'.format(rdir))
+            self.renderReadme(path=os.path.join(rdir, 'README.md'))
+#             self._runnables.add(path)
+#             self._threadPool.start(DirRunnable(path))
+
+    def renderReadme(self, *, path=None):
+        """加载README.md并显示
+        """
+        try:
+            self.webViewContent.loadFinished.disconnect(self.renderReadme)
+        except:
+            pass
+        path = path if path != None else os.path.join(
+            Constants.DirProjects, 'README.md')
+        if not os.path.exists(path):
+            return
+        content = repr(open(path, 'rb').read().decode())
+        self.webViewContent.page().mainFrame().evaluateJavaScript(
+            "updateText({});".format(content))
 
     def closeEvent(self, event):
         if hasattr(self, '_repoThread'):
@@ -108,126 +183,6 @@ class MainWindow(FramelessWindow, Ui_FormMainWindow):
                 # 隐藏还原按钮
                 self.buttonMaximum.setVisible(True)
                 self.buttonNormal.setVisible(False)
-
-    def showProgressBar(self, visible=True):
-        """显示或隐藏进度条
-        """
-        self.progressBar.setVisible(visible)
-
-    def onItemAdded(self, names):
-        AppLog.debug('names: {}'.format(str(names)))
-
-    def initLogin(self):
-        # 遍历本地缓存目录
-        self.initCatalog()
-        dialog = LoginDialog(self)
-        dialog.exec_()
-        # 刷新头像样式
-        if Constants._Github != None:
-            print(Constants.ImageAvatar)
-            self.buttonHead.image = Constants.ImageAvatar
-#             self.style().polish(self.buttonHead)
-
-    def initCatalog(self):
-        """初始化本地仓库结构树
-        """
-        if self._dmodel.rowCount() == 0:
-            for file in Path(Constants.DirProjects).rglob('*'):
-                if file.is_file():  # 跳过文件
-                    continue
-                if file.name.startswith('.'):  # 不显示.开头的文件夹
-                    continue
-                item = QStandardItem(file.name)
-                item.setTextAlignment(Qt.AlignCenter)   # 文字居中显示
-                # 添加自定义的数据
-                item.setData(file.name, Constants.RoleName)
-                item.setData(file, Constants.RoleFile)
-                self._dmodel.appendRow(item)
-            # 排序
-            self._fmodel.sort(0, Qt.AscendingOrder)
-        if Constants._Github != None:
-            # 更新根目录
-            self._threadPool.start(RootRunnable())
-
-    def on_treeViewCatalogs_clicked(self, modelIndex):
-        """点击目录中的item
-        :param modelIndex:        代理模型中的QModelIndex, 并不是真实的
-        """
-        print(modelIndex.data(Constants.RoleName))
-        print(modelIndex.data(Constants.RolePath))
-        print(modelIndex.data(Constants.RoleFile))
-
-    @pyqtSlot()
-    def on_buttonSkin_clicked(self):
-        """选择主题样式
-        """
-        pass
-
-    @pyqtSlot()
-    def on_buttonMinimum_clicked(self):
-        """最小化
-        """
-        self.showMinimized()
-
-    @pyqtSlot()
-    def on_buttonMaximum_clicked(self):
-        """最大化
-        """
-        self.showMaximized()
-
-    @pyqtSlot()
-    def on_buttonNormal_clicked(self):
-        """还原
-        """
-        self.showNormal()
-
-    @pyqtSlot()
-    def on_buttonClose_clicked(self):
-        """关闭
-        """
-        self.close()
-
-    @pyqtSlot()
-    def on_buttonHead_clicked(self):
-        """点击头像
-        """
-        if Constants._Github == None:
-            self.initLogin()
-
-    def on_lineEditSearch_textChanged(self, text):
-        """过滤筛选
-        """
-        self._fmodel.setFilterRegExp(text)
-
-    @pyqtSlot()
-    def on_buttonSearch_clicked(self):
-        """点击搜索按钮
-        """
-        pass
-
-    @pyqtSlot()
-    def on_buttonGithub_clicked(self):
-        """点击项目按钮
-        """
-        webbrowser.open_new_tab(Constants.UrlProject)
-
-    @pyqtSlot()
-    def on_buttonQQ_clicked(self):
-        """点击QQ按钮
-        """
-        webbrowser.open(Constants.UrlQQ)
-
-    @pyqtSlot()
-    def on_buttonGroup_clicked(self):
-        """点击群按钮
-        """
-        webbrowser.open(Constants.UrlGroup)
-
-    @pyqtSlot()
-    def on_buttonBackup_clicked(self):
-        """点击返回按钮
-        """
-        pass
 
 
 def main():

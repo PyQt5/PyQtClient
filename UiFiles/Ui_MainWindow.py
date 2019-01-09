@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'D:\Workspace\PyQtClient\UiFiles\MainWindow.ui'
+# Form implementation generated from reading ui file 'G:\Workspace\PyQtClient\UiFiles\MainWindow.ui'
 #
 # Created by: PyQt5 UI code generator 5.5.1
 #
@@ -100,10 +100,8 @@ class Ui_FormMainWindow(object):
         self.treeViewCatalogs.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.treeViewCatalogs.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.treeViewCatalogs.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
-        self.treeViewCatalogs.setIndentation(0)
         self.treeViewCatalogs.setAnimated(True)
         self.treeViewCatalogs.setHeaderHidden(True)
-        self.treeViewCatalogs.setExpandsOnDoubleClick(False)
         self.treeViewCatalogs.setObjectName("treeViewCatalogs")
         self.verticalLayout_4.addWidget(self.treeViewCatalogs)
         self.horizontalLayout_2.addWidget(self.widgetCatalogs)

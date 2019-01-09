@@ -261,17 +261,11 @@
               <property name="editTriggers">
                <set>QAbstractItemView::NoEditTriggers</set>
               </property>
-              <property name="indentation">
-               <number>0</number>
-              </property>
               <property name="animated">
                <bool>true</bool>
               </property>
               <property name="headerHidden">
                <bool>true</bool>
-              </property>
-              <property name="expandsOnDoubleClick">
-               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -416,11 +410,6 @@
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>QWebView</class>
-   <extends>QWidget</extends>
-   <header>QtWebKitWidgets/QWebView</header>
-  </customwidget>
   <customwidget>
    <class>RotateButton</class>
    <extends>QPushButton</extends>

@@ -108,9 +108,11 @@ class _Signals(QObject):
     # 控制进度条显示和隐藏
     progressBarShowed = pyqtSignal(bool)
     # 添加树目录
-    itemAdded = pyqtSignal(list)
+    itemAdded = pyqtSignal(list, str)
     # 否要更新右侧内容显示
     indexPageUpdated = pyqtSignal()
+    # 后台下载任务完成信号
+    runnableFinished = pyqtSignal(str)
 
 
 # 说白了就是全局信号定义

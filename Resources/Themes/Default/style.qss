@@ -265,7 +265,9 @@ ToolTip > QLabel {
     background-color: rgba(255, 255, 255, 255);
     border-radius: 12px;
 }
-
+#lineEditPassword {
+    font-size: 10px;
+}
 #lineEditPassword[echoMode="2"] {
     lineedit-password-character: 1422;
 }
