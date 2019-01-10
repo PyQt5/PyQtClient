@@ -225,7 +225,8 @@ QLineEdit {
 
 /*网页控件*/
 #webViewContent {
-    background: rgba(208, 208, 208, 255);
+    background: white;
+    /*网页控件不支持圆角*/
 }
 
 /*仿ToolTip窗口*/

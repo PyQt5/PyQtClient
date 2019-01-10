@@ -19,7 +19,7 @@ from PyQt5.QtGui import QStandardItem, QEnterEvent
 from UiFiles.Ui_MainWindow import Ui_FormMainWindow
 from Utils import Constants
 from Utils.Application import QSingleApplication
-from Utils.CommonUtil import initLog, AppLog
+from Utils.CommonUtil import initLog, AppLog, Setting
 from Utils.Repository import DirRunnable
 from Widgets.FramelessWindow import FramelessWindow
 from Widgets.LoginDialog import LoginDialog
@@ -41,6 +41,10 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         self._initModel()
         self._initThread()
         self._initSignals()
+        # 加载窗口大小并恢复
+        geometry = Setting.value('geometry')
+        if geometry:
+            self.restoreGeometry(geometry)
         # 200毫秒后显示登录对话框
         QTimer.singleShot(200, self.initLogin)
 
@@ -118,7 +122,7 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
             # 排序
             self._fmodel.sort(0, Qt.AscendingOrder)
             # 初始化网页
-            self._initWebView()
+            QTimer.singleShot(500, self._initWebView)
 
     def on_treeViewCatalogs_clicked(self, modelIndex):
         """被点击的item
@@ -151,6 +155,8 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
             "updateText({});".format(content))
 
     def closeEvent(self, event):
+        # 储存窗口位置
+        Setting.setValue('geometry', self.saveGeometry())
         if hasattr(self, '_repoThread'):
             self._repoThread.stoped = True
         super(MainWindow, self).closeEvent(event)

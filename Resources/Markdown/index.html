@@ -2,23 +2,26 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <link rel="stylesheet" type="text/css" href="3rdparty/markdown.css">
-        <link rel="stylesheet" href="3rdparty/github.css">
-        <script src="3rdparty/highlight.pack.js"></script>
-        <script src="3rdparty/marked.min.js"></script>
-        <script>
-            hljs.initHighlightingOnLoad();
-            var updateText = function(text) {
-                marked.setOptions({
-                    highlight: function (code) {
-                        return hljs.highlightAuto(code).value;
-                    }
-                });
-                document.getElementById('placeholder').innerHTML = marked(text);
-            }
-        </script>
+        <link rel="stylesheet" href="css/github.min.css">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/app.css">
+        <script src="js/highlight.pack.js"></script>
+        <script src="js/markdown-it.min.js"></script>
+        <script src="js/index.js"></script>
     </head>
     <body>
-        <div id="placeholder"></div>
+        <div class="container">
+            <h1></h1>
+        </div>
+        <div class="container full-height">
+            <div class="row full-height">
+                <section class="col-xs-12 full-height">
+                    <div id="result" class="result"></div>
+                </section>
+            </div>
+        </div>
+        <div class="container">
+            <h1></h1>
+        </div>
     </body>
 </html>

@@ -15,9 +15,11 @@ import webbrowser
 from PyQt5.QtCore import pyqtSlot, QThreadPool, Qt, QUrl
 from PyQt5.QtGui import QStandardItemModel
 from PyQt5.QtWebKit import QWebSettings
+from PyQt5.QtWebKitWidgets import QWebPage
 
 from Utils import Constants
 from Utils.CommonUtil import Signals
+from Utils.NetworkAccessManager import NetworkAccessManager
 from Utils.SortFilterModel import SortFilterModel
 from Utils.ThemeManager import ThemeManager
 from Widgets.ToolTip import ToolTip
@@ -65,6 +67,10 @@ class MainWindowBase:
 
     def _initSignals(self):
         """初始化信号槽"""
+        self.webViewContent.loadStarted.connect(self.showProgressBar)
+        self.webViewContent.loadFinished.connect(self.hideProgressBar)
+        self.webViewContent.loadFinished.connect(self.renderReadme)
+        self.webViewContent.linkClicked.connect(self.onLinkClicked)
         # 绑定全局信号槽
         Signals.progressBarShowed.connect(
             self.showProgressBar, type=Qt.QueuedConnection)
@@ -77,14 +83,32 @@ class MainWindowBase:
         settings = self.webViewContent.settings()
         # 开启开发人员工具
         settings.setAttribute(QWebSettings.DeveloperExtrasEnabled, True)
-        self.webViewContent.loadFinished.connect(self.renderReadme)
+
+        page = self.webViewContent.page()
+        # 设置链接可以点击
+        page.setLinkDelegationPolicy(QWebPage.DelegateAllLinks)
+        # 使用自定义的网络请求类(方便处理一些链接点击)
+        page.setNetworkAccessManager(NetworkAccessManager(self.webViewContent))
+
+        # 加载readme
         self.webViewContent.load(QUrl.fromLocalFile(
             os.path.abspath(Constants.HomeFile)))
 
+    def onLinkClicked(self, url):
+        """加载网址
+        :param url:
+        """
+        self.webViewContent.load(QUrl(url))
+
     def showProgressBar(self, visible=True):
-        """显示或隐藏进度条
+        """显示进度条
         """
         self.progressBar.setVisible(visible)
+
+    def hideProgressBar(self, _=False):
+        """隐藏进度条
+        """
+        self.progressBar.setVisible(False)
 
     @pyqtSlot()
     def on_buttonSkin_clicked(self):

@@ -40,8 +40,6 @@ class DirRunnable(QRunnable):
         while len(contents) > 0:
             content = contents.pop(0)
             if content.type == 'dir':
-                if content.name == 'Donate':
-                    continue
                 # 尝试创建目录
                 try:
                     os.makedirs(os.path.join(
@@ -50,6 +48,8 @@ class DirRunnable(QRunnable):
                         # 添加到界面树中
                         Signals.itemAdded.emit(
                             content.path.split('/'), content.path)
+                        if content.name == 'Donate':  # 继续遍历
+                            contents.extend(repo.get_contents(content.path))
                         # 是否需要深度遍历
                         if self.path != '':
                             AppLog.info(

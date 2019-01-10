@@ -13,6 +13,7 @@ encoding//UiFiles/Ui_MainWindow.py=utf-8
 encoding//Utils/Application.py=utf-8
 encoding//Utils/CommonUtil.py=utf-8
 encoding//Utils/Constants.py=utf-8
+encoding//Utils/NetworkAccessManager.py=utf-8
 encoding//Utils/Repository.py=utf-8
 encoding//Utils/SortFilterModel.py=utf-8
 encoding//Utils/ThemeManager.py=utf-8
