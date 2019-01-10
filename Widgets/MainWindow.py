@@ -164,7 +164,7 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         elif item and path:
             self.listSubDir(item, rdir)
         # 是否需要执行获取远程目录任务
-        elif path not in self._runnables:
+        if path not in self._runnables:
             self.renderReadme(path=os.path.join(rdir, 'README.md'))
             if Constants._Github != None:
                 self._runnables.add(path)

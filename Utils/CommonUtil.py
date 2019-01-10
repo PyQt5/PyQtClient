@@ -13,7 +13,7 @@ import hashlib
 import logging
 import os
 
-from PyQt5.QtCore import QSettings, QTextCodec, QObject, pyqtSignal, QVariant
+from PyQt5.QtCore import QSettings, QTextCodec, QObject, pyqtSignal
 
 from Utils.Constants import LogName, LogFormatterDebug, LogFormatter, ConfigFile
 
@@ -89,7 +89,11 @@ class Setting:
         :param typ:        类型
         """
         cls.init()
-        return cls._Setting.value(key, default or QVariant(), typ or QVariant)
+        if default != None and typ != None:
+            return cls._Setting.value(key, default, typ)
+        if default != None:
+            return cls._Setting.value(key, default)
+        return cls._Setting.value(key)
 
     @classmethod
     def setValue(cls, key, value):

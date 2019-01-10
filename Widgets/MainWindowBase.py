@@ -32,12 +32,13 @@ __Copyright__ = "Copyright (c) 2019"
 
 def runCode(file):
     import sys
-    import os
+    import os  # @Reimport
+    import runpy
     dirPath = os.path.dirname(file)
-    sys.path.append(dirPath)
-    code = open(file, 'rb').read()
+    sys.argv = [file]
+    sys.path.insert(0, dirPath)
     os.chdir(dirPath)
-    exec(code)
+    runpy.run_path(file, run_name='__main__')
 
 
 class MainWindowBase:
@@ -112,7 +113,7 @@ class MainWindowBase:
         """子进程运行文件
         :param file:    文件
         """
-        p = Process(target=runCode, args=(file,))
+        p = Process(target=runCode, args=(os.path.abspath(file),))
         p.start()
 
     def _runJs(self, code):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'D:\Workspace\PyQtClient\UiFiles\LoginDialog.ui'
+# Form implementation generated from reading ui file 'G:\Workspace\PyQtClient\UiFiles\LoginDialog.ui'
 #
 # Created by: PyQt5 UI code generator 5.5.1
 #
