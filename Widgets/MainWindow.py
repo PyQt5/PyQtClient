@@ -64,6 +64,8 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         AppLog.debug('names: {}'.format(str(names)))
         file = ''  # 路径
         pItem = None  # 上级item
+        if len(names) == 1 and 'Donate' in names:
+            return
         for name in names:
             items = self._dmodel.findItems(name)
             if not items:
@@ -99,6 +101,26 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
             # 更新根目录
             self._threadPool.start(DirRunnable(''))
 
+    def listSubDir(self, pitem, path):
+        """遍历子目录
+        :param item:    上级Item
+        :param path:    目录
+        """
+        paths = os.listdir(path)
+        files = [name for name in paths if name.endswith(
+            '.py') and os.path.isfile(os.path.join(path, name))]
+        if pitem.rowCount() != 0 and len(files) == pitem.rowCount():
+            return
+        for name in files:
+            file = os.path.join(path, name).replace('\\', '/')
+            item = QStandardItem(pitem)
+            item.setText(name)
+            # 添加自定义的数据
+            item.setData(name, Constants.RoleName)        # 文件名字
+            item.setData(file, Constants.RoleFile)        # 本地文件路径
+            item.setData(None, Constants.RolePath)
+            pitem.appendRow(item)
+
     def initCatalog(self):
         """初始化本地仓库结构树
         """
@@ -124,17 +146,25 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
             # 初始化网页
             QTimer.singleShot(500, self._initWebView)
 
-    def on_treeViewCatalogs_clicked(self, modelIndex):
-        """被点击的item
+    def on_treeViewCatalogs_doubleClicked(self, modelIndex):
+        """
         :param modelIndex:        代理模型中的QModelIndex, 并不是真实的
         """
         path = modelIndex.data(Constants.RolePath)
-        if path not in self._runnables:
-            AppLog.debug('path: {}'.format(path))
-            AppLog.debug('name: {}'.format(
-                modelIndex.data(Constants.RoleName)))
-            rdir = modelIndex.data(Constants.RoleFile)
-            AppLog.debug('file: {}'.format(rdir))
+        rdir = modelIndex.data(Constants.RoleFile)
+        AppLog.debug('path: {}'.format(path))
+        AppLog.debug('name: {}'.format(
+            modelIndex.data(Constants.RoleName)))
+        AppLog.debug('dir or file: {}'.format(rdir))
+        # 是否需要遍历本地子目录并显示
+        item = self._dmodel.itemFromIndex(self._fmodel.mapToSource(modelIndex))
+        if os.path.isfile(rdir):
+            # 运行代码
+            self._runFile(rdir)
+        elif item and path:
+            self.listSubDir(item, rdir)
+        # 是否需要执行获取远程目录任务
+        elif path not in self._runnables:
             self.renderReadme(path=os.path.join(rdir, 'README.md'))
             if Constants._Github != None:
                 self._runnables.add(path)

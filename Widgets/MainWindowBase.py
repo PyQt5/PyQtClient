@@ -9,6 +9,7 @@ Created on 2019年1月9日
 @file: Widgets.MainWindowBase
 @description: 
 """
+from multiprocessing import Process
 import os
 import webbrowser
 
@@ -27,6 +28,16 @@ from Widgets.ToolTip import ToolTip
 
 __Author__ = "Irony"
 __Copyright__ = "Copyright (c) 2019"
+
+
+def runCode(file):
+    import sys
+    import os
+    dirPath = os.path.dirname(file)
+    sys.path.append(dirPath)
+    code = open(file, 'rb').read()
+    os.chdir(dirPath)
+    exec(code)
 
 
 class MainWindowBase:
@@ -96,6 +107,13 @@ class MainWindowBase:
         # 加载readme
         self.webViewContent.load(QUrl.fromLocalFile(
             os.path.abspath(Constants.HomeFile)))
+
+    def _runFile(self, file):
+        """子进程运行文件
+        :param file:    文件
+        """
+        p = Process(target=runCode, args=(file,))
+        p.start()
 
     def _runJs(self, code):
         """执行js
