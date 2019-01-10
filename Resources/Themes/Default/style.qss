@@ -198,7 +198,7 @@ QLineEdit {
 }
 
 /*返回顶部按钮*/
-#buttonBacktoUp {
+#buttonBackToUp {
     min-width: 36px;
     max-width: 36px;
     min-height: 36px;

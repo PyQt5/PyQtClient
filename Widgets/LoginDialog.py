@@ -94,6 +94,8 @@ class LoginDialog(MoveDialog, TwinkleDialog, Ui_FormLoginDialog):
         self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
         # 加载鼠标样式
         ThemeManager.loadCursor(self)
+        # 加载鼠标样式
+        ThemeManager.loadCursor(self.buttonHead,'pointer.png')
         # 登录线程
         self._loginThread = None
         QTimer.singleShot(100, self.initAccount)

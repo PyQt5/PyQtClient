@@ -37,8 +37,9 @@ LogFormatterDebug = '[%(asctime)s %(name)s %(module)s:%(funcName)s:%(lineno)s] %
 LogFormatter = '[%(asctime)s %(name)s] %(levelname)-8s %(message)s'
 LogFile = 'Resources/Data/app.log'
 
-DirErrors = 'Resources/Data/Errors'
-DirProjects = 'Resources/Data/Projects'
+DirErrors = 'Resources/Data/Errors'         # 错误日志目录
+DirProjects = 'Resources/Data/Projects'     # 本地项目目录
+DirCurrent = 'Resources/Data/Projects'      # 当前README.md目录
 
 AttrCallback = QNetworkRequest.User + 1
 AttrFilePath = QNetworkRequest.User + 2

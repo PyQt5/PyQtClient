@@ -136,8 +136,9 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
             rdir = modelIndex.data(Constants.RoleFile)
             AppLog.debug('file: {}'.format(rdir))
             self.renderReadme(path=os.path.join(rdir, 'README.md'))
-#             self._runnables.add(path)
-#             self._threadPool.start(DirRunnable(path))
+            if Constants._Github != None:
+                self._runnables.add(path)
+                self._threadPool.start(DirRunnable(path))
 
     def renderReadme(self, *, path=None):
         """加载README.md并显示
@@ -146,13 +147,15 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
             self.webViewContent.loadFinished.disconnect(self.renderReadme)
         except:
             pass
-        path = path if path != None else os.path.join(
-            Constants.DirProjects, 'README.md')
+        if path == None:
+            path = os.path.join(Constants.DirProjects, 'README.md')
         if not os.path.exists(path):
             return
+        Constants.DirCurrent = os.path.dirname(path).replace('\\', '/')
+        AppLog.debug('render: {}'.format(path))
+        AppLog.debug('readme dir: {}'.format(Constants.DirCurrent))
         content = repr(open(path, 'rb').read().decode())
-        self.webViewContent.page().mainFrame().evaluateJavaScript(
-            "updateText({});".format(content))
+        self._runJs("updateText({});".format(content))
 
     def closeEvent(self, event):
         # 储存窗口位置

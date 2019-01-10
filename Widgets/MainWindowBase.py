@@ -35,7 +35,7 @@ class MainWindowBase:
         """初始UI"""
         self.setupUi(self)
         # 绑定返回顶部提示框
-        ToolTip.bind(self.buttonBacktoUp)
+        ToolTip.bind(self.buttonBackToUp)
         # 隐藏进度条
         self.progressBar.setVisible(False)
         # 隐藏还原按钮
@@ -46,6 +46,7 @@ class MainWindowBase:
         ThemeManager.loadTheme(self)
         # 加载鼠标样式
         ThemeManager.loadCursor(self.widgetMain)
+        ThemeManager.setPointerCursors(self)
         # 安装事件过滤器用于还原鼠标样式
         self.widgetMain.installEventFilter(self)
 
@@ -81,6 +82,8 @@ class MainWindowBase:
     def _initWebView(self):
         """初始化网页"""
         settings = self.webViewContent.settings()
+        # 设置默认编码
+        settings.setDefaultTextEncoding('UTF-8')
         # 开启开发人员工具
         settings.setAttribute(QWebSettings.DeveloperExtrasEnabled, True)
 
@@ -93,6 +96,12 @@ class MainWindowBase:
         # 加载readme
         self.webViewContent.load(QUrl.fromLocalFile(
             os.path.abspath(Constants.HomeFile)))
+
+    def _runJs(self, code):
+        """执行js
+        :param code:
+        """
+        self.webViewContent.page().mainFrame().evaluateJavaScript(code)
 
     def onLinkClicked(self, url):
         """加载网址
@@ -179,7 +188,7 @@ class MainWindowBase:
         webbrowser.open(Constants.UrlGroup)
 
     @pyqtSlot()
-    def on_buttonBackup_clicked(self):
+    def on_buttonBackToUp_clicked(self):
         """点击返回按钮
         """
-        pass
+        self._runJs('backToUp();')

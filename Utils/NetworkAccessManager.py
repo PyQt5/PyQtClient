@@ -16,8 +16,8 @@ import webbrowser
 from PyQt5.QtCore import QUrl
 from PyQt5.QtNetwork import QNetworkAccessManager
 
+from Utils import Constants
 from Utils.CommonUtil import AppLog
-from Utils.Constants import DirProjects, UrlGroup
 
 
 __Author__ = """By: Irony
@@ -48,7 +48,7 @@ class NetworkAccessManager(QNetworkAccessManager):
             return super(NetworkAccessManager, self).createRequest(op, originalReq, outgoingData)
         elif surl.endswith('k=5QVVEdF'):
             # 点击了QQ群链接
-            webbrowser.open(UrlGroup)
+            webbrowser.open(Constants.UrlGroup)
             originalReq.setUrl(QUrl())
             return super(NetworkAccessManager, self).createRequest(op, originalReq, outgoingData)
 
@@ -58,10 +58,13 @@ class NetworkAccessManager(QNetworkAccessManager):
             originalReq.setUrl(QUrl())
         elif url.scheme() == 'file':
             # 本地文件,比如一些图片文件等
-            name = surl.split('Markdown/')[1]
-            path = os.path.join(DirProjects, name).replace('\\', '/')
-            if os.path.exists(path) and os.path.isfile(path):
-                originalReq.setUrl(QUrl.fromLocalFile(path))
+            name = surl.split('Markdown/')
+            if len(name) > 1:
+                name = name[1]
+                path = os.path.join(
+                    Constants.DirCurrent, name).replace('\\', '/')
+                if os.path.exists(path) and os.path.isfile(path):
+                    originalReq.setUrl(QUrl.fromLocalFile(path))
         else:
             # 只加载文件,不加载其它网页
             if not mimetypes.guess_type(url.fileName())[0]:

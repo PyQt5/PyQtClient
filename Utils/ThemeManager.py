@@ -55,21 +55,36 @@ class ThemeManager:
             AppLog.error(str(e))
 
     @classmethod
-    def loadCursor(cls, parent):
+    def loadCursor(cls, parent, name='default.png'):
         # 加载光标
-        path = cls.cursorPath()
+        path = cls.cursorPath(name)
         AppLog.info('cursorPath: {}'.format(path))
         if os.path.exists(path):
             # 设置自定义鼠标样式,并以0,0为原点
             parent.setCursor(QCursor(QPixmap(path), 0, 0))
 
     @classmethod
-    def cursorPath(cls):
+    def cursorPath(cls, name='default.png'):
         """
         :param cls:
-        :return: 主题中 cursor.ani 的绝对路径
+        :return: 主题中 default.png 的绝对路径
         """
-        return os.path.abspath(os.path.join(cls.ThemeDir, cls.ThemeName, 'cursor.png')).replace('\\', '/')
+        return os.path.abspath(os.path.join(cls.ThemeDir, cls.ThemeName, 'cursor', name)).replace('\\', '/')
+
+    @classmethod
+    def setPointerCursors(cls, parent):
+        """设置部分指定控件的鼠标样式
+        :param cls:
+        """
+        path = os.path.abspath(os.path.join(
+            cls.ThemeDir, cls.ThemeName, 'cursor', 'pointer.png')).replace('\\', '/')
+        if os.path.exists(path):
+            cursor = QCursor(QPixmap(path), 0, 0)
+            parent.buttonHead.setCursor(cursor)         # 主界面头像
+            parent.buttonGithub.setCursor(cursor)       # Github按钮
+            parent.buttonQQ.setCursor(cursor)           # QQ按钮
+            parent.buttonGroup.setCursor(cursor)        # 群按钮
+            parent.buttonBackToUp.setCursor(cursor)     # 返回顶部按钮
 
     @classmethod
     def fontPath(cls):

@@ -1,3 +1,13 @@
+html, body {
+    -webkit-user-select: none;
+    user-select: none;
+    cursor: url('../cursor/default.png'), default;
+}
+
+a {
+    cursor: url('../cursor/pointer.png'), pointer;
+}
+
 .result {
     display: none;
     padding: 2px 10px;

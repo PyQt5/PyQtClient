@@ -343,7 +343,7 @@
              </spacer>
             </item>
             <item>
-             <widget class="RubberBandButton" name="buttonBacktoUp">
+             <widget class="RubberBandButton" name="buttonBackToUp">
               <property name="cursor">
                <cursorShape>PointingHandCursor</cursorShape>
               </property>
@@ -410,6 +410,11 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QWebView</class>
+   <extends>QWidget</extends>
+   <header>QtWebKitWidgets/QWebView</header>
+  </customwidget>
   <customwidget>
    <class>RotateButton</class>
    <extends>QPushButton</extends>
