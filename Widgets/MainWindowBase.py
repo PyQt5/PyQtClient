@@ -31,14 +31,8 @@ __Copyright__ = "Copyright (c) 2019"
 
 
 def runCode(file):
-    import sys
-    import os  # @Reimport
-    import runpy
-    dirPath = os.path.dirname(file)
-    sys.argv = [file]
-    sys.path.insert(0, dirPath)
-    os.chdir(dirPath)
-    runpy.run_path(file, run_name='__main__')
+    from Utils import RunCode
+    RunCode.runCode(file)
 
 
 class MainWindowBase:
@@ -48,8 +42,6 @@ class MainWindowBase:
         self.setupUi(self)
         # 绑定返回顶部提示框
         ToolTip.bind(self.buttonBackToUp)
-        # 隐藏进度条
-        self.progressBar.setVisible(False)
         # 隐藏还原按钮
         self.buttonNormal.setVisible(False)
         # 隐藏目录树的滑动条
@@ -80,13 +72,9 @@ class MainWindowBase:
 
     def _initSignals(self):
         """初始化信号槽"""
-        self.webViewContent.loadStarted.connect(self.showProgressBar)
-        self.webViewContent.loadFinished.connect(self.hideProgressBar)
         self.webViewContent.loadFinished.connect(self.renderReadme)
         self.webViewContent.linkClicked.connect(self.onLinkClicked)
         # 绑定全局信号槽
-        Signals.progressBarShowed.connect(
-            self.showProgressBar, type=Qt.QueuedConnection)
         Signals.itemAdded.connect(self.onItemAdded, type=Qt.QueuedConnection)
         Signals.runnableFinished.connect(
             self.onRunnableFinished, type=Qt.QueuedConnection)
@@ -127,16 +115,6 @@ class MainWindowBase:
         :param url:
         """
         self.webViewContent.load(QUrl(url))
-
-    def showProgressBar(self, visible=True):
-        """显示进度条
-        """
-        self.progressBar.setVisible(visible)
-
-    def hideProgressBar(self, _=False):
-        """隐藏进度条
-        """
-        self.progressBar.setVisible(False)
 
     @pyqtSlot()
     def on_buttonSkin_clicked(self):

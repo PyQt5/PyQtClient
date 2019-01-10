@@ -109,8 +109,6 @@ class Setting:
 
 class _Signals(QObject):
 
-    # 控制进度条显示和隐藏
-    progressBarShowed = pyqtSignal(bool)
     # 添加树目录
     itemAdded = pyqtSignal(list, str)
     # 否要更新右侧内容显示

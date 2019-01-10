@@ -211,18 +211,6 @@ QLineEdit {
     qproperty-text: "\5101";
 }
 
-/*内容区域进度条*/
-#progressBar {
-    min-height: 2px;
-    max-height: 2px;
-    border-color: transparent;
-    background-color: transparent;
-}
-#progressBar::chunk {
-    /*进度条滑块颜色*/
-    background-color: rgba(255, 180, 97, 255);
-}
-
 /*网页控件*/
 #webViewContent {
     background: white;

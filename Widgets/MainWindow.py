@@ -107,8 +107,17 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         :param path:    目录
         """
         paths = os.listdir(path)
-        files = [name for name in paths if name.endswith(
-            '.py') and os.path.isfile(os.path.join(path, name))]
+        files = []
+        for name in paths:
+            spath = os.path.join(path, name)
+            if not os.path.isfile(spath):
+                continue
+            spath = os.path.splitext(spath)
+            if len(spath) == 0:
+                continue
+            if spath[1] == '.py' and spath[0].endswith('__init__') == False:
+                files.append(name)
+
         if pitem.rowCount() != 0 and len(files) == pitem.rowCount():
             return
         for name in files:
@@ -141,13 +150,15 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
                 item.setData(file, Constants.RoleFile)        # 本地文件夹路径
                 item.setData(name, Constants.RolePath)        # 用于请求远程的路径
                 pitem.appendRow(item)
+                # 遍历子目录
+                self.listSubDir(item, file)
             # 排序
             self._fmodel.sort(0, Qt.AscendingOrder)
             # 初始化网页
             QTimer.singleShot(500, self._initWebView)
 
     def on_treeViewCatalogs_doubleClicked(self, modelIndex):
-        """
+        """Item双击
         :param modelIndex:        代理模型中的QModelIndex, 并不是真实的
         """
         path = modelIndex.data(Constants.RolePath)
@@ -163,12 +174,23 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
             self._runFile(rdir)
         elif item and path:
             self.listSubDir(item, rdir)
+        if item.rowCount() == 0:
+            self.on_treeViewCatalogs_expanded(modelIndex)
+
+    def on_treeViewCatalogs_expanded(self, modelIndex):
+        """Item展开
+        :param modelIndex:        代理模型中的QModelIndex, 并不是真实的
+        """
+        path = modelIndex.data(Constants.RolePath)
+        rdir = modelIndex.data(Constants.RoleFile)
+        AppLog.debug('path: {}'.format(path))
+        AppLog.debug('rdir: {}'.format(rdir))
         # 是否需要执行获取远程目录任务
         if path not in self._runnables:
             self.renderReadme(path=os.path.join(rdir, 'README.md'))
-            if Constants._Github != None:
-                self._runnables.add(path)
-                self._threadPool.start(DirRunnable(path))
+#             if Constants._Github != None:
+#                 self._runnables.add(path)
+#                 self._threadPool.start(DirRunnable(path))
 
     def renderReadme(self, *, path=None):
         """加载README.md并显示
