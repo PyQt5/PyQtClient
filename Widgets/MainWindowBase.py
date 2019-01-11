@@ -78,6 +78,8 @@ class MainWindowBase:
         Signals.itemAdded.connect(self.onItemAdded, type=Qt.QueuedConnection)
         Signals.runnableFinished.connect(
             self.onRunnableFinished, type=Qt.QueuedConnection)
+        Signals.runExampled.connect(
+            self._runFile, type=Qt.QueuedConnection)
 
     def _initWebView(self):
         """初始化网页"""

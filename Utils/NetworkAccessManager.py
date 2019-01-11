@@ -17,7 +17,7 @@ from PyQt5.QtCore import QUrl
 from PyQt5.QtNetwork import QNetworkAccessManager
 
 from Utils import Constants
-from Utils.CommonUtil import AppLog
+from Utils.CommonUtil import AppLog, Signals
 
 
 __Author__ = """By: Irony
@@ -25,7 +25,6 @@ QQ: 892768447
 Email: 892768447@qq.com"""
 __Copyright__ = "Copyright (c) 2019 Irony"
 __Version__ = "Version 1.0"
-
 
 class NetworkAccessManager(QNetworkAccessManager):
 
@@ -64,7 +63,12 @@ class NetworkAccessManager(QNetworkAccessManager):
                 path = os.path.join(
                     Constants.DirCurrent, name).replace('\\', '/')
                 if os.path.exists(path) and os.path.isfile(path):
-                    originalReq.setUrl(QUrl.fromLocalFile(path))
+                    if name[-3:] == '.py':
+                        originalReq.setUrl(QUrl())
+                        # 运行py文件
+                        Signals.runExampled.emit(path)
+                    else:
+                        originalReq.setUrl(QUrl.fromLocalFile(path))
         else:
             # 只加载文件,不加载其它网页
             if not mimetypes.guess_type(url.fileName())[0]:

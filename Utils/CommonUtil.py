@@ -115,6 +115,10 @@ class _Signals(QObject):
     indexPageUpdated = pyqtSignal()
     # 后台下载任务完成信号
     runnableFinished = pyqtSignal(str)
+    # 运行例子信号
+    runExampled = pyqtSignal(str)
+    # 弹出捐赠对话框
+    donateShowed = pyqtSignal()
 
 
 # 说白了就是全局信号定义

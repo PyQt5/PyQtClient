@@ -211,10 +211,10 @@ QLineEdit {
     qproperty-text: "\5101";
 }
 
-/*网页控件*/
-#webViewContent {
-    background: white;
-    /*网页控件不支持圆角*/
+/*层叠存放网页控件*/
+#widgetContents {
+    background: rgb(248, 248, 248);
+    border-bottom-right-radius: 4px;
 }
 
 /*仿ToolTip窗口*/

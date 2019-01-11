@@ -137,7 +137,7 @@ class Ui_FormMainWindow(object):
         self.widgetContents = QtWidgets.QWidget(self.widgetCentral)
         self.widgetContents.setObjectName("widgetContents")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.widgetContents)
-        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_3.setContentsMargins(4, 4, 4, 4)
         self.verticalLayout_3.setSpacing(0)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.webViewContent = QtWebKitWidgets.QWebView(self.widgetContents)

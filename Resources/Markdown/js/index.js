@@ -3,7 +3,7 @@ var md = window.markdownit();
 
 md.renderer.rules.table_open = function () {
     return '<table class="table table-striped">\n';
-}
+};
 
 md.options.html = true;
 md.options.breaks = true;
@@ -18,12 +18,15 @@ md.options.highlight = function (str, lang) {
         } catch (__) {}
     }
     return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
-}
+};
 
 // 更新文字
 function updateText(text) {
     document.getElementById("result").innerHTML = md.render(text);
     document.getElementById("result").style.display = "block";
+    backToUp();
+//     hljs.initHighlighting.called = false;
+//     hljs.initHighlighting();
 }
 
 // 返回顶部

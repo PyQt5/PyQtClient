@@ -74,9 +74,11 @@ class ProgressButton(QPushButton):
                 animation.stop()
 
     def paintEvent(self, event):
-        super(ProgressButton, self).paintEvent(event)
         if not self._waiting:
+            # 交给原来的绘制
+            super(ProgressButton, self).paintEvent(event)
             return
+        # 自定义绘制
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
         painter.setRenderHint(QPainter.SmoothPixmapTransform)
