@@ -95,11 +95,12 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         dialog = LoginDialog(self)
         dialog.exec_()
         # 刷新头像样式
-        if Constants._Github != None:
+        if Constants._Account != None and Constants._Passord != None:
             self.buttonHead.image = Constants.ImageAvatar
+            self.buttonHead.setToolTip(Constants._Username)
 #             self.style().polish(self.buttonHead)
             # 更新根目录
-            self._threadPool.start(DirRunnable(''))
+#             self._threadPool.start(DirRunnable(''))
 
     def listSubDir(self, pitem, path):
         """遍历子目录
@@ -188,7 +189,7 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         # 是否需要执行获取远程目录任务
         if path not in self._runnables:
             self.renderReadme(path=os.path.join(rdir, 'README.md'))
-#             if Constants._Github != None:
+#             if Constants._Account != None and Constants._Passord != None:
 #                 self._runnables.add(path)
 #                 self._threadPool.start(DirRunnable(path))
 
@@ -204,6 +205,7 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         if not os.path.exists(path):
             return
         Constants.DirCurrent = os.path.dirname(path).replace('\\', '/')
+        Constants.CurrentReadme = path      # 记录打开的路径防止重复加载
         AppLog.debug('render: {}'.format(path))
         AppLog.debug('readme dir: {}'.format(Constants.DirCurrent))
         content = repr(open(path, 'rb').read().decode())

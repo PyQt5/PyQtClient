@@ -40,6 +40,7 @@ LogFile = 'Resources/Data/app.log'
 DirErrors = 'Resources/Data/Errors'         # 错误日志目录
 DirProjects = 'Resources/Data/Projects'     # 本地项目目录
 DirCurrent = 'Resources/Data/Projects'      # 当前README.md目录
+CurrentReadme = ''                          # 当前加载的README.md路径
 
 AttrCallback = QNetworkRequest.User + 1
 AttrFilePath = QNetworkRequest.User + 2
@@ -50,3 +51,6 @@ UrlHomePage = 'https://api.github.com/repos/PyQt5/PyQt/contents'
 
 # Github Api访问实例
 _Github = None
+_Account = ''
+_Passord = ''
+_Username = ''

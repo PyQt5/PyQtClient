@@ -1,2 +1,6 @@
-PyGithub
+requests
 PyQt5
+PyQt3D
+PyQtChart
+PyQtDataVisualization
+PyQtPurchasing

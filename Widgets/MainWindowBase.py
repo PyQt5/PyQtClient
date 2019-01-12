@@ -40,8 +40,6 @@ class MainWindowBase:
     def _initUi(self):
         """初始UI"""
         self.setupUi(self)
-        # 绑定返回顶部提示框
-        ToolTip.bind(self.buttonBackToUp)
         # 隐藏还原按钮
         self.buttonNormal.setVisible(False)
         # 隐藏目录树的滑动条
@@ -53,6 +51,10 @@ class MainWindowBase:
         ThemeManager.setPointerCursors(self)
         # 安装事件过滤器用于还原鼠标样式
         self.widgetMain.installEventFilter(self)
+        # 绑定返回顶部提示框
+        ToolTip.bind(self.buttonBackToUp)
+        # 头像提示控件
+        ToolTip.bind(self.buttonHead)
 
     def _initModel(self):
         """设置目录树Model"""
@@ -152,7 +154,7 @@ class MainWindowBase:
     def on_buttonHead_clicked(self):
         """点击头像
         """
-        if Constants._Github == None:
+        if Constants._Account != None and Constants._Passord != None:
             self.initLogin()
         else:
             self.renderReadme()

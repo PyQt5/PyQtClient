@@ -20,7 +20,8 @@ import requests
 
 from UiFiles.Ui_LoginDialog import Ui_FormLoginDialog
 from Utils import Constants
-from Utils.CommonUtil import AppLog, Setting
+from Utils.CommonUtil import AppLog, Setting, Signals
+from Utils.Repository import LoginRunnable
 from Utils.ThemeManager import ThemeManager
 from Widgets.MoveDialog import MoveDialog
 from Widgets.TwinkleDialog import TwinkleDialog
@@ -95,9 +96,11 @@ class LoginDialog(MoveDialog, TwinkleDialog, Ui_FormLoginDialog):
         # 加载鼠标样式
         ThemeManager.loadCursor(self)
         # 加载鼠标样式
-        ThemeManager.loadCursor(self.buttonHead,'pointer.png')
-        # 登录线程
-        self._loginThread = None
+        ThemeManager.loadCursor(self.buttonHead, 'pointer.png')
+        # 是否正在登录
+        self._isLogin = False
+        Signals.loginErrored.connect(self.onLoginErrored)
+        Signals.loginSuccessed.connect(self.onLoginSuccessed)
         QTimer.singleShot(100, self.initAccount)
 
     def initAccount(self):
@@ -134,59 +137,40 @@ class LoginDialog(MoveDialog, TwinkleDialog, Ui_FormLoginDialog):
             # 更换头像
             self.buttonHead.image = path
 
-    def onLoginStarted(self):
-        AppLog.debug('onLoginStarted')
-
-    def onLoginFinished(self):
-        AppLog.debug('onLoginFinished')
-        self.closeThread()
-        self.buttonLogin.showWaiting(False)
-        self.setEnabled(True)
-
-    def onLoginErrored(self, e, message):
+    def onLoginErrored(self, message):
         AppLog.debug('onLoginErrored')
-        self.closeThread()
+        self._isLogin = False
         self.buttonLogin.showWaiting(False)
         self.setEnabled(True)
-        AppLog.error(e)
         AppLog.error(message)
         if message:
             self.labelNotice.setText(message)
 
-    def onLoginSuccessed(self, uid):
+    def onLoginSuccessed(self, uid, name):
         AppLog.debug('onLoginSuccessed')
-        self.closeThread()
+        self._isLogin = False
         self.buttonLogin.showWaiting(False)
         self.setEnabled(True)
         # 用账号密码实例化github访问对象
         account = self.lineEditAccount.text().strip()
         password = self.lineEditPassword.text().strip()
-        Constants._Github = Github(account, password)
+        Constants._Account = account
+        Constants._Passord = password
+        Constants._Username = name
         # 储存账号密码
         Setting.setValue('account', account)
         if account not in self._accounts:
             # 更新账号数组
             self._accounts[account] = [
-                str(uid), base64.b85encode(password.encode()).decode()]
+                uid, base64.b85encode(password.encode()).decode()]
             Setting.setValue('accounts', self._accounts)
         self.accept()
-
-    def closeThread(self):
-        # 关闭线程
-        if self._loginThread:
-            self._loginThread.quit()
-            self._loginThread.deleteLater()
-            self._loginThread = None
 
     def setEnabled(self, enabled):
         self.buttonClose.setEnabled(enabled)
         self.lineEditAccount.setEnabled(enabled)
         self.lineEditPassword.setEnabled(enabled)
         self.buttonLogin.setEnabled(enabled)
-
-    def closeEvent(self, event):
-        self.closeThread()
-        super(LoginDialog, self).closeEvent(event)
 
     @pyqtSlot()
     def on_buttonLogin_clicked(self):
@@ -202,10 +186,4 @@ class LoginDialog(MoveDialog, TwinkleDialog, Ui_FormLoginDialog):
         self.labelNotice.setText('')
         self.setEnabled(False)
         self.buttonLogin.showWaiting(True)
-        self._loginThread = LoginThread(account, password, self)
-        # 绑定信号槽
-        self._loginThread.started.connect(self.onLoginStarted)
-        self._loginThread.finished.connect(self.onLoginFinished)
-        self._loginThread.loginErrored.connect(self.onLoginErrored)
-        self._loginThread.loginSuccessed.connect(self.onLoginSuccessed)
-        self._loginThread.start()
+        self.parent()._threadPool.start(LoginRunnable(account, password))

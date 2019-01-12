@@ -120,6 +120,11 @@ class _Signals(QObject):
     # 弹出捐赠对话框
     donateShowed = pyqtSignal()
 
+    # 登录失败
+    loginErrored = pyqtSignal(str)
+    # 登录成功发送用户的id和昵称
+    loginSuccessed = pyqtSignal(str, str)
+
 
 # 说白了就是全局信号定义
 Signals = _Signals()
