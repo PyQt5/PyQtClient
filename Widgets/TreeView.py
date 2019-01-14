@@ -69,8 +69,7 @@ class TreeView(QTreeView):
             return
         for name in files:
             file = os.path.join(path, name).replace('\\', '/')
-            item = QStandardItem(pitem)
-            item.setText(name)
+            item = QStandardItem(name)
             # 添加自定义的数据
             item.setData(False, Constants.RoleRoot)       # 不是根目录
             item.setData(name, Constants.RoleName)        # 文件名字
@@ -91,8 +90,7 @@ class TreeView(QTreeView):
                     continue
                 if name.startswith('.') or name == 'Donate' or name == 'Test':  # 不显示.开头的文件夹
                     continue
-                item = QStandardItem(pitem)
-                item.setText(name)
+                item = QStandardItem(name)
                 # 添加自定义的数据
                 item.setData(True, Constants.RoleRoot)        # 根目录
                 item.setData(name, Constants.RoleName)        # 文件夹名字
@@ -136,7 +134,7 @@ class TreeView(QTreeView):
         super(TreeView, self).enterEvent(event)
         # 鼠标进入显示滚动条
         self.verticalScrollBar().setVisible(True)
-
+ 
     def leaveEvent(self, event):
         super(TreeView, self).leaveEvent(event)
         # 鼠标离开隐藏滚动条

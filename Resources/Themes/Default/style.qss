@@ -135,22 +135,22 @@ QLineEdit {
 
 #treeViewCatalogs::item:hover {
     color: rgba(255, 255, 255, 255);
-    background: rgba(217, 217, 217, 200);
+    background: rgba(217, 217, 217, 100);
 }
 
 #treeViewCatalogs::item:selected {
     color: rgba(255, 255, 255, 255);
-    background: rgba(217, 217, 217, 200);
+    background: rgba(217, 217, 217, 100);
 }
 
 #treeViewCatalogs::item:selected:active{
     color: rgba(255, 255, 255, 255);
-    background: rgba(217, 217, 217, 200);
+    background: rgba(217, 217, 217, 100);
 }
 
 #treeViewCatalogs::item:selected:!active {
     color: rgba(255, 255, 255, 200);
-    background: rgba(217, 217, 217, 100);
+    background: rgba(217, 217, 217, 50);
 }
 
 /*工具栏*/
