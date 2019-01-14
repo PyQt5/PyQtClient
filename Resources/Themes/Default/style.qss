@@ -78,7 +78,7 @@ QLineEdit {
     max-width: 130px;
     max-height: 130px;
     background: transparent;
-    qproperty-shadowColor: #212121;
+    qproperty-shadowColor: rgba(33, 33, 33, 255);
     qproperty-image: "Resources/Images/Avatars/avatar.png";
 }
 
@@ -113,7 +113,7 @@ QLineEdit {
     max-height: 26px;
     border: none;
     color: white;
-    qproperty-bgColor: #27AE61;
+    qproperty-bgColor: rgba(39, 174, 97, 255);
     outline: none;
     font-family: "pyqtclient";
     qproperty-text: "\5100";
@@ -125,6 +125,8 @@ QLineEdit {
     border: none;       /*无边框*/
     color: rgba(255, 255, 255, 200);
     background: transparent;    /*背景透明*/
+    /*item 进度条颜色*/
+    qproperty-barColor: rgb(255, 255, 255);
 }
 
 #treeViewCatalogs::item {
@@ -133,22 +135,22 @@ QLineEdit {
 
 #treeViewCatalogs::item:hover {
     color: rgba(255, 255, 255, 255);
-    background: rgba(217, 217, 217, 100);
+    background: rgba(217, 217, 217, 200);
 }
 
 #treeViewCatalogs::item:selected {
     color: rgba(255, 255, 255, 255);
-    background: rgba(217, 217, 217, 100);
+    background: rgba(217, 217, 217, 200);
 }
 
 #treeViewCatalogs::item:selected:active{
     color: rgba(255, 255, 255, 255);
-    background: rgba(217, 217, 217, 100);
+    background: rgba(217, 217, 217, 200);
 }
 
 #treeViewCatalogs::item:selected:!active {
     color: rgba(255, 255, 255, 200);
-    background: rgba(217, 217, 217, 50);
+    background: rgba(217, 217, 217, 100);
 }
 
 /*工具栏*/
@@ -170,7 +172,7 @@ QLineEdit {
     font-family: "pyqtclient";
     font-size: 20px;
     background: rgba(46, 46, 46, 255);
-    qproperty-shadowColor: #FFFFFF;
+    qproperty-shadowColor: rgba(255, 255, 255, 255);
 }
 
 /*github按钮*/
@@ -205,16 +207,20 @@ QLineEdit {
     max-height: 36px;
     border: none;
     color: rgba(255, 255, 255, 255);
-    qproperty-bgColor: #27AE61;
+    qproperty-bgColor: rgba(39, 174, 97, 255);
     outline: none;
     font-family: "pyqtclient";
     qproperty-text: "\5101";
 }
 
-/*层叠存放网页控件*/
+/*存放网页控件*/
 #widgetContents {
     background: rgb(248, 248, 248);
     border-bottom-right-radius: 4px;
+}
+/*网页背景透明*/
+#webViewContent {
+    background: transparent;
 }
 
 /*仿ToolTip窗口*/

@@ -33,7 +33,7 @@ if __name__ == '__main__':
         color: white;
         outline: none;
         margin: 4px;
-        qproperty-bgColor: #ff0000;
+        qproperty-bgColor: rgba(255, 0, 0, 150);
     }
     """)
     w = QWidget()

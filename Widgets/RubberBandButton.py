@@ -31,7 +31,7 @@ class RubberBandButton(QPushButton):
         self.setCursor(Qt.PointingHandCursor)
         self._width = 0
         self._height = 0
-        self._bgcolor = 'green'
+        self._bgcolor = QColor(Qt.green)
 
     def paintEvent(self, event):
         self._initAnimate()
@@ -118,10 +118,10 @@ class RubberBandButton(QPushButton):
     def rHeight(self, value):
         self._height = value
 
-    @pyqtProperty(str)
+    @pyqtProperty(QColor)
     def bgColor(self):
         return self._bgcolor
 
     @bgColor.setter
-    def bgColor(self, value):
-        self._bgcolor = value
+    def bgColor(self, color):
+        self._bgcolor = QColor(color)

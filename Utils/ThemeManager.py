@@ -11,12 +11,11 @@ Created on 2019年1月3日
 """
 import os
 
-from PyQt5.QtCore import QSettings, QTextCodec
 from PyQt5.QtGui import QFontDatabase, QCursor, QPixmap
 from PyQt5.QtWidgets import QApplication
 
-from Utils.CommonUtil import AppLog
-from Utils.Constants import ConfigFile
+from Utils.ColorThief import ColorThief
+from Utils.CommonUtil import AppLog, Setting
 
 
 __Author__ = """By: Irony
@@ -25,6 +24,47 @@ Email: 892768447@qq.com"""
 __Copyright__ = "Copyright (c) 2019 Irony"
 __Version__ = "Version 1.0"
 
+StyleTemplate = """
+#widgetMain {{
+    border-image: url({0});    /*背景图片*/
+}}
+
+/*工具栏*/
+#widgetTools {{
+    background-color: rgba(38, 38, 38, 10);
+}}
+
+/*存放网页控件*/
+#widgetContents {{
+    background: rgba(248, 248, 248, 150);
+}}
+
+/*搜索框中的按钮*/
+#buttonSearch {{
+    qproperty-bgColor: rgb({1}, {2}, {3}, 255);
+}}
+
+/*返回顶部按钮*/
+#buttonBackToUp {{
+    qproperty-bgColor: rgb({1}, {2}, {3}, 255);
+}}
+
+/*工具栏中的按钮*/
+#buttonGithub, #buttonQQ, #buttonGroup {{
+    background: rgb({1}, {2}, {3}, 255);
+}}
+
+/*登录窗口*/
+#widgetLogin {{
+    background: rgb({1}, {2}, {3}, 210);
+}}
+
+/*激活状态*/
+#widgetLogin[_active="true"] {{
+    border: 1px solid rgba({1}, {2}, {3}, 255);
+}}
+"""
+
 
 class ThemeManager:
 
@@ -32,15 +72,12 @@ class ThemeManager:
     ThemeName = 'Default'
 
     @classmethod
-    def loadTheme(cls, parent=None):
+    def loadTheme(cls):
         """根据配置加载主题
         :param cls:
         :param parent:
         """
-        setting = QSettings(ConfigFile,
-                            QSettings.IniFormat, parent)
-        setting.setIniCodec(QTextCodec.codecForName('utf-8'))
-        cls.ThemeName = setting.value('theme', 'Default', str)
+        cls.ThemeName = Setting.value('theme', 'Default', str)
         # 加载主题中的字体
         path = cls.fontPath()
         AppLog.info('fontPath: {}'.format(path))
@@ -50,18 +87,46 @@ class ThemeManager:
         path = cls.stylePath()
         AppLog.info('stylePath: {}'.format(path))
         try:
-            QApplication.instance().setStyleSheet(open(path, 'rb').read().decode('utf-8'))
+            QApplication.instance().setStyleSheet(
+                open(path, 'rb').read().decode('utf-8', errors='ignore'))
         except Exception as e:
             AppLog.error(str(e))
 
     @classmethod
-    def loadCursor(cls, parent, name='default.png'):
+    def loadFestivalTheme(cls, image=None):
+        """根据配置加载主题
+        :param cls:
+        :param parent:
+        :param image:         背景图片
+        """
+        cls.ThemeName = Setting.value('theme', 'Default', str)
+        # 加载主题取样式
+        path = cls.stylePath()
+        AppLog.info('stylePath: {}'.format(path))
+        try:
+            styleSheet = open(path, 'rb').read().decode(
+                'utf-8', errors='ignore')
+            # 需要替换部分样式
+            if image and os.path.isfile(image):
+                # 获取图片主色调
+                color_thief = ColorThief(image)
+                color = color_thief.get_color()
+                AppLog.info('dominant color: {}'.format(str(color)))
+                styleSheet += StyleTemplate.format(
+                    os.path.abspath(image).replace('\\', '/'),
+                    *color)
+            QApplication.instance().setStyleSheet(styleSheet)
+        except Exception as e:
+            AppLog.error(str(e))
+
+    @classmethod
+    def loadCursor(cls, widget, name='default.png'):
         # 加载光标
         path = cls.cursorPath(name)
         AppLog.info('cursorPath: {}'.format(path))
         if os.path.exists(path):
             # 设置自定义鼠标样式,并以0,0为原点
-            parent.setCursor(QCursor(QPixmap(path), 0, 0))
+            widget.setCursor(QCursor(QPixmap(path), 0, 0))
 
     @classmethod
     def cursorPath(cls, name='default.png'):
@@ -72,7 +137,7 @@ class ThemeManager:
         return os.path.abspath(os.path.join(cls.ThemeDir, cls.ThemeName, 'cursor', name)).replace('\\', '/')
 
     @classmethod
-    def setPointerCursors(cls, parent):
+    def setPointerCursors(cls, widgets):
         """设置部分指定控件的鼠标样式
         :param cls:
         """
@@ -80,11 +145,8 @@ class ThemeManager:
             cls.ThemeDir, cls.ThemeName, 'cursor', 'pointer.png')).replace('\\', '/')
         if os.path.exists(path):
             cursor = QCursor(QPixmap(path), 0, 0)
-            parent.buttonHead.setCursor(cursor)         # 主界面头像
-            parent.buttonGithub.setCursor(cursor)       # Github按钮
-            parent.buttonQQ.setCursor(cursor)           # QQ按钮
-            parent.buttonGroup.setCursor(cursor)        # 群按钮
-            parent.buttonBackToUp.setCursor(cursor)     # 返回顶部按钮
+            for w in widgets:
+                w.setCursor(cursor)
 
     @classmethod
     def fontPath(cls):

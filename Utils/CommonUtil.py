@@ -119,6 +119,14 @@ class _Signals(QObject):
     runExampled = pyqtSignal(str)
     # 弹出捐赠对话框
     donateShowed = pyqtSignal()
+    # 过滤筛选木兰路
+    filterChanged = pyqtSignal(str)
+    # 文件下载请求
+    fileDownloaded = pyqtSignal(str, str)
+    # 文件下载请求完成
+    fileDownloadFinished = pyqtSignal(str)
+    # 目前请求完成
+    DirDownloadFinished = pyqtSignal(str)
 
     # 登录失败
     loginErrored = pyqtSignal(str)

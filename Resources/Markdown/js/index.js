@@ -1,3 +1,9 @@
+function renderReadme() {
+    if(typeof _mainWindow != "undefined") {
+        _mainWindow.renderReadme();
+    }
+};
+
 hljs.initHighlightingOnLoad();
 var md = window.markdownit();
 
@@ -23,7 +29,8 @@ md.options.highlight = function (str, lang) {
 // 更新文字
 function updateText(text) {
     document.getElementById("result").innerHTML = md.render(text);
-    document.getElementById("result").style.display = "block";
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("result").style.display = text.length > 0 ? "block" : "none";
     backToUp();
 //     hljs.initHighlighting.called = false;
 //     hljs.initHighlighting();
@@ -33,4 +40,8 @@ function updateText(text) {
 function backToUp() {
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
+}
+
+window.onload = function() {
+    setTimeout(renderReadme, 500);
 }

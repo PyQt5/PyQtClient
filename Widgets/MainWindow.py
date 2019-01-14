@@ -13,16 +13,16 @@ import cgitb
 import os
 import sys
 
-from PyQt5.QtCore import QEvent, Qt, QTimer
+from PyQt5.QtCore import QEvent, Qt, QTimer, pyqtSlot
 from PyQt5.QtGui import QStandardItem, QEnterEvent
 
+from Dialogs.LoginDialog import LoginDialog
 from UiFiles.Ui_MainWindow import Ui_FormMainWindow
 from Utils import Constants
 from Utils.Application import QSingleApplication
 from Utils.CommonUtil import initLog, AppLog, Setting
 from Utils.Repository import DirRunnable
 from Widgets.FramelessWindow import FramelessWindow
-from Widgets.LoginDialog import LoginDialog
 from Widgets.MainWindowBase import MainWindowBase
 
 
@@ -37,8 +37,8 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
 
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
+        Setting.init(self)
         self._initUi()
-        self._initModel()
         self._initThread()
         self._initSignals()
         # 加载窗口大小并恢复
@@ -47,6 +47,8 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
             self.restoreGeometry(geometry)
         # 200毫秒后显示登录对话框
         QTimer.singleShot(200, self.initLogin)
+        # 初始化网页
+        QTimer.singleShot(500, self._initWebView)
 
     def onRunnableFinished(self, path):
         """任务运行完毕后删除该path
@@ -90,119 +92,26 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
                         break
 
     def initLogin(self):
-        # 遍历本地缓存目录
-        self.initCatalog()
         dialog = LoginDialog(self)
         dialog.exec_()
         # 刷新头像样式
-        if Constants._Account != None and Constants._Passord != None:
+        if Constants._Account != None and Constants._Password != None:
             self.buttonHead.image = Constants.ImageAvatar
             self.buttonHead.setToolTip(Constants._Username)
-#             self.style().polish(self.buttonHead)
             # 更新根目录
-#             self._threadPool.start(DirRunnable(''))
+            if '/' not in self._runnables:
+                self._runnables.add('/')
+                self._threadPool.start(DirRunnable(
+                    '', Constants._Account, Constants._Password))
 
-    def listSubDir(self, pitem, path):
-        """遍历子目录
-        :param item:    上级Item
-        :param path:    目录
-        """
-        paths = os.listdir(path)
-        files = []
-        for name in paths:
-            spath = os.path.join(path, name)
-            if not os.path.isfile(spath):
-                continue
-            spath = os.path.splitext(spath)
-            if len(spath) == 0:
-                continue
-            if spath[1] == '.py' and spath[0].endswith('__init__') == False:
-                files.append(name)
-
-        if pitem.rowCount() != 0 and len(files) == pitem.rowCount():
-            return
-        for name in files:
-            file = os.path.join(path, name).replace('\\', '/')
-            item = QStandardItem(pitem)
-            item.setText(name)
-            # 添加自定义的数据
-            item.setData(name, Constants.RoleName)        # 文件名字
-            item.setData(file, Constants.RoleFile)        # 本地文件路径
-            item.setData(None, Constants.RolePath)
-            pitem.appendRow(item)
-
-    def initCatalog(self):
-        """初始化本地仓库结构树
-        """
-        if self._dmodel.rowCount() == 0:
-            pitem = self._dmodel.invisibleRootItem()
-            # 只遍历根目录
-            for name in os.listdir(Constants.DirProjects):
-                file = os.path.join(Constants.DirProjects,
-                                    name).replace('\\', '/')
-                if os.path.isfile(file):  # 跳过文件
-                    continue
-                if name.startswith('.') or name == 'Donate' or name == 'Test':  # 不显示.开头的文件夹
-                    continue
-                item = QStandardItem(pitem)
-                item.setText(name)
-                # 添加自定义的数据
-                item.setData(name, Constants.RoleName)        # 文件夹名字
-                item.setData(file, Constants.RoleFile)        # 本地文件夹路径
-                item.setData(name, Constants.RolePath)        # 用于请求远程的路径
-                pitem.appendRow(item)
-                # 遍历子目录
-                self.listSubDir(item, file)
-            # 排序
-            self._fmodel.sort(0, Qt.AscendingOrder)
-            # 初始化网页
-            QTimer.singleShot(500, self._initWebView)
-
-    def on_treeViewCatalogs_doubleClicked(self, modelIndex):
-        """Item双击
-        :param modelIndex:        代理模型中的QModelIndex, 并不是真实的
-        """
-        path = modelIndex.data(Constants.RolePath)
-        rdir = modelIndex.data(Constants.RoleFile)
-        AppLog.debug('path: {}'.format(path))
-        AppLog.debug('name: {}'.format(
-            modelIndex.data(Constants.RoleName)))
-        AppLog.debug('dir or file: {}'.format(rdir))
-        # 是否需要遍历本地子目录并显示
-        item = self._dmodel.itemFromIndex(self._fmodel.mapToSource(modelIndex))
-        if os.path.isfile(rdir):
-            # 运行代码
-            self._runFile(rdir)
-        elif item and path:
-            self.listSubDir(item, rdir)
-        if item.rowCount() == 0:
-            self.on_treeViewCatalogs_expanded(modelIndex)
-
-    def on_treeViewCatalogs_expanded(self, modelIndex):
-        """Item展开
-        :param modelIndex:        代理模型中的QModelIndex, 并不是真实的
-        """
-        path = modelIndex.data(Constants.RolePath)
-        rdir = modelIndex.data(Constants.RoleFile)
-        AppLog.debug('path: {}'.format(path))
-        AppLog.debug('rdir: {}'.format(rdir))
-        # 是否需要执行获取远程目录任务
-        if path not in self._runnables:
-            self.renderReadme(path=os.path.join(rdir, 'README.md'))
-#             if Constants._Account != None and Constants._Passord != None:
-#                 self._runnables.add(path)
-#                 self._threadPool.start(DirRunnable(path))
-
-    def renderReadme(self, *, path=None):
+    @pyqtSlot()
+    def renderReadme(self, path=None):
         """加载README.md并显示
         """
-        try:
-            self.webViewContent.loadFinished.disconnect(self.renderReadme)
-        except:
-            pass
-        if path == None:
+        if not path:
             path = os.path.join(Constants.DirProjects, 'README.md')
         if not os.path.exists(path):
+            self._runJs('updateText("");')
             return
         Constants.DirCurrent = os.path.dirname(path).replace('\\', '/')
         Constants.CurrentReadme = path      # 记录打开的路径防止重复加载
@@ -214,8 +123,6 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
     def closeEvent(self, event):
         # 储存窗口位置
         Setting.setValue('geometry', self.saveGeometry())
-        if hasattr(self, '_repoThread'):
-            self._repoThread.stoped = True
         super(MainWindow, self).closeEvent(event)
 
     def eventFilter(self, obj, event):
@@ -223,14 +130,6 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         if obj == self.widgetMain and isinstance(event, QEnterEvent):
             # 用于解决鼠标进入其它控件后还原为标准鼠标样式
             self.setCursor(Qt.ArrowCursor)
-        elif obj == self.treeViewCatalogs:
-            types = event.type()
-            if types == QEvent.Enter:
-                # 鼠标进入显示滚动条
-                self.treeViewCatalogs.verticalScrollBar().setVisible(True)
-            elif types == QEvent.Leave:
-                # 鼠标离开隐藏滚动条
-                self.treeViewCatalogs.verticalScrollBar().setVisible(False)
         return FramelessWindow.eventFilter(self, obj, event)
 
     def changeEvent(self, event):

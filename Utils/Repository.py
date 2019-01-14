@@ -19,7 +19,6 @@ from requests.exceptions import ConnectTimeout
 
 from Utils import Constants
 from Utils.CommonUtil import git_blob_hash, Signals, AppLog
-from Utils.Constants import ProjectRepo, DirProjects
 
 
 __Author__ = """By: Irony
@@ -33,6 +32,8 @@ class LoginRunnable(QRunnable):
     """登录Github
     """
 
+    Url = 'https://api.github.com/user'
+
     def __init__(self, account, password, *args, **kwargs):
         super(LoginRunnable, self).__init__(*args, **kwargs)
         self.account = account
@@ -41,8 +42,8 @@ class LoginRunnable(QRunnable):
     def run(self):
         AppLog.info('start login github')
         try:
-            req = requests.get('https://api.github.com/user',
-                               auth=HTTPBasicAuth(self.account, self.password))
+            req = requests.get(self.Url, auth=HTTPBasicAuth(
+                self.account, self.password))
             retval = req.json()
             if retval.get('message', '') == 'Bad credentials':
                 Signals.loginErrored.emit(QCoreApplication.translate(
@@ -109,6 +110,8 @@ class DirRunnable(QRunnable):
     """获指定路径下的目录和文件
     """
 
+    Url = 'https://api.github.com/repos/PyQt5/PyQt/contents'
+
     def __init__(self, path, account, password, *args, **kwargs):
         super(DirRunnable, self).__init__(*args, **kwargs)
         # 如果path == '' 则表示获取根目录,不用递归获取
@@ -116,45 +119,75 @@ class DirRunnable(QRunnable):
         self.account = account
         self.password = password
 
-    def run(self):
-        path = '/' + self.path if self.path else ''
-        req = requests.get('https://api.github.com/repos/PyQt5/PyQt/contents' + path,
-                           auth=HTTPBasicAuth(self.account, self.password))
-        print(req.json())
-        AppLog.info('start get {} catalogs'.format(self.path))
-        repo = Constants._Github.get_repo(ProjectRepo)
-        contents = repo.get_contents(self.path)
-        while len(contents) > 0:
-            content = contents.pop(0)
-            if content.type == 'dir':
+    def _analysis(self, retval, isRoot=False):
+        """解析josn数组
+        :param retval:    数组
+        """
+        AppLog.debug('retval length: {}, isRoot: {}'.format(
+            len(retval), isRoot))
+        for item in retval:
+            name = item['name']
+            rpath = item['path']
+            type_ = item['type']
+            path = os.path.join(Constants.DirProjects,
+                                rpath).replace('\\', '/')
+            AppLog.debug('name: {}, type: {}'.format(name, type_))
+            if type_ == 'dir':  # 目录
                 # 尝试创建目录
                 try:
-                    os.makedirs(os.path.join(
-                        DirProjects, content.path).replace('\\', '/'), exist_ok=True)
-                    if not content.path.startswith('.'):  # 文件名不以.开头
+                    os.makedirs(path, exist_ok=True)
+                    if path.startswith('.'):  # 忽略.开头的目录
+                        continue
+                    if isRoot:
                         # 添加到界面树中
-                        Signals.itemAdded.emit(
-                            content.path.split('/'), content.path)
-                        if content.name == 'Donate':  # 继续遍历
-                            contents.extend(repo.get_contents(content.path))
-                        # 是否需要深度遍历
-                        if self.path != '':
-                            AppLog.info(
-                                'start get {} catalogs'.format(content.path))
-                            contents.extend(repo.get_contents(content.path))
+                        pass
+                    if name == 'Donate' or not isRoot:
+                        # 继续遍历
+                        self.getContent('/' + rpath)
                 except Exception as e:
                     AppLog.warn(str(e))
-            else:
-                path = os.path.join(
-                    DirProjects, content.path).replace('\\', '/')
+            elif type_ == 'file':  # 文件
+                sha = item['sha']
                 # 如果文件不存在或者sha不一致则重新写入
-                if not os.path.exists(path) or content.sha != git_blob_hash(path):
+                if not os.path.exists(path) or sha != git_blob_hash(path):
                     AppLog.debug('overwrite file: {}'.format(path))
-                    with open(path, 'wb') as fp:
-                        fp.write(content.decoded_content)
-                # 判断文件名是否是README
-                if content.name == 'README.md':
-                    # 通知是否要更新右侧内容显示
-                    Signals.indexPageUpdated.emit()
+                    Signals.fileDownloaded.emit(path, item['download_url'])
 
-        Signals.runnableFinished.emit(self.path)
+    def getContent(self, path):
+        AppLog.info('start get {} catalogs'.format(path))
+        try:
+            req = requests.get(self.Url + path, auth=HTTPBasicAuth(
+                self.account, self.password))
+            retval = req.json()
+            if isinstance(retval, dict):
+                AppLog.warn('Not Found')
+                return
+            self._analysis(retval, path == '')
+        except Exception as e:
+            AppLog.warn(str(e))
+
+    def run(self):
+        path = '/' + self.path if self.path else ''
+        self.getContent(path)
+        Signals.DirDownloadFinished.emit(self.path if self.path else '/')
+        AppLog.debug('Download dir end: {}'.format(self.path))
+
+
+class DownloadRunnable(QRunnable):
+    """文件下载
+    """
+
+    def __init__(self, path, url, *args, **kwargs):
+        super(DownloadRunnable, self).__init__(*args, **kwargs)
+        self.path = path
+        self.url = url
+
+    def run(self):
+        try:
+            req = requests.get(self.url)
+            with open(self.path, 'wb') as fp:
+                fp.write(req.content)
+        except Exception as e:
+            AppLog.warn(str(e))
+        AppLog.debug('download file end: {}'.format(self.url))
+        Signals.fileDownloadFinished.emit(self.path)

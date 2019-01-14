@@ -18,6 +18,7 @@ from PyQt5.QtWidgets import QPushButton, QGraphicsDropShadowEffect, \
 
 from Widgets.ToolTip import ToolTip
 
+
 __Author__ = """By: Irony
 QQ: 892768447
 Email: 892768447@qq.com"""
@@ -37,7 +38,7 @@ class RotateButton(QPushButton):
         self._angle = 0  # 角度
         self._padding = 10  # 阴影边距
         self._image = ''  # 图片路径
-        self._shadowColor = '#212121'  # 阴影颜色
+        self._shadowColor = QColor(33, 33, 33)  # 阴影颜色
         self._pixmap = None  # 图片对象
         # 属性动画
         self._animation = QPropertyAnimation(self, b'angle', self)
@@ -85,7 +86,7 @@ class RotateButton(QPushButton):
     def enterEvent(self, _):
         """鼠标进入事件"""
         # 设置阴影
-        self._effect.setColor(QColor(self._shadowColor))
+        self._effect.setColor(self._shadowColor)
         self._effect.setBlurRadius(self._padding * 2)
         self.setGraphicsEffect(self._effect)
 
@@ -167,10 +168,10 @@ class RotateButton(QPushButton):
     def padding(self, value):
         self._padding = value
 
-    @pyqtProperty(str)
+    @pyqtProperty(QColor)
     def shadowColor(self):
         return self._shadowColor
 
     @shadowColor.setter
-    def shadowColor(self, value):
-        self._shadowColor = value
+    def shadowColor(self, color):
+        self._shadowColor = QColor(color)

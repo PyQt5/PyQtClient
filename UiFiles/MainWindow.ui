@@ -239,9 +239,6 @@
                </item>
                <item>
                 <widget class="RubberBandButton" name="buttonSearch">
-                 <property name="cursor">
-                  <cursorShape>PointingHandCursor</cursorShape>
-                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -251,7 +248,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QTreeView" name="treeViewCatalogs">
+             <widget class="TreeView" name="treeViewCatalogs">
               <property name="frameShape">
                <enum>QFrame::NoFrame</enum>
               </property>
@@ -411,6 +408,11 @@
    <class>RubberBandButton</class>
    <extends>QPushButton</extends>
    <header location="global">Widgets.RubberBandButton</header>
+  </customwidget>
+  <customwidget>
+   <class>TreeView</class>
+   <extends>QTreeView</extends>
+   <header location="global">Widgets.TreeView</header>
   </customwidget>
  </customwidgets>
  <resources/>

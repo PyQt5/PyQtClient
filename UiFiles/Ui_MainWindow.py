@@ -91,12 +91,11 @@ class Ui_FormMainWindow(object):
         self.lineEditSearch.setObjectName("lineEditSearch")
         self.horizontalLayout_3.addWidget(self.lineEditSearch)
         self.buttonSearch = RubberBandButton(self.widgetSearch)
-        self.buttonSearch.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.buttonSearch.setText("")
         self.buttonSearch.setObjectName("buttonSearch")
         self.horizontalLayout_3.addWidget(self.buttonSearch)
         self.verticalLayout_4.addWidget(self.widgetSearch)
-        self.treeViewCatalogs = QtWidgets.QTreeView(self.widgetCatalogs)
+        self.treeViewCatalogs = TreeView(self.widgetCatalogs)
         self.treeViewCatalogs.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.treeViewCatalogs.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.treeViewCatalogs.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
@@ -162,6 +161,7 @@ class Ui_FormMainWindow(object):
 from PyQt5 import QtWebKitWidgets
 from Widgets.RotateButton import RotateButton
 from Widgets.RubberBandButton import RubberBandButton
+from Widgets.TreeView import TreeView
 
 if __name__ == "__main__":
     import sys

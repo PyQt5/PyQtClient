@@ -6,25 +6,22 @@ Created on 2019年1月5日
 @author: Irony
 @site: https://pyqt5.com https://github.com/892768447
 @email: 892768447@qq.com
-@file: Widgets.LoginDialog
+@file: Dialogs.LoginDialog
 @description:
 """
 import base64
 import os
 
-from PyQt5.QtCore import Qt, pyqtSlot, QThread, pyqtSignal, QVariant, QTimer
-from PyQt5.QtGui import QImage
+from PyQt5.QtCore import Qt, pyqtSlot, QVariant, QTimer
 from PyQt5.QtWidgets import QCompleter
-from github import Github
-import requests
 
+from Dialogs.MoveDialog import MoveDialog
+from Dialogs.TwinkleDialog import TwinkleDialog
 from UiFiles.Ui_LoginDialog import Ui_FormLoginDialog
 from Utils import Constants
 from Utils.CommonUtil import AppLog, Setting, Signals
 from Utils.Repository import LoginRunnable
 from Utils.ThemeManager import ThemeManager
-from Widgets.MoveDialog import MoveDialog
-from Widgets.TwinkleDialog import TwinkleDialog
 
 
 __Author__ = """By: Irony
@@ -32,52 +29,6 @@ QQ: 892768447
 Email: 892768447@qq.com"""
 __Copyright__ = "Copyright (c) 2019 Irony"
 __Version__ = "Version 1.0"
-
-
-class LoginThread(QThread):
-
-    loginErrored = pyqtSignal(str, str)
-    loginSuccessed = pyqtSignal(int)  # 登录成功发送用户的id
-
-    def __init__(self, account, password, *args, **kwargs):
-        super(LoginThread, self).__init__(*args, **kwargs)
-        self.account = account
-        self.password = password
-
-    def run(self):
-        try:
-            g = Github(self.account, self.password)
-            user = g.get_user()
-            if user.login:
-                AppLog.info('login: {}'.format(user.login))
-                # 获取头像
-                req = requests.get(user.avatar_url)
-                if req.status_code == 200:
-                    imgformat = req.headers.get(
-                        'content-type', 'image/jpg').split('/')[1]
-                    Constants.ImageAvatar = os.path.join(
-                        Constants.ImageDir, str(user.id)).replace('\\', '/') + '.jpg'
-                    AppLog.debug('image type: {}'.format(imgformat))
-                    AppLog.debug('content length: {}'.format(len(req.content)))
-
-                    image = QImage()
-                    if image.loadFromData(req.content):
-                        # 缩放图片
-                        if not image.isNull():
-                            image = image.scaled(130, 130, Qt.IgnoreAspectRatio,
-                                                 Qt.SmoothTransformation)
-                            AppLog.debug('save to: {}'.format(
-                                Constants.ImageAvatar))
-                            image.save(Constants.ImageAvatar)
-                        else:
-                            AppLog.warn('avatar image is null')
-                    else:
-                        AppLog.warn('can not load from image data')
-                # 登录成功
-                self.loginSuccessed.emit(user.id)
-        except Exception as e:
-            self.loginErrored.emit(
-                str(e), self.tr('Incorrect account or password'))
 
 
 class LoginDialog(MoveDialog, TwinkleDialog, Ui_FormLoginDialog):
@@ -155,7 +106,7 @@ class LoginDialog(MoveDialog, TwinkleDialog, Ui_FormLoginDialog):
         account = self.lineEditAccount.text().strip()
         password = self.lineEditPassword.text().strip()
         Constants._Account = account
-        Constants._Passord = password
+        Constants._Password = password
         Constants._Username = name
         # 储存账号密码
         Setting.setValue('account', account)

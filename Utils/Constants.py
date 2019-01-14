@@ -20,13 +20,15 @@ Email: 892768447@qq.com"""
 __Copyright__ = "Copyright (c) 2019 Irony"
 __Version__ = "Version 1.0"
 
+RoleRoot = Qt.UserRole
 RoleFile = Qt.UserRole + 1
 RoleName = Qt.UserRole + 2
 RolePath = Qt.UserRole + 3
+RoleValue = Qt.UserRole + 4
+RoleTotal = Qt.UserRole + 5
 
 HomeFile = 'Resources/Markdown/index.html'
 
-ProjectRepo = 'PyQt5/PyQt'
 ConfigFile = 'Resources/Data/Config.ini'
 
 ImageDir = 'Resources/Images/Avatars'
@@ -52,5 +54,5 @@ UrlHomePage = 'https://api.github.com/repos/PyQt5/PyQt/contents'
 # Github Api访问实例
 _Github = None
 _Account = ''
-_Passord = ''
+_Password = ''
 _Username = ''

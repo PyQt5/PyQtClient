@@ -29,7 +29,7 @@ class Window(QWidget):
         layout.addWidget(RotateButton(
             '6', self, minimumHeight=96, toolTip='旋转按钮'))
         layout.addWidget(RotateButton(
-            '', self, minimumHeight=96, image='../Resources/Images/avatar.jpg'))
+            '', self, minimumHeight=96, image='../Resources/Images/Avatars/avatar.png'))
         layout.addWidget(RotateButton(
             '', self, minimumHeight=96, objectName='imageLabel'))
 
@@ -51,7 +51,7 @@ if __name__ == '__main__':
         background-color: rgba(77, 77, 77, 180);
     }
     #imageLabel {
-        qproperty-image: "../Resources/Images/avatar.jpg";
+        qproperty-image: "../Resources/Images/Avatars/avatar.png";
     }
     """)
     w = Window()

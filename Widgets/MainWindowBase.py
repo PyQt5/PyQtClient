@@ -14,14 +14,13 @@ import os
 import webbrowser
 
 from PyQt5.QtCore import pyqtSlot, QThreadPool, Qt, QUrl
-from PyQt5.QtGui import QStandardItemModel
 from PyQt5.QtWebKit import QWebSettings
 from PyQt5.QtWebKitWidgets import QWebPage
 
 from Utils import Constants
 from Utils.CommonUtil import Signals
 from Utils.NetworkAccessManager import NetworkAccessManager
-from Utils.SortFilterModel import SortFilterModel
+from Utils.Repository import DownloadRunnable
 from Utils.ThemeManager import ThemeManager
 from Widgets.ToolTip import ToolTip
 
@@ -45,25 +44,23 @@ class MainWindowBase:
         # 隐藏目录树的滑动条
         self.treeViewCatalogs.verticalScrollBar().setVisible(False)
         # 加载主题
-        ThemeManager.loadTheme(self)
+        ThemeManager.loadTheme()
         # 加载鼠标样式
         ThemeManager.loadCursor(self.widgetMain)
-        ThemeManager.setPointerCursors(self)
+        ThemeManager.setPointerCursors([
+            self.buttonHead,            # 主界面头像
+            self.buttonSearch,          # 主界面搜索按钮
+            self.buttonGithub,          # Github按钮
+            self.buttonQQ,              # QQ按钮
+            self.buttonGroup,           # 群按钮
+            self.buttonBackToUp,        # 返回顶部按钮
+        ])
         # 安装事件过滤器用于还原鼠标样式
         self.widgetMain.installEventFilter(self)
         # 绑定返回顶部提示框
         ToolTip.bind(self.buttonBackToUp)
         # 头像提示控件
         ToolTip.bind(self.buttonHead)
-
-    def _initModel(self):
-        """设置目录树Model"""
-        self._dmodel = QStandardItemModel(self.treeViewCatalogs)
-        self._fmodel = SortFilterModel(self.treeViewCatalogs)
-        self._fmodel.setSourceModel(self._dmodel)
-        self.treeViewCatalogs.setModel(self._fmodel)
-        # 安装事件过滤器捕捉鼠标进入离开事件
-        self.treeViewCatalogs.installEventFilter(self)
 
     def _initThread(self):
         """初始化线程池"""
@@ -74,10 +71,14 @@ class MainWindowBase:
 
     def _initSignals(self):
         """初始化信号槽"""
-        self.webViewContent.loadFinished.connect(self.renderReadme)
+        self.webViewContent.loadFinished.connect(self._exposeInterface)
         self.webViewContent.linkClicked.connect(self.onLinkClicked)
         # 绑定全局信号槽
         Signals.itemAdded.connect(self.onItemAdded, type=Qt.QueuedConnection)
+        Signals.fileDownloaded.connect(
+            self.onDownloadFile, type=Qt.QueuedConnection)
+        Signals.fileDownloadFinished.connect(
+            self.onDownloadFinished, type=Qt.QueuedConnection)
         Signals.runnableFinished.connect(
             self.onRunnableFinished, type=Qt.QueuedConnection)
         Signals.runExampled.connect(
@@ -101,6 +102,11 @@ class MainWindowBase:
         self.webViewContent.load(QUrl.fromLocalFile(
             os.path.abspath(Constants.HomeFile)))
 
+    def _exposeInterface(self):
+        """向Js暴露调用本地方法接口
+        """
+        self.webViewContent.page().mainFrame().addToJavaScriptWindowObject('_mainWindow', self)
+
     def _runFile(self, file):
         """子进程运行文件
         :param file:    文件
@@ -113,6 +119,22 @@ class MainWindowBase:
         :param code:
         """
         self.webViewContent.page().mainFrame().evaluateJavaScript(code)
+
+    def onDownloadFile(self, path, url):
+        """线程池下载文件
+        :param path:        本地文件路径
+        :param url:         远程文件路径
+        """
+        if path not in self._runnables:
+            self._runnables.add(path)
+            self._threadPool.start(DownloadRunnable(path, url))
+
+    def onDownloadFinished(self, path):
+        """下载文件请求完成
+        :param path:        本地文件路径
+        """
+        if path in self._runnables:
+            self._runnables.remove(path)
 
     def onLinkClicked(self, url):
         """加载网址
@@ -154,15 +176,15 @@ class MainWindowBase:
     def on_buttonHead_clicked(self):
         """点击头像
         """
-        if Constants._Account != None and Constants._Passord != None:
-            self.initLogin()
-        else:
+        if Constants._Account != '' and Constants._Password != '':
             self.renderReadme()
+        else:
+            self.initLogin()
 
     def on_lineEditSearch_textChanged(self, text):
         """过滤筛选
         """
-        self._fmodel.setFilterRegExp(text)
+        Signals.filterChanged.emit(text)
 
     @pyqtSlot()
     def on_buttonSearch_clicked(self):

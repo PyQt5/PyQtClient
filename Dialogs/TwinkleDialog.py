@@ -6,7 +6,7 @@ Created on 2019年1月5日
 @author: Irony
 @site: https://pyqt5.com https://github.com/892768447
 @email: 892768447@qq.com
-@file: Widgets.TwinkleDialog
+@file: Dialogs.TwinkleDialog
 @description: windows 对话框边框闪烁
 """
 import os
