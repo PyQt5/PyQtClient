@@ -27,7 +27,7 @@ class StyledItemDelegate(QStyledItemDelegate):
         if index.data(Constants.RoleRoot):
             value = index.data(Constants.RoleValue)
             total = index.data(Constants.RoleTotal)
-            if value == None or total == None or (value == total == 0) or total == 0:
+            if value == None or total == None or (value >= total) or total == 0:
                 return
             # 绘制进度条
             painter.setPen(QPen(self.parent().barColor, 1))

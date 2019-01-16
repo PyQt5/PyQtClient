@@ -10,10 +10,11 @@ Created on 2019年1月3日
 @description:
 """
 import cgitb
+from multiprocessing import Process
 import os
 import sys
 
-from PyQt5.QtCore import QEvent, Qt, QTimer, pyqtSlot
+from PyQt5.QtCore import QEvent, Qt, QTimer, pyqtSlot, QUrl
 from PyQt5.QtGui import QStandardItem, QEnterEvent
 
 from Dialogs.LoginDialog import LoginDialog
@@ -21,7 +22,7 @@ from UiFiles.Ui_MainWindow import Ui_FormMainWindow
 from Utils import Constants
 from Utils.Application import QSingleApplication
 from Utils.CommonUtil import initLog, AppLog, Setting
-from Utils.Repository import DirRunnable
+from Utils.Repository import DirRunnable, TreesRunnable
 from Widgets.FramelessWindow import FramelessWindow
 from Widgets.MainWindowBase import MainWindowBase
 
@@ -33,11 +34,17 @@ __Copyright__ = "Copyright (c) 2019 Irony"
 __Version__ = "Version 1.0"
 
 
+def runCode(file):
+    from Utils import RunCode
+    RunCode.runCode(file)
+
+
 class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
 
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
         Setting.init(self)
+        self._runnables = set()  # QRunnable任务集合
         self._initUi()
         self._initThread()
         self._initSignals()
@@ -50,59 +57,18 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         # 初始化网页
         QTimer.singleShot(500, self._initWebView)
 
-    def onRunnableFinished(self, path):
-        """任务运行完毕后删除该path
-        :param path:
-        """
-        AppLog.debug('finished get path: {}'.format(path))
-        if path in self._runnables:
-            self._runnables.remove(path)
-
-    def onItemAdded(self, names, rpath):
-        """线程发送信号增加Item
-        :param names:
-        :param rpath:
-        """
-        AppLog.debug('names: {}'.format(str(names)))
-        file = ''  # 路径
-        pItem = None  # 上级item
-        if len(names) == 1 and 'Donate' in names:
-            return
-        for name in names:
-            items = self._dmodel.findItems(name)
-            if not items:
-                # 如果没有找到上级Item则新增加一个
-                item = QStandardItem(self._dmodel.invisibleRootItem())
-                item.setText(name)
-                item.setTextAlignment(Qt.AlignCenter)
-                item.setData(name, Constants.RoleName)
-                file = os.path.join(file, name)
-                item.setData(file.replace('\\', '/'), Constants.RolePath)
-                file = os.path.join(Constants.DirProjects, file)
-                item.setData(file.replace('\\', '/'), Constants.RoleFile)
-                if pItem:
-                    pItem.appendRow(item)
-                else:
-                    self._dmodel.appendRow(item)
-                pItem = item
-            else:
-                for item in items:
-                    if item.data(Constants.RoleFile) == rpath:
-                        pItem = item
-                        break
-
     def initLogin(self):
         dialog = LoginDialog(self)
         dialog.exec_()
         # 刷新头像样式
-        if Constants._Account != None and Constants._Password != None:
+        if Constants._Account != '' and Constants._Password != '':
             self.buttonHead.image = Constants.ImageAvatar
             self.buttonHead.setToolTip(Constants._Username)
             # 更新根目录
             if '/' not in self._runnables:
                 self._runnables.add('/')
-                self._threadPool.start(DirRunnable(
-                    '', Constants._Account, Constants._Password))
+                self._threadPool.start(TreesRunnable(
+                    Constants._Account, Constants._Password))
 
     @pyqtSlot()
     def renderReadme(self, path=None):
@@ -113,12 +79,103 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         if not os.path.exists(path):
             self._runJs('updateText("");')
             return
+        if not os.path.isfile(path):
+            AppLog.warn('file {} not exists'.format(path))
+            return
         Constants.DirCurrent = os.path.dirname(path).replace('\\', '/')
         Constants.CurrentReadme = path      # 记录打开的路径防止重复加载
         AppLog.debug('render: {}'.format(path))
         AppLog.debug('readme dir: {}'.format(Constants.DirCurrent))
         content = repr(open(path, 'rb').read().decode())
         self._runJs("updateText({});".format(content))
+
+    def _exposeInterface(self):
+        """向Js暴露调用本地方法接口
+        """
+        self.webViewContent.page().mainFrame().addToJavaScriptWindowObject('_mainWindow', self)
+
+    def _runFile(self, file):
+        """子进程运行文件
+        :param file:    文件
+        """
+        p = Process(target=runCode, args=(os.path.abspath(file),))
+        p.start()
+
+    def _runJs(self, code):
+        """执行js
+        :param code:
+        """
+        self.webViewContent.page().mainFrame().evaluateJavaScript(code)
+
+    def onRunnableFinished(self, path):
+        """任务运行完毕后删除该path
+        :param path:
+        """
+        AppLog.debug('finished get path: {}'.format(path))
+        if path in self._runnables:
+            self._runnables.remove(path)
+
+    def onItemProgressChanged(self, item, value):
+        """更新item的进度条值
+        :param item:             item
+        :param value:            当前进度
+        """
+        if not item.text():
+            return
+        item.setData(value, Constants.RoleValue)
+        AppLog.debug(
+            'update item({}) progress: {}'.format(item.data(Qt.DisplayRole), value))
+
+    def onChildItemAdded(self, pitem, path):
+        """追加子item
+        :param pitem:        上级pitem
+        :param path:        本地文件路径
+        """
+        if not pitem.text():
+            return
+        name = os.path.basename(path)
+        for i in range(pitem.rowCount()):
+            if pitem.child(i).text() == name:
+                return
+        # 添加子item
+        item = QStandardItem(name)
+        item.setData(path, Constants.RolePath)
+        pitem.appendRow(item)
+
+    def onAnalysisTrees(self, trees):
+        """解析目录树结构
+        :param trees:        以根目录整合的数组
+        """
+        rootItem = self.treeViewCatalogs.rootItem()
+        for name, values in trees.items():
+            if name == '/' or name == 'Donate' or name == 'Test':
+                item = QStandardItem()
+            else:
+                items = self.treeViewCatalogs.findItems(name)
+                if not items:
+                    # 未找到则添加新的item
+                    item = QStandardItem(name)
+                    # 用于绘制进度条的item标识
+                    item.setData(True, Constants.RoleRoot)
+                    # 目录或者文件的绝对路径
+                    item.setData(os.path.abspath(os.path.join(
+                        Constants.DirProjects, name)), Constants.RolePath)
+                    rootItem.appendRow(item)
+                else:
+                    item = items[0]
+                # 进度条的总值
+                item.setData(len(values), Constants.RoleTotal)
+            # 开始下载该目录下所有文件
+            if name not in self._runnables:
+                self._runnables.add(name)
+                self._threadPool.start(DirRunnable(
+                    name, item, values, Constants._Account, Constants._Password))
+
+    def onLinkClicked(self, url):
+        """加载网址
+        :param url:
+        """
+        self.webViewContent.load(QUrl(url))
 
     def closeEvent(self, event):
         # 储存窗口位置
@@ -148,7 +205,10 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
 
 
 def main():
+    # for Qt 5.5
     os.putenv('QT_DEVICE_PIXEL_RATIO', 'auto')
+    # for > Qt 5.5
+    os.putenv('QT_AUTO_SCREEN_SCALE_FACTOR', '1')
     os.makedirs(Constants.DirErrors, exist_ok=True)
     os.makedirs(Constants.DirProjects, exist_ok=True)
     # 异常捕捉

@@ -9,29 +9,22 @@ Created on 2019年1月9日
 @file: Widgets.MainWindowBase
 @description: 
 """
-from multiprocessing import Process
 import os
 import webbrowser
 
-from PyQt5.QtCore import pyqtSlot, QThreadPool, Qt, QUrl
+from PyQt5.QtCore import pyqtSlot, QThreadPool, QUrl
 from PyQt5.QtWebKit import QWebSettings
 from PyQt5.QtWebKitWidgets import QWebPage
 
 from Utils import Constants
 from Utils.CommonUtil import Signals
 from Utils.NetworkAccessManager import NetworkAccessManager
-from Utils.Repository import DownloadRunnable
 from Utils.ThemeManager import ThemeManager
 from Widgets.ToolTip import ToolTip
 
 
 __Author__ = "Irony"
 __Copyright__ = "Copyright (c) 2019"
-
-
-def runCode(file):
-    from Utils import RunCode
-    RunCode.runCode(file)
 
 
 class MainWindowBase:
@@ -64,25 +57,20 @@ class MainWindowBase:
 
     def _initThread(self):
         """初始化线程池"""
-        # 创建线程池,最多5个线程
-        self._runnables = set()  # QRunnable任务集合
+        # 创建线程池
         self._threadPool = QThreadPool(self)
-        self._threadPool.setMaxThreadCount(5)
+        self._threadPool.setMaxThreadCount(30)
 
     def _initSignals(self):
         """初始化信号槽"""
         self.webViewContent.loadFinished.connect(self._exposeInterface)
         self.webViewContent.linkClicked.connect(self.onLinkClicked)
         # 绑定全局信号槽
-        Signals.itemAdded.connect(self.onItemAdded, type=Qt.QueuedConnection)
-        Signals.fileDownloaded.connect(
-            self.onDownloadFile, type=Qt.QueuedConnection)
-        Signals.fileDownloadFinished.connect(
-            self.onDownloadFinished, type=Qt.QueuedConnection)
-        Signals.runnableFinished.connect(
-            self.onRunnableFinished, type=Qt.QueuedConnection)
-        Signals.runExampled.connect(
-            self._runFile, type=Qt.QueuedConnection)
+        Signals.treesFinished.connect(self.onAnalysisTrees)
+        Signals.childItemAdded.connect(self.onChildItemAdded)
+        Signals.runnableFinished.connect(self.onRunnableFinished)
+        Signals.itemProgressChanged.connect(self.onItemProgressChanged)
+        Signals.runExampled.connect(self._runFile)
 
     def _initWebView(self):
         """初始化网页"""
@@ -101,46 +89,6 @@ class MainWindowBase:
         # 加载readme
         self.webViewContent.load(QUrl.fromLocalFile(
             os.path.abspath(Constants.HomeFile)))
-
-    def _exposeInterface(self):
-        """向Js暴露调用本地方法接口
-        """
-        self.webViewContent.page().mainFrame().addToJavaScriptWindowObject('_mainWindow', self)
-
-    def _runFile(self, file):
-        """子进程运行文件
-        :param file:    文件
-        """
-        p = Process(target=runCode, args=(os.path.abspath(file),))
-        p.start()
-
-    def _runJs(self, code):
-        """执行js
-        :param code:
-        """
-        self.webViewContent.page().mainFrame().evaluateJavaScript(code)
-
-    def onDownloadFile(self, path, url):
-        """线程池下载文件
-        :param path:        本地文件路径
-        :param url:         远程文件路径
-        """
-        if path not in self._runnables:
-            self._runnables.add(path)
-            self._threadPool.start(DownloadRunnable(path, url))
-
-    def onDownloadFinished(self, path):
-        """下载文件请求完成
-        :param path:        本地文件路径
-        """
-        if path in self._runnables:
-            self._runnables.remove(path)
-
-    def onLinkClicked(self, url):
-        """加载网址
-        :param url:
-        """
-        self.webViewContent.load(QUrl(url))
 
     @pyqtSlot()
     def on_buttonSkin_clicked(self):
@@ -184,6 +132,7 @@ class MainWindowBase:
     def on_lineEditSearch_textChanged(self, text):
         """过滤筛选
         """
+        return
         Signals.filterChanged.emit(text)
 
     @pyqtSlot()

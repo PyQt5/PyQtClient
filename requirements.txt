@@ -1,3 +1,4 @@
+pygit2==0.27.2
 requests
 PyQt5
 PyQt3D

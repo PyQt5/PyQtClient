@@ -43,10 +43,20 @@ class TreeView(QTreeView):
         self._fmodel = SortFilterModel(self)
         self._fmodel.setSourceModel(self._dmodel)
         self.setModel(self._fmodel)
-    
+
     def _initSignals(self):
         Signals.filterChanged.connect(self._fmodel.setFilterRegExp)
         self.doubleClicked.connect(self.onDoubleClicked)
+
+    def rootItem(self):
+        """得到根节点Item"""
+        return self._dmodel.invisibleRootItem()
+
+    def findItems(self, name):
+        """根据名字查找item
+        :param name:
+        """
+        return self._dmodel.findItems(name)
 
     def listSubDir(self, pitem, path):
         """遍历子目录
@@ -72,9 +82,7 @@ class TreeView(QTreeView):
             item = QStandardItem(name)
             # 添加自定义的数据
             item.setData(False, Constants.RoleRoot)       # 不是根目录
-            item.setData(name, Constants.RoleName)        # 文件名字
-            item.setData(file, Constants.RoleFile)        # 本地文件路径
-            item.setData(None, Constants.RolePath)
+            item.setData(file, Constants.RolePath)
             pitem.appendRow(item)
 
     def initCatalog(self):
@@ -92,12 +100,11 @@ class TreeView(QTreeView):
                     continue
                 item = QStandardItem(name)
                 # 添加自定义的数据
-                item.setData(True, Constants.RoleRoot)        # 根目录
-                item.setData(name, Constants.RoleName)        # 文件夹名字
-                item.setData(file, Constants.RoleFile)        # 本地文件夹路径
-                item.setData(name, Constants.RolePath)        # 用于请求远程的路径
-                item.setData(0, Constants.RoleValue)          # 当前进度
-                item.setData(0, Constants.RoleTotal)          # 总进度
+                # 用于绘制进度条的item标识
+                item.setData(True, Constants.RoleRoot)
+                # 目录或者文件的绝对路径
+                item.setData(os.path.abspath(os.path.join(
+                    Constants.DirProjects, name)), Constants.RolePath)
                 pitem.appendRow(item)
                 # 遍历子目录
                 self.listSubDir(item, file)
@@ -108,33 +115,19 @@ class TreeView(QTreeView):
         """Item双击
         :param modelIndex:        此处是代理模型中的QModelIndex, 并不是真实的
         """
+        root = modelIndex.data(Constants.RoleRoot)
         path = modelIndex.data(Constants.RolePath)
-        rdir = modelIndex.data(Constants.RoleFile)
+        AppLog.debug('is root: {}'.format(root))
         AppLog.debug('path: {}'.format(path))
-        AppLog.debug('name: {}'.format(
-            modelIndex.data(Constants.RoleName)))
-        AppLog.debug('dir or file: {}'.format(rdir))
-        # 是否需要遍历本地子目录并显示
-        item = self._dmodel.itemFromIndex(self._fmodel.mapToSource(modelIndex))
-        if os.path.isfile(rdir):
+        if not root and os.path.isfile(path):
             # 运行代码
-            self._runFile(rdir)
-        elif item and path:
-            # 是否需要加载README.md
-#             self.renderReadme(path=os.path.join(rdir, 'README.md'))
-            self.listSubDir(item, rdir)
-        if item.rowCount() == 0:
-            # 尝试后台获取远程目录数据
-            if Constants._Account != None and Constants._Password != None:
-                if path not in self._runnables:
-                    self._runnables.add(path)
-#                     self._threadPool.start(DirRunnable(item, path,Constants._Account))
+            Signals.runExampled.emit(path)
 
     def enterEvent(self, event):
         super(TreeView, self).enterEvent(event)
         # 鼠标进入显示滚动条
         self.verticalScrollBar().setVisible(True)
- 
+
     def leaveEvent(self, event):
         super(TreeView, self).leaveEvent(event)
         # 鼠标离开隐藏滚动条
