@@ -12,7 +12,7 @@ Created on 2019年1月9日
 import os
 import webbrowser
 
-from PyQt5.QtCore import pyqtSlot, QThreadPool, QUrl
+from PyQt5.QtCore import pyqtSlot, QUrl
 from PyQt5.QtWebKit import QWebSettings
 from PyQt5.QtWebKitWidgets import QWebPage
 
@@ -55,21 +55,11 @@ class MainWindowBase:
         # 头像提示控件
         ToolTip.bind(self.buttonHead)
 
-    def _initThread(self):
-        """初始化线程池"""
-        # 创建线程池
-        self._threadPool = QThreadPool(self)
-        self._threadPool.setMaxThreadCount(30)
-
     def _initSignals(self):
         """初始化信号槽"""
         self.webViewContent.loadFinished.connect(self._exposeInterface)
         self.webViewContent.linkClicked.connect(self.onLinkClicked)
-        # 绑定全局信号槽
-        Signals.treesFinished.connect(self.onAnalysisTrees)
-        Signals.childItemAdded.connect(self.onChildItemAdded)
-        Signals.runnableFinished.connect(self.onRunnableFinished)
-        Signals.itemProgressChanged.connect(self.onItemProgressChanged)
+        # 绑定信号槽
         Signals.runExampled.connect(self._runFile)
 
     def _initWebView(self):

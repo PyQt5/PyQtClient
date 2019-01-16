@@ -37,10 +37,10 @@ LogFormatterDebug = '[%(asctime)s %(name)s %(module)s:%(funcName)s:%(lineno)s] %
 LogFormatter = '[%(asctime)s %(name)s] %(levelname)-8s %(message)s'
 LogFile = 'Resources/Data/app.log'
 
-DirErrors = 'Resources/Data/Errors'         # 错误日志目录
-DirProjects = 'Resources/Data/Projects'     # 本地项目目录
-DirCurrent = 'Resources/Data/Projects'      # 当前README.md目录
-CurrentReadme = ''                          # 当前加载的README.md路径
+DirErrors = 'Resources/Data/Errors'              # 错误日志目录
+DirProjects = 'Resources/Data/Projects/PyQt'     # 本地项目目录
+DirCurrent = 'Resources/Data/Projects/PyQt'      # 当前README.md目录
+CurrentReadme = ''                               # 当前加载的README.md路径
 
 AttrCallback = QNetworkRequest.User + 1
 AttrFilePath = QNetworkRequest.User + 2
@@ -49,8 +49,8 @@ UrlQQ = 'tencent://message/?uin=892768447'
 UrlGroup = 'tencent://groupwpa/?subcmd=all&param=7B2267726F757055696E223A3234363236393931392C2274696D655374616D70223A313531383537323831357D0A'
 UrlHomePage = 'https://api.github.com/repos/PyQt5/PyQt/contents'
 
-# Github Api访问实例
-_Github = None
+
+_Sha = ''
 _Account = ''
 _Password = ''
 _Username = ''

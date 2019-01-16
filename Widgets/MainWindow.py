@@ -15,14 +15,13 @@ import os
 import sys
 
 from PyQt5.QtCore import QEvent, Qt, QTimer, pyqtSlot, QUrl
-from PyQt5.QtGui import QStandardItem, QEnterEvent
+from PyQt5.QtGui import QEnterEvent
 
 from Dialogs.LoginDialog import LoginDialog
 from UiFiles.Ui_MainWindow import Ui_FormMainWindow
 from Utils import Constants
 from Utils.Application import QSingleApplication
 from Utils.CommonUtil import initLog, AppLog, Setting
-from Utils.Repository import DirRunnable, TreesRunnable
 from Widgets.FramelessWindow import FramelessWindow
 from Widgets.MainWindowBase import MainWindowBase
 
@@ -44,9 +43,7 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
         Setting.init(self)
-        self._runnables = set()  # QRunnable任务集合
         self._initUi()
-        self._initThread()
         self._initSignals()
         # 加载窗口大小并恢复
         geometry = Setting.value('geometry')
@@ -64,11 +61,7 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         if Constants._Account != '' and Constants._Password != '':
             self.buttonHead.image = Constants.ImageAvatar
             self.buttonHead.setToolTip(Constants._Username)
-            # 更新根目录
-            if '/' not in self._runnables:
-                self._runnables.add('/')
-                self._threadPool.start(TreesRunnable(
-                    Constants._Account, Constants._Password))
+            # 更新目录
 
     @pyqtSlot()
     def renderReadme(self, path=None):
@@ -106,70 +99,6 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         :param code:
         """
         self.webViewContent.page().mainFrame().evaluateJavaScript(code)
-
-    def onRunnableFinished(self, path):
-        """任务运行完毕后删除该path
-        :param path:
-        """
-        AppLog.debug('finished get path: {}'.format(path))
-        if path in self._runnables:
-            self._runnables.remove(path)
-
-    def onItemProgressChanged(self, item, value):
-        """更新item的进度条值
-        :param item:             item
-        :param value:            当前进度
-        """
-        if not item.text():
-            return
-        item.setData(value, Constants.RoleValue)
-        AppLog.debug(
-            'update item({}) progress: {}'.format(item.data(Qt.DisplayRole), value))
-
-    def onChildItemAdded(self, pitem, path):
-        """追加子item
-        :param pitem:        上级pitem
-        :param path:        本地文件路径
-        """
-        if not pitem.text():
-            return
-        name = os.path.basename(path)
-        for i in range(pitem.rowCount()):
-            if pitem.child(i).text() == name:
-                return
-        # 添加子item
-        item = QStandardItem(name)
-        item.setData(path, Constants.RolePath)
-        pitem.appendRow(item)
-
-    def onAnalysisTrees(self, trees):
-        """解析目录树结构
-        :param trees:        以根目录整合的数组
-        """
-        rootItem = self.treeViewCatalogs.rootItem()
-        for name, values in trees.items():
-            if name == '/' or name == 'Donate' or name == 'Test':
-                item = QStandardItem()
-            else:
-                items = self.treeViewCatalogs.findItems(name)
-                if not items:
-                    # 未找到则添加新的item
-                    item = QStandardItem(name)
-                    # 用于绘制进度条的item标识
-                    item.setData(True, Constants.RoleRoot)
-                    # 目录或者文件的绝对路径
-                    item.setData(os.path.abspath(os.path.join(
-                        Constants.DirProjects, name)), Constants.RolePath)
-                    rootItem.appendRow(item)
-                else:
-                    item = items[0]
-                # 进度条的总值
-                item.setData(len(values), Constants.RoleTotal)
-            # 开始下载该目录下所有文件
-            if name not in self._runnables:
-                self._runnables.add(name)
-                self._threadPool.start(DirRunnable(
-                    name, item, values, Constants._Account, Constants._Password))
 
     def onLinkClicked(self, url):
         """加载网址

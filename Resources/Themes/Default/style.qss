@@ -125,8 +125,6 @@ QLineEdit {
     border: none;       /*无边框*/
     color: rgba(255, 255, 255, 200);
     background: transparent;    /*背景透明*/
-    /*item 进度条颜色*/
-    qproperty-barColor: rgb(255, 255, 255);
 }
 
 #treeViewCatalogs::item {

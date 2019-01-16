@@ -14,7 +14,6 @@ import logging
 import os
 
 from PyQt5.QtCore import QSettings, QTextCodec, QObject, pyqtSignal
-from PyQt5.QtGui import QStandardItem
 
 from Utils.Constants import LogName, LogFormatterDebug, LogFormatter, ConfigFile
 
@@ -110,21 +109,10 @@ class Setting:
 
 class _Signals(QObject):
 
-    # 后台下载任务完成信号
-    runnableFinished = pyqtSignal(str)
     # 运行例子信号
     runExampled = pyqtSignal(str)
     # 过滤筛选目录
     filterChanged = pyqtSignal(str)
-    # 错误显示
-    errorShowed = pyqtSignal(str)
-
-    # 根目录数据获取完成
-    treesFinished = pyqtSignal(object)
-    # 添加子item
-    childItemAdded = pyqtSignal(QStandardItem, str)
-    # 遍历进度改变(item, 当前值)
-    itemProgressChanged = pyqtSignal(QStandardItem, int)
 
     # 登录失败
     loginErrored = pyqtSignal(str)

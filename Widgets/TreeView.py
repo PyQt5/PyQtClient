@@ -11,14 +11,13 @@ Created on 2019年1月13日
 """
 import os
 
-from PyQt5.QtCore import pyqtProperty, Qt
-from PyQt5.QtGui import QColor, QStandardItemModel, QStandardItem
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.QtWidgets import QTreeView
 
 from Utils import Constants
 from Utils.CommonUtil import AppLog, Signals
 from Utils.SortFilterModel import SortFilterModel
-from Utils.StyledItemDelegate import StyledItemDelegate
 
 
 __Author__ = "Irony"
@@ -29,12 +28,8 @@ class TreeView(QTreeView):
 
     def __init__(self, *args, **kwargs):
         super(TreeView, self).__init__(*args, **kwargs)
-        # 进度条背景颜色
-        self._barColor = QColor(255, 255, 255)
         self._initModel()
         self._initSignals()
-        # 设置自定义委托代理用于绘制下载进度
-        self.setItemDelegate(StyledItemDelegate(self))
         self.initCatalog()
 
     def _initModel(self):
@@ -132,11 +127,3 @@ class TreeView(QTreeView):
         super(TreeView, self).leaveEvent(event)
         # 鼠标离开隐藏滚动条
         self.verticalScrollBar().setVisible(False)
-
-    @pyqtProperty(QColor)
-    def barColor(self):
-        return self._barColor
-
-    @barColor.setter
-    def barColor(self, color):
-        self._barColor = QColor(color)

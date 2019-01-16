@@ -20,7 +20,7 @@ from Dialogs.TwinkleDialog import TwinkleDialog
 from UiFiles.Ui_LoginDialog import Ui_FormLoginDialog
 from Utils import Constants
 from Utils.CommonUtil import AppLog, Setting, Signals
-from Utils.Repository import LoginRunnable
+from Utils.GitThread import LoginThread
 from Utils.ThemeManager import ThemeManager
 
 
@@ -137,4 +137,4 @@ class LoginDialog(MoveDialog, TwinkleDialog, Ui_FormLoginDialog):
         self.labelNotice.setText('')
         self.setEnabled(False)
         self.buttonLogin.showWaiting(True)
-        self.parent()._threadPool.start(LoginRunnable(account, password))
+        LoginThread.start(account, password, self)
