@@ -29,7 +29,7 @@ __Version__ = "Version 1.0"
 
 
 class LoginThread(QObject):
-    """登录Github,获取头像和项目最新的sha值
+    """登录Github,获取头像
     """
 
     Url = 'https://api.github.com/user'
@@ -53,6 +53,34 @@ class LoginThread(QObject):
         cls._thread.finished.connect(cls._worker.deleteLater)
         cls._thread.start()
         AppLog.info('login thread started')
+
+    def get_avatar(self, uid, avatar_url):
+        try:
+            req = requests.get(avatar_url)
+            if req.status_code == 200:
+                imgformat = req.headers.get(
+                    'content-type', 'image/jpg').split('/')[1]
+                Constants.ImageAvatar = os.path.join(
+                    Constants.ImageDir, str(uid)).replace('\\', '/') + '.jpg'
+                AppLog.debug('image type: {}'.format(imgformat))
+                AppLog.debug(
+                    'content length: {}'.format(len(req.content)))
+
+                image = QImage()
+                if image.loadFromData(req.content):
+                    # 缩放图片
+                    if not image.isNull():
+                        image = image.scaled(130, 130, Qt.IgnoreAspectRatio,
+                                             Qt.SmoothTransformation)
+                        AppLog.debug('save to: {}'.format(
+                            Constants.ImageAvatar))
+                        image.save(Constants.ImageAvatar)
+                    else:
+                        AppLog.warn('avatar image is null')
+                else:
+                    AppLog.warn('can not load from image data')
+        except Exception as e:
+            AppLog.warn(str(e))
 
     def run(self):
         AppLog.info('start login github')
@@ -80,32 +108,7 @@ class LoginThread(QObject):
             avatar_url = retval.get('avatar_url', '')
             if avatar_url:
                 # 获取头像
-                try:
-                    req = requests.get(avatar_url)
-                    if req.status_code == 200:
-                        imgformat = req.headers.get(
-                            'content-type', 'image/jpg').split('/')[1]
-                        Constants.ImageAvatar = os.path.join(
-                            Constants.ImageDir, str(uid)).replace('\\', '/') + '.jpg'
-                        AppLog.debug('image type: {}'.format(imgformat))
-                        AppLog.debug(
-                            'content length: {}'.format(len(req.content)))
-
-                        image = QImage()
-                        if image.loadFromData(req.content):
-                            # 缩放图片
-                            if not image.isNull():
-                                image = image.scaled(130, 130, Qt.IgnoreAspectRatio,
-                                                     Qt.SmoothTransformation)
-                                AppLog.debug('save to: {}'.format(
-                                    Constants.ImageAvatar))
-                                image.save(Constants.ImageAvatar)
-                            else:
-                                AppLog.warn('avatar image is null')
-                        else:
-                            AppLog.warn('can not load from image data')
-                except Exception as e:
-                    AppLog.warn(str(e))
+                self.get_avatar(uid, avatar_url)
             Signals.loginSuccessed.emit(str(uid), name)
         except ConnectTimeout as e:
             Signals.loginErrored.emit(QCoreApplication.translate(
