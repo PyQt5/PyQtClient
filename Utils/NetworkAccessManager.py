@@ -73,7 +73,7 @@ class NetworkAccessManager(QNetworkAccessManager):
                 elif os.path.exists(path) and os.path.isdir(path):
                     if rname.count('/') == 0:
                         # 跳转到左侧目录树
-#                         originalReq.setUrl(QUrl())
+                        originalReq.setUrl(QUrl())
                         Signals.itemJumped.emit(rname)
         else:
             # 只加载文件,不加载其它网页

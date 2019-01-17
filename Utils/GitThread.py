@@ -9,10 +9,13 @@ Created on 2019年1月5日
 @file: Utils.GitThread
 @description: Git操作线程
 """
+from contextlib import closing
 import os
 from pathlib import Path
 import shutil
 import stat
+from time import time
+from zipfile import ZipFile
 
 from PyQt5.QtCore import Qt, QCoreApplication, QThread, QObject
 from PyQt5.QtGui import QImage
@@ -22,7 +25,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 from requests.exceptions import ConnectTimeout
 
-from Utils import Constants
+from Utils import Constants, Version
 from Utils.CommonUtil import Signals, AppLog
 
 
@@ -138,7 +141,8 @@ class ProgressCallback(RemoteCallbacks):
     def transfer_progress(self, stats):
         Signals.progressUpdated.emit(
             stats.received_objects, stats.total_objects)
-#         print(stats.total_objects, stats.received_objects)
+        AppLog.debug('total: {}, received: {}'.format(
+            stats.total_objects, stats.received_objects))
 
 
 class CloneThread(QObject):
@@ -243,7 +247,7 @@ class CloneThread(QObject):
                     # 重置并pull
                     AppLog.info('reset dir: {}'.format(Constants.DirProjects))
                     repo.reset(repo.head.target, pygit2.GIT_RESET_HARD)
-                    Signals.progressUpdated.emit(50, 100)
+                    Signals.progressUpdated.emit(5, 100)
                     AppLog.info('pull into dir: {}'.format(
                         Constants.DirProjects))
                     self.pull(repo)
@@ -253,4 +257,95 @@ class CloneThread(QObject):
 
         AppLog.info('clone thread end')
         Signals.progressStoped.emit()
-        Signals.cloneFinished.emit()
+        Signals.cloneFinished.emit('')
+
+
+class UpgradeThread(QObject):
+    """自动更新
+    """
+
+    Url = 'https://raw.githubusercontent.com/PyQt5/PyQtClient/master/Update/Upgrade.json'
+    ZipUrl = 'https://raw.githubusercontent.com/PyQt5/PyQtClient/master/Update/Upgrade.{}.zip'
+
+#     Url = 'https://raw.githubusercontent.com/IronyYou/test/master/Update/Upgrade.json'
+#     ZipUrl = 'https://raw.githubusercontent.com/IronyYou/test/master/Update/Upgrade.{}.zip'
+
+    @classmethod
+    def start(cls, parent=None):
+        """启动自动更新线程
+        :param cls:
+        """
+        cls._thread = QThread(parent)
+        cls._worker = UpgradeThread()
+        cls._worker.moveToThread(cls._thread)
+        cls._thread.started.connect(cls._worker.run)
+        cls._thread.finished.connect(cls._worker.deleteLater)
+        cls._thread.start()
+        AppLog.info('update thread started')
+
+    def unzip(self, file):
+        # 进行解压
+        zipfile = ZipFile(file)
+        path = os.path.abspath('.')
+        members = zipfile.namelist()
+        for zipinfo in members:
+            _name = zipinfo.lower()
+            if _name.endswith('.exe') or \
+                    _name.endswith('.dll') or \
+                    _name.endswith('.ttf') or \
+                    _name.endswith('.so') or \
+                    _name.endswith('.dylib'):
+                tpath = os.path.abspath(os.path.join(path, zipinfo))
+                # 需要重命名当前正在占用的文件
+                if os.path.isfile(tpath):
+                    os.rename(tpath, tpath + str(time()) + '.old')
+            zipfile.extract(zipinfo, path)
+#             zipfile.extractall(os.path.abspath('.'))
+        zipfile.close()
+
+    def download(self, file, url):
+        AppLog.debug('start download {}'.format(url))
+        with closing(requests.get(url, stream=True)) as response:
+            # 单次请求最大值
+            chunk_size = 1024
+            # 内容体总大小
+            content_size = int(response.headers['content-length'])
+            data_count = 0
+            Signals.updateProgressChanged.emit(0, 0, content_size)
+            AppLog.debug('content_size: {}'.format(content_size))
+            with open(file, 'wb') as fp:
+                for data in response.iter_content(chunk_size=chunk_size):
+                    fp.write(data)
+                    data_count = data_count + len(data)
+                    if content_size > 0:
+                        Signals.updateProgressChanged.emit(
+                            data_count, 0, content_size)
+            # 解压
+            self.unzip(file)
+        AppLog.debug('download {} end'.format(file))
+
+    def run(self):
+        show = True
+        try:
+            req = requests.get(self.Url)
+            AppLog.info(req.text)
+            if req.status_code != 200:
+                AppLog.info('update thread end')
+                return
+            content = req.json()
+            for version, text in content:
+                if Version.version < version:
+                    if show:
+                        Signals.updateDialogShowed.emit()
+                        QThread.msleep(1000)
+                    show = False
+                    Signals.updateTextChanged.emit(
+                        str(Version.version), str(version), text)
+                    self.download(Constants.UpgradeFile.format(
+                        version), self.ZipUrl.format(version))
+            Signals.updateFinished.emit(self.tr('update completed'))
+        except Exception as e:
+            Signals.updateFinished.emit(
+                self.tr('update failed: {}').format(str(e)))
+            AppLog.warn(str(e))
+        AppLog.info('update thread end')

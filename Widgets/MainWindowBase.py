@@ -62,12 +62,14 @@ class MainWindowBase:
         self.webViewContent.loadFinished.connect(self._exposeInterface)
         self.webViewContent.linkClicked.connect(self.onLinkClicked)
         # 绑定信号槽
-        Signals.showReadmed.connect(self._renderReadme)
+        Signals.showReadmed.connect(self.renderReadme)
+        Signals.urlLoaded.connect(self.onUrlLoaded)
         Signals.runExampled.connect(self._runFile)
         Signals.cloneFinished.connect(self.treeViewCatalogs.initCatalog)
         Signals.cloneFinished.connect(self.renderReadme)
         Signals.progressStoped.connect(self.widgetCatalogs.stop)
         Signals.progressUpdated.connect(self.widgetCatalogs.setValue)
+        Signals.updateDialogShowed.connect(self._initUpdate)
 
     def _initWebView(self):
         """初始化网页"""
@@ -92,6 +94,12 @@ class MainWindowBase:
         """选择主题样式
         """
         pass
+
+    @pyqtSlot()
+    def on_buttonIssues_clicked(self):
+        """提交意见
+        """
+        webbrowser.open_new_tab(Constants.UrlIssues)
 
     @pyqtSlot()
     def on_buttonMinimum_clicked(self):

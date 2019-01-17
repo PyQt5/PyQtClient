@@ -212,7 +212,7 @@
        </widget>
       </item>
       <item row="0" column="0" colspan="3">
-       <widget class="QWidget" name="widgetLoginTitlebar" native="true">
+       <widget class="QWidget" name="dialogTitlebar" native="true">
         <layout class="QHBoxLayout" name="horizontalLayout">
          <property name="spacing">
           <number>0</number>

@@ -89,6 +89,13 @@
           </widget>
          </item>
          <item>
+          <widget class="QPushButton" name="buttonIssues">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QPushButton" name="buttonMinimum">
            <property name="text">
             <string/>

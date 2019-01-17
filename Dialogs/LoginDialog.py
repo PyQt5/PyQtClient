@@ -137,4 +137,4 @@ class LoginDialog(MoveDialog, TwinkleDialog, Ui_FormLoginDialog):
         self.labelNotice.setText('')
         self.setEnabled(False)
         self.buttonLogin.showWaiting(True)
-        LoginThread.start(account, password, self)
+        LoginThread.start(account, password)

@@ -111,6 +111,8 @@ class _Signals(QObject):
 
     # 显示Readme.md
     showReadmed = pyqtSignal(str)
+    # 加载网址
+    urlLoaded = pyqtSignal(str)
     # 运行例子信号
     runExampled = pyqtSignal(str)
     # 过滤筛选目录
@@ -120,9 +122,18 @@ class _Signals(QObject):
     # 关闭进度条
     progressStoped = pyqtSignal()
     # 克隆完成
-    cloneFinished = pyqtSignal()
+    cloneFinished = pyqtSignal(str)
     # 跳转到item
     itemJumped = pyqtSignal(str)
+
+    # 显示更新对话框
+    updateDialogShowed = pyqtSignal()
+    # 更新版本文字改变
+    updateTextChanged = pyqtSignal(str, str, str)
+    # 更新完成
+    updateFinished = pyqtSignal(str)
+    # 更新进度条(当前值,最小值,最大值)
+    updateProgressChanged = pyqtSignal(int, int, int)
 
     # 登录失败
     loginErrored = pyqtSignal(str)

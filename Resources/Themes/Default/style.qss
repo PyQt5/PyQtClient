@@ -19,7 +19,7 @@ QLineEdit {
 }
 
 /*标题栏中的按钮*/
-#buttonSkin, #buttonMinimum, #buttonMaximum, #buttonNormal, #buttonClose {
+#buttonSkin, #buttonIssues, #buttonMinimum, #buttonMaximum, #buttonNormal, #buttonClose {
     /*定义最小最大宽高*/
     min-width: 36px;
     max-width: 36px;
@@ -32,7 +32,7 @@ QLineEdit {
     background: transparent; /*背景透明*/
 }
 /*标题栏中的按钮悬停效果*/
-#buttonSkin:hover, #buttonMinimum:hover, #buttonMaximum:hover, #buttonNormal:hover, #buttonClose:hover {
+#buttonSkin:hover, #buttonIssues:hover, #buttonMinimum:hover, #buttonMaximum:hover, #buttonNormal:hover, #buttonClose:hover {
     background-color: rgba(255, 255, 255, 100); /*带透明度白色背景*/
 }
 
@@ -45,6 +45,9 @@ QLineEdit {
 #buttonSkin {
     font-size: 20px;
     qproperty-text: "\2104";
+}
+#buttonIssues {
+    qproperty-text: "\5104";
 }
 #buttonMinimum {
     qproperty-text: "\2100";
@@ -241,9 +244,16 @@ ToolTip > QLabel {
     background-color: rgba(77, 77, 77, 180);
 }
 
+/*对话框标题栏*/
+#dialogTitlebar {
+    /*标题栏左上角右上角圆角(保持和主窗口的圆角一致)*/
+    border-top-right-radius: 4px;
+    border-top-left-radius: 4px;
+}
+
 /*登录窗口*/
 #widgetLogin {
-    border: 1px solid white;
+    border: 1px solid rgba(44, 144, 92, 255);
     border-radius: 4px;    /*窗口最外层圆角*/
     background: rgba(64, 187, 107, 255);    /*背景颜色*/
 }
@@ -256,12 +266,6 @@ ToolTip > QLabel {
     border: 1px solid transparent; /*透明边框*/
 }
 
-/*登录窗口标题栏*/
-#widgetLoginTitlebar {
-    /*标题栏左上角右上角圆角(保持和主窗口的圆角一致)*/
-    border-top-right-radius: 4px;
-    border-top-left-radius: 4px;
-}
 /*登录窗口输入框*/
 #lineEditAccount, #lineEditPassword {
     /*设置左右边距*/
@@ -297,6 +301,32 @@ ToolTip > QLabel {
 }
 #buttonLogin:pressed {
     background-color: rgba(230, 230, 230, 255);
+}
+
+/*捐赠,更新窗口*/
+#widgetDonate, #widgetUpdate {
+    border: 1px solid rgba(44, 144, 92, 255);
+    border-radius: 4px;    /*窗口最外层圆角*/
+    background: rgba(64, 187, 107, 255);    /*背景颜色*/
+}
+/*捐赠窗口,更新窗口背景*/
+#widgetImage, #widgetUpdateBg {
+    border: 1px solid rgba(44, 144, 92, 255);
+    border-top: none;
+    background: rgba(235, 235, 235, 255);    /*背景颜色*/
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+#dialogTitlebar > #labelTitle {
+    color: white;
+}
+/*更新详情*/
+#plainTextEditDetail {
+    background: transparent;
+}
+/*更新进度条*/
+#progressBarUpdate::chunk {
+    background-color: rgba(39, 174, 97, 255);
 }
 
 /*滚动条样式*/

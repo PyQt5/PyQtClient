@@ -12,17 +12,20 @@ Created on 2019年1月3日
 import cgitb
 from multiprocessing import Process
 import os
+from random import randint
 import sys
 
 from PyQt5.QtCore import QEvent, Qt, QTimer, pyqtSlot, QUrl
 from PyQt5.QtGui import QEnterEvent
 
+from Dialogs.DonateDialog import DonateDialog
 from Dialogs.LoginDialog import LoginDialog
+from Dialogs.UpdateDialog import UpdateDialog
 from UiFiles.Ui_MainWindow import Ui_FormMainWindow
 from Utils import Constants
 from Utils.Application import QSingleApplication
 from Utils.CommonUtil import initLog, AppLog, Setting
-from Utils.GitThread import CloneThread
+from Utils.GitThread import CloneThread, UpgradeThread
 from Widgets.FramelessWindow import FramelessWindow
 from Widgets.MainWindowBase import MainWindowBase
 
@@ -54,6 +57,11 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         QTimer.singleShot(200, self._initCatalog)
         # 初始化网页
         QTimer.singleShot(500, self._initWebView)
+        # 检测更新
+        QTimer.singleShot(5000, UpgradeThread.start)
+        # 显示捐赠窗口
+        QTimer.singleShot(
+            randint(1000 * 60 * 5, 2000 * 60 * 5), self._initDonate)
 
     def initLogin(self):
         dialog = LoginDialog(self)
@@ -63,26 +71,42 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
             self.buttonHead.image = Constants.ImageAvatar
             self.buttonHead.setToolTip(Constants._Username)
 
+    def _initDonate(self):
+        # 显示捐赠窗口
+        alipayImg = os.path.join(
+            Constants.DirProjects, 'Donate', 'zhifubao.png')
+        wechatImg = os.path.join(Constants.DirProjects, 'Donate', 'weixin.png')
+        if os.path.exists(alipayImg) and os.path.exists(wechatImg):
+            dialog = DonateDialog(alipayImg, wechatImg, self)
+            dialog.exec_()
+
+    def _initUpdate(self):
+        # 显示更新对话框
+        self.udialog = UpdateDialog()
+        self.udialog.show()
+
     def _initCatalog(self):
         # 更新目录
-        CloneThread.start(self)
+        CloneThread.start()
 
-    def _renderReadme(self, path):
-        self.renderReadme(path)
-
-    @pyqtSlot()
-    def renderReadme(self, path=None):
+    @pyqtSlot(str)
+    def renderReadme(self, path=''):
         """加载README.md并显示
         """
+        path = path.replace('\\', '/')
         if not path:
             path = os.path.join(Constants.DirProjects, 'README.md')
+            Constants.CurrentReadme = ''
+        elif path.count('/') == 0:
+            path = os.path.join(Constants.DirCurrent, path, 'README.md')
+            Constants.CurrentReadme = path
         if not os.path.exists(path):
+            AppLog.debug('{} not exists'.format(path))
             self._runJs('updateText("");')
             return
         if not os.path.isfile(path):
             AppLog.warn('file {} not exists'.format(path))
             return
-        path = path.replace('\\', '/')
         Constants.DirCurrent = os.path.dirname(path).replace('\\', '/')
         AppLog.debug('DirCurrent change to: {}'.format(Constants.DirCurrent))
         if Constants.CurrentReadme == path:
@@ -110,6 +134,14 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         :param code:
         """
         self.webViewContent.page().mainFrame().evaluateJavaScript(code)
+
+    def onUrlLoaded(self, name):
+        """加载带参数网址
+        :param name:
+        """
+        url = QUrl.fromLocalFile(os.path.abspath(Constants.HomeFile))
+        url.setQuery('name={}'.format(name))
+        self.webViewContent.load(url)
 
     def onLinkClicked(self, url):
         """加载网址
@@ -151,6 +183,7 @@ def main():
     os.putenv('QT_AUTO_SCREEN_SCALE_FACTOR', '1')
     os.makedirs(Constants.DirErrors, exist_ok=True)
     os.makedirs(Constants.DirProject, exist_ok=True)
+    os.makedirs(os.path.dirname(Constants.UpgradeFile), exist_ok=True)
     # 异常捕捉
     sys.excepthook = cgitb.Hook(1, Constants.DirErrors, 5, sys.stderr, '')
     # 初始化日志

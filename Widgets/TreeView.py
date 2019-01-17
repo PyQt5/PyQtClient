@@ -63,8 +63,7 @@ class TreeView(QTreeView):
         self.setCurrentIndex(index)
         self.expand(index)
 #         # 显示readme
-#         Signals.showReadmed.emit(os.path.join(
-#             Constants.DirProjects, name, 'README.md'))
+        Signals.urlLoaded.emit(name)
 
     def listSubDir(self, pitem, path):
         """遍历子目录

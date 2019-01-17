@@ -28,6 +28,7 @@ RoleTotal = Qt.UserRole + 4         # item进度条总的值
 HomeFile = 'Resources/Markdown/index.html'
 
 ConfigFile = 'Resources/Data/Config.ini'
+UpgradeFile = 'Resources/Data/Upgrade/Upgrade.{}.zip'
 
 ImageDir = 'Resources/Images/Avatars'
 ImageAvatar = 'Resources/Images/Avatars/avatar.png'
@@ -48,8 +49,7 @@ AttrFilePath = QNetworkRequest.User + 2
 UrlProject = 'https://github.com/PyQt5/PyQtClient'
 UrlQQ = 'tencent://message/?uin=892768447'
 UrlGroup = 'tencent://groupwpa/?subcmd=all&param=7B2267726F757055696E223A3234363236393931392C2274696D655374616D70223A313531383537323831357D0A'
-UrlHomePage = 'https://api.github.com/repos/PyQt5/PyQt/contents'
-
+UrlIssues = 'https://github.com/PyQt5/PyQtClient/issues/new'
 
 _Sha = ''
 _Account = ''
