@@ -133,6 +133,7 @@ QLineEdit {
 
 #treeViewCatalogs::item {
     min-height: 36px;
+    border-radius: 8px;
 }
 
 #treeViewCatalogs::item:hover {
@@ -202,7 +203,7 @@ QLineEdit {
 }
 
 /*返回顶部按钮*/
-#buttonBackToUp {
+#buttonHome, #buttonBackToUp {
     min-width: 36px;
     max-width: 36px;
     min-height: 36px;
@@ -212,6 +213,13 @@ QLineEdit {
     qproperty-bgColor: rgba(39, 174, 97, 255);
     outline: none;
     font-family: "pyqtclient";
+}
+
+/*显示主页Readme*/
+#buttonHome {
+    qproperty-text: "\5103";
+}
+#buttonBackToUp {
     qproperty-text: "\5101";
 }
 

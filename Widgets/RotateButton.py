@@ -43,10 +43,6 @@ class RotateButton(QPushButton):
         # 属性动画
         self._animation = QPropertyAnimation(self, b'angle', self)
         self._animation.setLoopCount(1)  # 只循环一次
-        # 边框阴影效果
-        self._effect = QGraphicsDropShadowEffect(self)
-        self._effect.setBlurRadius(self._padding * 2)
-        self._effect.setOffset(0, 0)
         self.setPixmap(image)
         # 绑定提示框
         ToolTip.bind(self)
@@ -86,9 +82,13 @@ class RotateButton(QPushButton):
     def enterEvent(self, _):
         """鼠标进入事件"""
         # 设置阴影
-        self._effect.setColor(self._shadowColor)
-        self._effect.setBlurRadius(self._padding * 2)
-        self.setGraphicsEffect(self._effect)
+        # 边框阴影效果
+        effect = QGraphicsDropShadowEffect(self)
+        effect.setBlurRadius(self._padding * 2)
+        effect.setOffset(0, 0)
+        effect.setColor(self._shadowColor)
+        effect.setBlurRadius(self._padding * 2)
+        self.setGraphicsEffect(effect)
 
         # 开启旋转动画
         self._animation.stop()
@@ -102,8 +102,7 @@ class RotateButton(QPushButton):
     def leaveEvent(self, _):
         """鼠标离开事件"""
         # 取消阴影
-        self._effect.setBlurRadius(0)
-        self.setGraphicsEffect(self._effect)
+        self.setGraphicsEffect(None)
 
         # 旋转动画
         self._animation.stop()

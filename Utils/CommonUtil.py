@@ -109,6 +109,8 @@ class Setting:
 
 class _Signals(QObject):
 
+    # 显示Readme.md
+    showReadmed = pyqtSignal(str)
     # 运行例子信号
     runExampled = pyqtSignal(str)
     # 过滤筛选目录
@@ -119,6 +121,8 @@ class _Signals(QObject):
     progressStoped = pyqtSignal()
     # 克隆完成
     cloneFinished = pyqtSignal()
+    # 跳转到item
+    itemJumped = pyqtSignal(str)
 
     # 登录失败
     loginErrored = pyqtSignal(str)

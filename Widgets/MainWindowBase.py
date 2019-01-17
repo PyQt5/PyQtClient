@@ -47,11 +47,13 @@ class MainWindowBase:
             self.buttonQQ,              # QQ按钮
             self.buttonGroup,           # 群按钮
             self.buttonBackToUp,        # 返回顶部按钮
+            self.buttonHome             # 显示主页readme
         ])
         # 安装事件过滤器用于还原鼠标样式
         self.widgetMain.installEventFilter(self)
         # 绑定返回顶部提示框
         ToolTip.bind(self.buttonBackToUp)
+        ToolTip.bind(self.buttonHome)
         # 头像提示控件
         ToolTip.bind(self.buttonHead)
 
@@ -60,6 +62,7 @@ class MainWindowBase:
         self.webViewContent.loadFinished.connect(self._exposeInterface)
         self.webViewContent.linkClicked.connect(self.onLinkClicked)
         # 绑定信号槽
+        Signals.showReadmed.connect(self._renderReadme)
         Signals.runExampled.connect(self._runFile)
         Signals.cloneFinished.connect(self.treeViewCatalogs.initCatalog)
         Signals.cloneFinished.connect(self.renderReadme)
@@ -158,3 +161,9 @@ class MainWindowBase:
         """点击返回按钮
         """
         self._runJs('backToUp();')
+
+    @pyqtSlot()
+    def on_buttonHome_clicked(self):
+        """主页readme
+        """
+        self.renderReadme()

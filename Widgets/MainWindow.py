@@ -62,10 +62,13 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         if Constants._Account != '' and Constants._Password != '':
             self.buttonHead.image = Constants.ImageAvatar
             self.buttonHead.setToolTip(Constants._Username)
-    
+
     def _initCatalog(self):
         # 更新目录
         CloneThread.start(self)
+
+    def _renderReadme(self, path):
+        self.renderReadme(path)
 
     @pyqtSlot()
     def renderReadme(self, path=None):
@@ -79,7 +82,9 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         if not os.path.isfile(path):
             AppLog.warn('file {} not exists'.format(path))
             return
+        path = path.replace('\\', '/')
         Constants.DirCurrent = os.path.dirname(path).replace('\\', '/')
+        AppLog.debug('DirCurrent change to: {}'.format(Constants.DirCurrent))
         if Constants.CurrentReadme == path:
             return
         Constants.CurrentReadme = path      # 记录打开的路径防止重复加载

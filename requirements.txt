@@ -1,7 +1,7 @@
 pygit2==0.27.2
 requests
-PyQt5
-PyQt3D
-PyQtChart
-PyQtDataVisualization
-PyQtPurchasing
+PyQt5==5.10.1
+PyQt3D==5.10.1
+PyQtChart==5.10.1
+PyQtDataVisualization==5.10.1
+PyQtPurchasing==5.10.1

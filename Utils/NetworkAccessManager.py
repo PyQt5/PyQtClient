@@ -26,6 +26,7 @@ Email: 892768447@qq.com"""
 __Copyright__ = "Copyright (c) 2019 Irony"
 __Version__ = "Version 1.0"
 
+
 class NetworkAccessManager(QNetworkAccessManager):
 
     def __init__(self, *args, **kwargs):
@@ -57,18 +58,23 @@ class NetworkAccessManager(QNetworkAccessManager):
             originalReq.setUrl(QUrl())
         elif url.scheme() == 'file':
             # 本地文件,比如一些图片文件等
-            name = surl.split('Markdown/')
-            if len(name) > 1:
-                name = name[1]
+            names = surl.split('Markdown/')
+            if len(names) > 1:
+                rname = names[1]
                 path = os.path.join(
-                    Constants.DirCurrent, name).replace('\\', '/')
+                    Constants.DirCurrent, rname).replace('\\', '/')
                 if os.path.exists(path) and os.path.isfile(path):
-                    if name[-3:] == '.py':
+                    if rname[-3:] == '.py':
                         originalReq.setUrl(QUrl())
                         # 运行py文件
                         Signals.runExampled.emit(path)
                     else:
                         originalReq.setUrl(QUrl.fromLocalFile(path))
+                elif os.path.exists(path) and os.path.isdir(path):
+                    if rname.count('/') == 0:
+                        # 跳转到左侧目录树
+#                         originalReq.setUrl(QUrl())
+                        Signals.itemJumped.emit(rname)
         else:
             # 只加载文件,不加载其它网页
             if not mimetypes.guess_type(url.fileName())[0]:

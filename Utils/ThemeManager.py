@@ -44,8 +44,8 @@ StyleTemplate = """
     qproperty-bgColor: rgb({1}, {2}, {3}, 255);
 }}
 
-/*返回顶部按钮*/
-#buttonBackToUp {{
+/*返回顶部,主页按钮*/
+#buttonBackToUp, #buttonHome {{
     qproperty-bgColor: rgb({1}, {2}, {3}, 255);
 }}
 

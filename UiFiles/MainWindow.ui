@@ -188,9 +188,6 @@
                </item>
                <item>
                 <widget class="RotateButton" name="buttonHead">
-                 <property name="cursor">
-                  <cursorShape>PointingHandCursor</cursorShape>
-                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -289,9 +286,6 @@
             </property>
             <item>
              <widget class="RotateButton" name="buttonGithub">
-              <property name="cursor">
-               <cursorShape>PointingHandCursor</cursorShape>
-              </property>
               <property name="toolTip">
                <string>Project Url</string>
               </property>
@@ -302,9 +296,6 @@
             </item>
             <item>
              <widget class="RotateButton" name="buttonQQ">
-              <property name="cursor">
-               <cursorShape>PointingHandCursor</cursorShape>
-              </property>
               <property name="toolTip">
                <string>QQ Chat</string>
               </property>
@@ -315,9 +306,6 @@
             </item>
             <item>
              <widget class="RotateButton" name="buttonGroup">
-              <property name="cursor">
-               <cursorShape>PointingHandCursor</cursorShape>
-              </property>
               <property name="toolTip">
                <string>QQ Group</string>
               </property>
@@ -340,10 +328,17 @@
              </spacer>
             </item>
             <item>
-             <widget class="RubberBandButton" name="buttonBackToUp">
-              <property name="cursor">
-               <cursorShape>PointingHandCursor</cursorShape>
+             <widget class="RubberBandButton" name="buttonHome">
+              <property name="toolTip">
+               <string>Home Page</string>
               </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="RubberBandButton" name="buttonBackToUp">
               <property name="toolTip">
                <string>Back to Top</string>
               </property>

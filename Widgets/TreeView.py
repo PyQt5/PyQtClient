@@ -40,6 +40,7 @@ class TreeView(QTreeView):
         self.setModel(self._fmodel)
 
     def _initSignals(self):
+        Signals.itemJumped.connect(self.onItemJumped)
         Signals.filterChanged.connect(self._fmodel.setFilterRegExp)
         self.doubleClicked.connect(self.onDoubleClicked)
 
@@ -52,6 +53,18 @@ class TreeView(QTreeView):
         :param name:
         """
         return self._dmodel.findItems(name)
+
+    def onItemJumped(self, name):
+        items = self.findItems(name)
+        if not items:
+            return
+        index = self._fmodel.mapFromSource(
+            self._dmodel.indexFromItem(items[0]))
+        self.setCurrentIndex(index)
+        self.expand(index)
+#         # 显示readme
+#         Signals.showReadmed.emit(os.path.join(
+#             Constants.DirProjects, name, 'README.md'))
 
     def listSubDir(self, pitem, path):
         """遍历子目录
@@ -126,6 +139,9 @@ class TreeView(QTreeView):
         if not root and os.path.isfile(path):
             # 运行代码
             Signals.runExampled.emit(path)
+        if root and os.path.isdir(path):
+            # 显示readme
+            Signals.showReadmed.emit(os.path.join(path, 'README.md'))
 
     def enterEvent(self, event):
         super(TreeView, self).enterEvent(event)
