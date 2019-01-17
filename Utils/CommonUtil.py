@@ -113,6 +113,12 @@ class _Signals(QObject):
     runExampled = pyqtSignal(str)
     # 过滤筛选目录
     filterChanged = pyqtSignal(str)
+    # 更新进度条(当前值,最大值)
+    progressUpdated = pyqtSignal(int, int)
+    # 关闭进度条
+    progressStoped = pyqtSignal()
+    # 克隆完成
+    cloneFinished = pyqtSignal()
 
     # 登录失败
     loginErrored = pyqtSignal(str)

@@ -138,7 +138,7 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QWidget" name="widgetCatalogs" native="true">
+          <widget class="WaterWidget" name="widgetCatalogs" native="true">
            <layout class="QVBoxLayout" name="verticalLayout_4">
             <property name="spacing">
              <number>20</number>
@@ -413,6 +413,12 @@
    <class>TreeView</class>
    <extends>QTreeView</extends>
    <header location="global">Widgets.TreeView</header>
+  </customwidget>
+  <customwidget>
+   <class>WaterWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">Widgets.WaterWidget</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

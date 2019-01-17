@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'G:\Workspace\PyQtClient\UiFiles\MainWindow.ui'
 #
-# Created by: PyQt5 UI code generator 5.5.1
+# Created by: PyQt5 UI code generator 5.10.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -58,7 +58,7 @@ class Ui_FormMainWindow(object):
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_2.setSpacing(0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.widgetCatalogs = QtWidgets.QWidget(self.widgetCentral)
+        self.widgetCatalogs = WaterWidget(self.widgetCentral)
         self.widgetCatalogs.setObjectName("widgetCatalogs")
         self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.widgetCatalogs)
         self.verticalLayout_4.setContentsMargins(20, 30, 20, 30)
@@ -162,6 +162,7 @@ from PyQt5 import QtWebKitWidgets
 from Widgets.RotateButton import RotateButton
 from Widgets.RubberBandButton import RubberBandButton
 from Widgets.TreeView import TreeView
+from Widgets.WaterWidget import WaterWidget
 
 if __name__ == "__main__":
     import sys

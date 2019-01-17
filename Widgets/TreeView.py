@@ -70,9 +70,12 @@ class TreeView(QTreeView):
             if spath[1] == '.py' and spath[0].endswith('__init__') == False:
                 files.append(name)
 
-        if pitem.rowCount() != 0 and len(files) == pitem.rowCount():
-            return
+        # 已经存在的item
+        existsItems = [pitem.child(i).text() for i in range(pitem.rowCount())]
+
         for name in files:
+            if name in existsItems:
+                continue
             file = os.path.join(path, name).replace('\\', '/')
             item = QStandardItem(name)
             # 添加自定义的数据
@@ -83,16 +86,22 @@ class TreeView(QTreeView):
     def initCatalog(self):
         """初始化本地仓库结构树
         """
-        if self._dmodel.rowCount() == 0:
-            pitem = self._dmodel.invisibleRootItem()
-            # 只遍历根目录
-            for name in os.listdir(Constants.DirProjects):
-                file = os.path.join(Constants.DirProjects,
-                                    name).replace('\\', '/')
-                if os.path.isfile(file):  # 跳过文件
-                    continue
-                if name.startswith('.') or name == 'Donate' or name == 'Test':  # 不显示.开头的文件夹
-                    continue
+        AppLog.debug('')
+        if not os.path.exists(Constants.DirProjects):
+            return
+        pitem = self._dmodel.invisibleRootItem()
+        # 只遍历根目录
+        for name in os.listdir(Constants.DirProjects):
+            file = os.path.join(Constants.DirProjects,
+                                name).replace('\\', '/')
+            if os.path.isfile(file):  # 跳过文件
+                continue
+            if name.startswith('.') or name == 'Donate' or name == 'Test':  # 不显示.开头的文件夹
+                continue
+            items = self.findItems(name)
+            if items:
+                item = items[0]
+            else:
                 item = QStandardItem(name)
                 # 添加自定义的数据
                 # 用于绘制进度条的item标识
@@ -101,10 +110,10 @@ class TreeView(QTreeView):
                 item.setData(os.path.abspath(os.path.join(
                     Constants.DirProjects, name)), Constants.RolePath)
                 pitem.appendRow(item)
-                # 遍历子目录
-                self.listSubDir(item, file)
-            # 排序
-            self._fmodel.sort(0, Qt.AscendingOrder)
+            # 遍历子目录
+            self.listSubDir(item, file)
+        # 排序
+        self._fmodel.sort(0, Qt.AscendingOrder)
 
     def onDoubleClicked(self, modelIndex):
         """Item双击

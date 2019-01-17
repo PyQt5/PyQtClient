@@ -38,6 +38,7 @@ LogFormatter = '[%(asctime)s %(name)s] %(levelname)-8s %(message)s'
 LogFile = 'Resources/Data/app.log'
 
 DirErrors = 'Resources/Data/Errors'              # 错误日志目录
+DirProject = 'Resources/Data/Projects'           # 本地项目目录
 DirProjects = 'Resources/Data/Projects/PyQt'     # 本地项目目录
 DirCurrent = 'Resources/Data/Projects/PyQt'      # 当前README.md目录
 CurrentReadme = ''                               # 当前加载的README.md路径

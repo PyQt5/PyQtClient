@@ -22,6 +22,7 @@ from UiFiles.Ui_MainWindow import Ui_FormMainWindow
 from Utils import Constants
 from Utils.Application import QSingleApplication
 from Utils.CommonUtil import initLog, AppLog, Setting
+from Utils.GitThread import CloneThread
 from Widgets.FramelessWindow import FramelessWindow
 from Widgets.MainWindowBase import MainWindowBase
 
@@ -50,7 +51,7 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         if geometry:
             self.restoreGeometry(geometry)
         # 200毫秒后显示登录对话框
-        QTimer.singleShot(200, self.initLogin)
+        QTimer.singleShot(200, self._initCatalog)
         # 初始化网页
         QTimer.singleShot(500, self._initWebView)
 
@@ -61,7 +62,10 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         if Constants._Account != '' and Constants._Password != '':
             self.buttonHead.image = Constants.ImageAvatar
             self.buttonHead.setToolTip(Constants._Username)
-            # 更新目录
+    
+    def _initCatalog(self):
+        # 更新目录
+        CloneThread.start(self)
 
     @pyqtSlot()
     def renderReadme(self, path=None):
@@ -76,6 +80,8 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
             AppLog.warn('file {} not exists'.format(path))
             return
         Constants.DirCurrent = os.path.dirname(path).replace('\\', '/')
+        if Constants.CurrentReadme == path:
+            return
         Constants.CurrentReadme = path      # 记录打开的路径防止重复加载
         AppLog.debug('render: {}'.format(path))
         AppLog.debug('readme dir: {}'.format(Constants.DirCurrent))
@@ -139,7 +145,7 @@ def main():
     # for > Qt 5.5
     os.putenv('QT_AUTO_SCREEN_SCALE_FACTOR', '1')
     os.makedirs(Constants.DirErrors, exist_ok=True)
-    os.makedirs(Constants.DirProjects, exist_ok=True)
+    os.makedirs(Constants.DirProject, exist_ok=True)
     # 异常捕捉
     sys.excepthook = cgitb.Hook(1, Constants.DirErrors, 5, sys.stderr, '')
     # 初始化日志

@@ -61,6 +61,10 @@ class MainWindowBase:
         self.webViewContent.linkClicked.connect(self.onLinkClicked)
         # 绑定信号槽
         Signals.runExampled.connect(self._runFile)
+        Signals.cloneFinished.connect(self.treeViewCatalogs.initCatalog)
+        Signals.cloneFinished.connect(self.renderReadme)
+        Signals.progressStoped.connect(self.widgetCatalogs.stop)
+        Signals.progressUpdated.connect(self.widgetCatalogs.setValue)
 
     def _initWebView(self):
         """初始化网页"""

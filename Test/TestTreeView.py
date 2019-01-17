@@ -14,51 +14,11 @@ from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QTreeView, QTreeWidget,\
     QTreeWidgetItem
 
-from Utils import Constants
 from Widgets.TreeView import TreeView
 
 
 __Author__ = "Irony"
 __Copyright__ = "Copyright (c) 2019"
-
-
-class MyTreeView(QTreeView):
-
-    def __init__(self, *args, **kwargs):
-        super(MyTreeView, self).__init__(*args, **kwargs)
-        self._initModel()
-        self.initCatalog()
-
-    def _initModel(self):
-        """设置目录树Model"""
-        self._dmodel = QStandardItemModel(self)
-        self._fmodel = QSortFilterProxyModel(self)
-        self._fmodel.setSourceModel(self._dmodel)
-        self.setModel(self._fmodel)
-        pitem = self._dmodel.invisibleRootItem()
-        pitem.appendRow(QStandardItem('root'))
-
-    def initCatalog(self):
-        """初始化本地仓库结构树
-        """
-        pitem = self._dmodel.invisibleRootItem()
-        # 只遍历根目录
-        for name in os.listdir(Constants.DirProjects):
-            file = os.path.join(Constants.DirProjects,
-                                name).replace('\\', '/')
-            if os.path.isfile(file):  # 跳过文件
-                continue
-            if name.startswith('.') or name == 'Donate' or name == 'Test':  # 不显示.开头的文件夹
-                continue
-            item = QStandardItem(name)
-            # 添加自定义的数据
-            item.setData(True, Constants.RoleRoot)        # 根目录
-            item.setData(name, Constants.RoleName)        # 文件夹名字
-            item.setData(file, Constants.RoleFile)        # 本地文件夹路径
-            item.setData(name, Constants.RolePath)        # 用于请求远程的路径
-            item.setData(0, Constants.RoleValue)          # 当前进度
-            item.setData(0, Constants.RoleTotal)          # 总进度
-            pitem.appendRow(item)
 
 
 class Window(QWidget):
@@ -80,9 +40,6 @@ class Window(QWidget):
         pitem.appendRow(QStandardItem('root'))
         layout.addWidget(t2)
 
-        t4 = MyTreeView(self)
-        layout.addWidget(t4)
-
         t3 = QTreeWidget(self)
         layout.addWidget(t3)
         ritem = QTreeWidgetItem(t3)
@@ -93,7 +50,9 @@ class Window(QWidget):
 if __name__ == '__main__':
     import sys
     import os
+    import cgitb
     os.chdir('../')
+    sys.excepthook = cgitb.enable(1, None, 5, '')
     from PyQt5.QtWidgets import QApplication
     app = QApplication(sys.argv)
     app.setStyleSheet("""/*目录树*/

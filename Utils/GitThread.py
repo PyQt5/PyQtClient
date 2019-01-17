@@ -10,9 +10,14 @@ Created on 2019年1月5日
 @description: Git操作线程
 """
 import os
+from pathlib import Path
+import shutil
+import stat
 
 from PyQt5.QtCore import Qt, QCoreApplication, QThread, QObject
 from PyQt5.QtGui import QImage
+import pygit2
+from pygit2.remote import RemoteCallbacks
 import requests
 from requests.auth import HTTPBasicAuth
 from requests.exceptions import ConnectTimeout
@@ -122,3 +127,130 @@ class LoginThread(QObject):
             Signals.loginErrored.emit(QCoreApplication.translate(
                 'Repository', 'Unknown Error'))
             AppLog.warn(str(e))
+
+        AppLog.info('login thread end')
+
+
+class ProgressCallback(RemoteCallbacks):
+    """clone过程中的进度条
+    """
+
+    def transfer_progress(self, stats):
+        Signals.progressUpdated.emit(
+            stats.received_objects, stats.total_objects)
+#         print(stats.total_objects, stats.received_objects)
+
+
+class CloneThread(QObject):
+    """获取项目源码
+    """
+
+    Url = 'git://github.com/PyQt5/PyQt.git'
+
+    @classmethod
+    def start(cls, parent=None):
+        """启动Clone线程
+        :param cls:
+        """
+        cls._thread = QThread(parent)
+        cls._worker = CloneThread()
+        cls._worker.moveToThread(cls._thread)
+        cls._thread.started.connect(cls._worker.run)
+        cls._thread.finished.connect(cls._worker.deleteLater)
+        cls._thread.start()
+        AppLog.info('clone thread started')
+
+    def pull(self, repo, remote_name='origin', branch='master'):
+        """ pull changes for the specified remote (defaults to origin).
+
+        Code from MichaelBoselowitz at:
+        https://github.com/MichaelBoselowitz/pygit2-examples/blob/
+            68e889e50a592d30ab4105a2e7b9f28fac7324c8/examples.py#L58
+        licensed under the MIT license.
+        """
+        for remote in repo.remotes:
+            if remote.name == remote_name:
+                remote.fetch()
+                remote_master_id = repo.lookup_reference(
+                    'refs/remotes/origin/%s' % (branch)).target
+                merge_result, _ = repo.merge_analysis(remote_master_id)
+                # Up to date, do nothing
+                if merge_result & pygit2.GIT_MERGE_ANALYSIS_UP_TO_DATE:
+                    return
+                # We can just fastforward
+                elif merge_result & pygit2.GIT_MERGE_ANALYSIS_FASTFORWARD:
+                    repo.checkout_tree(repo.get(remote_master_id))
+                    try:
+                        master_ref = repo.lookup_reference(
+                            'refs/heads/%s' % (branch))
+                        master_ref.set_target(remote_master_id)
+                    except KeyError:
+                        repo.create_branch(branch, repo.get(remote_master_id))
+                    repo.head.set_target(remote_master_id)
+                elif merge_result & pygit2.GIT_MERGE_ANALYSIS_NORMAL:
+                    repo.merge(remote_master_id)
+
+                    if repo.index.conflicts is not None:
+                        for conflict in repo.index.conflicts:
+                            print('Conflicts found in:', conflict[0].path)
+                        raise AssertionError('Conflicts, ahhhhh!!')
+
+                    user = repo.default_signature
+                    tree = repo.index.write_tree()
+                    repo.create_commit('HEAD', user, user,
+                                       'Merge!', tree,
+                                       [repo.head.target, remote_master_id])
+                    # We need to do this or git CLI will think we are still
+                    # merging.
+                    repo.state_cleanup()
+                else:
+                    raise AssertionError('Unknown merge analysis result')
+
+    def remove(self):
+        """删除未clone完成的目录"""
+        for path in Path(Constants.DirProjects).rglob('*'):
+            path.chmod(stat.S_IWRITE)
+        shutil.rmtree(Constants.DirProjects, ignore_errors=True)
+
+    def clone(self):
+        """克隆项目"""
+        pygit2.clone_repository(
+            self.Url, Constants.DirProjects, callbacks=ProgressCallback())
+
+    def run(self):
+        try:
+            path = pygit2.discover_repository(Constants.DirProjects)
+            if not path:
+                # 本地项目不存在
+                if os.path.exists(Constants.DirProjects):
+                    # 如果文件夹存在则删除
+                    AppLog.info('remove dir: {}'.format(Constants.DirProjects))
+                    self.remove()
+                AppLog.info('clone into dir: {}'.format(Constants.DirProjects))
+                self.clone()
+            else:
+                repo = pygit2.Repository(path)
+                if repo.is_empty:  # 如果项目为空
+                    if os.path.exists(Constants.DirProjects):
+                        # 如果文件夹存在则删除
+                        AppLog.info('remove dir: {}'.format(
+                            Constants.DirProjects))
+                        self.remove()
+                    AppLog.info('clone into dir: {}'.format(
+                        Constants.DirProjects))
+                    self.clone()
+                else:
+                    # 重置并pull
+                    AppLog.info('reset dir: {}'.format(Constants.DirProjects))
+                    repo.reset(repo.head.target, pygit2.GIT_RESET_HARD)
+                    Signals.progressUpdated.emit(50, 100)
+                    AppLog.info('pull into dir: {}'.format(
+                        Constants.DirProjects))
+                    self.pull(repo)
+                    Signals.progressStoped.emit()
+        except Exception as e:
+            AppLog.warn(str(e))
+
+        AppLog.info('clone thread end')
+        Signals.progressStoped.emit()
+        Signals.cloneFinished.emit()

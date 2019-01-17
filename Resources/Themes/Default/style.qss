@@ -67,6 +67,10 @@ QLineEdit {
     max-width: 260px;
     /*左下角有个圆角(保持和主窗口一致)*/
     border-bottom-left-radius: 4px;
+    /*水波纹进度*/
+    qproperty-waterHeight: 0.6;
+    qproperty-waterFgColor: rgba(255, 255, 255, 80);
+    qproperty-waterBgColor: rgba(255, 255, 255, 50);
 }
 
 /*圆形头像*/

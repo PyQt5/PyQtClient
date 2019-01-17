@@ -7,7 +7,7 @@ Created on 2019年1月5日
 @site: https://pyqt5.com https://github.com/892768447
 @email: 892768447@qq.com
 @file: Dialogs.LoginDialog
-@description:
+@description: 登录对话框
 """
 import base64
 import os

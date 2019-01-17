@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'G:\Workspace\PyQtClient\UiFiles\LoginDialog.ui'
 #
-# Created by: PyQt5 UI code generator 5.5.1
+# Created by: PyQt5 UI code generator 5.10.1
 #
 # WARNING! All changes made in this file will be lost!
 
