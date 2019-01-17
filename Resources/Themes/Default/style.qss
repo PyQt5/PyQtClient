@@ -43,7 +43,8 @@ QLineEdit {
 
 /*修改标题栏中按钮的文字*/
 #buttonSkin {
-    font-size: 20px;
+    font-size: 22px;
+    font-weight: bold;
     qproperty-text: "\2104";
 }
 #buttonIssues {
