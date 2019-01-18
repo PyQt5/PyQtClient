@@ -20,8 +20,6 @@ Email: 892768447@qq.com"""
 __Copyright__ = 'Copyright (c) 2019 Irony'
 __Version__ = 1.0
 
-sys.path.append(os.path.abspath('Lib'))
-sys.path.append(os.path.abspath('Lib/site-packages'))
 sys.path.append(os.path.abspath('Library.zip'))
 
 from PyQt5.QtWidgets import QApplication
