@@ -10,15 +10,15 @@ Created on 2019年1月3日
 @description:
 """
 import cgitb
-from multiprocessing import Process
 import os
 from random import randint
 import sys
 
-from PyQt5.QtCore import QEvent, Qt, QTimer, pyqtSlot, QUrl
-from PyQt5.QtGui import QEnterEvent
+from PyQt5.QtCore import QEvent, Qt, QTimer, pyqtSlot, QUrl, QProcess
+from PyQt5.QtGui import QEnterEvent, QIcon
 
 from Dialogs.DonateDialog import DonateDialog
+from Dialogs.ErrorDialog import ErrorDialog
 from Dialogs.LoginDialog import LoginDialog
 from Dialogs.UpdateDialog import UpdateDialog
 from UiFiles.Ui_MainWindow import Ui_FormMainWindow
@@ -35,11 +35,6 @@ QQ: 892768447
 Email: 892768447@qq.com"""
 __Copyright__ = "Copyright (c) 2019 Irony"
 __Version__ = "Version 1.0"
-
-
-def runCode(file):
-    from Utils import RunCode
-    RunCode.runCode(file)
 
 
 class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
@@ -100,6 +95,9 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         elif path.count('/') == 0:
             path = os.path.join(Constants.DirCurrent, path, 'README.md')
             Constants.CurrentReadme = path
+        elif not path.endswith('README.md'):
+            path = path + '/README.md'
+            Constants.CurrentReadme = path
         if not os.path.exists(path):
             AppLog.debug('{} not exists'.format(path))
             self._runJs('updateText("");')
@@ -109,10 +107,8 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
             return
         Constants.DirCurrent = os.path.dirname(path).replace('\\', '/')
         AppLog.debug('DirCurrent change to: {}'.format(Constants.DirCurrent))
-        if Constants.CurrentReadme == path:
-            return
-        Constants.CurrentReadme = path      # 记录打开的路径防止重复加载
         AppLog.debug('render: {}'.format(path))
+        Constants.CurrentReadme = path      # 记录打开的路径防止重复加载
         AppLog.debug('readme dir: {}'.format(Constants.DirCurrent))
         content = repr(open(path, 'rb').read().decode())
         self._runJs("updateText({});".format(content))
@@ -126,14 +122,30 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         """子进程运行文件
         :param file:    文件
         """
-        p = Process(target=runCode, args=(os.path.abspath(file),))
-        p.start()
+        file = os.path.abspath(file)
+        process = QProcess(self)
+        process.setProperty('file', file)
+        process.readChannelFinished.connect(self.onReadChannelFinished)
+        if sys.executable.endswith('python.exe'):
+            process.setWorkingDirectory(os.path.dirname(file))
+        process.start(sys.executable, [file])
 
     def _runJs(self, code):
         """执行js
         :param code:
         """
         self.webViewContent.page().mainFrame().evaluateJavaScript(code)
+
+    def onReadChannelFinished(self):
+        process = self.sender()
+        message = process.readAllStandardError().data().decode()
+        if process.exitCode() != 0 and len(message.strip()) > 0:
+            file = str(process.property('file'))
+            reqfile = os.path.abspath(os.path.join(
+                os.path.dirname(file), 'requirements.txt'))
+            AppLog.debug('reqfile: {}'.format(reqfile))
+            dialog = ErrorDialog(message, self, reqfile=reqfile)
+            dialog.exec_()
 
     def onUrlLoaded(self, name):
         """加载带参数网址
@@ -195,6 +207,7 @@ def main():
         app.sendMessage('show', 1000)
     else:
         app.setQuitOnLastWindowClosed(True)
+        app.setWindowIcon(QIcon('Resources/Images/app.ico'))
         # 第一次运行
         w = MainWindow()
         app.setActivationWindow(w)

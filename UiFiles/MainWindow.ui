@@ -236,6 +236,9 @@
                </property>
                <item>
                 <widget class="QLineEdit" name="lineEditSearch">
+                 <property name="contextMenuPolicy">
+                  <enum>Qt::NoContextMenu</enum>
+                 </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
                  </property>
@@ -377,6 +380,9 @@
             </property>
             <item>
              <widget class="QWebView" name="webViewContent">
+              <property name="contextMenuPolicy">
+               <enum>Qt::NoContextMenu</enum>
+              </property>
               <property name="url">
                <url>
                 <string>about:blank</string>

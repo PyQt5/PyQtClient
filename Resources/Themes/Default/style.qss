@@ -304,14 +304,14 @@ ToolTip > QLabel {
     background-color: rgba(230, 230, 230, 255);
 }
 
-/*捐赠,更新窗口*/
-#widgetDonate, #widgetUpdate {
+/*捐赠,更新,错误窗口*/
+#widgetDonate, #widgetUpdate, #widgetError {
     border: 1px solid rgba(44, 144, 92, 255);
     border-radius: 4px;    /*窗口最外层圆角*/
     background: rgba(64, 187, 107, 255);    /*背景颜色*/
 }
-/*捐赠窗口,更新窗口背景*/
-#widgetImage, #widgetUpdateBg {
+/*捐赠窗口,更新窗口,错误窗口背景*/
+#widgetImage, #widgetUpdateBg, #widgetErrorBg {
     border: 1px solid rgba(44, 144, 92, 255);
     border-top: none;
     background: rgba(235, 235, 235, 255);    /*背景颜色*/
@@ -322,7 +322,7 @@ ToolTip > QLabel {
     color: white;
 }
 /*更新详情*/
-#plainTextEditDetail {
+#plainTextEditDetail, #plainTextEditPip {
     background: transparent;
 }
 /*更新进度条*/
@@ -330,6 +330,27 @@ ToolTip > QLabel {
     background-color: rgba(39, 174, 97, 255);
 }
 
+/*pip按钮*/
+#buttonInstall {
+    border: none;
+    padding: 4px 10px;
+    min-height: 36px;
+    max-height: 36px;
+    border-radius: 4px;
+    background: rgba(64, 187, 107, 255);    /*背景颜色*/
+}
+#buttonInstall:hover {
+    background: rgba(64, 187, 107, 150);
+}
+#buttonInstall:pressed {
+    background: rgba(64, 187, 107, 200);
+}
+/*pip输入框*/
+#lineEditPip {
+    border: none;
+    min-height: 28px;
+    border-radius: 4px;
+}
 /*滚动条样式*/
 QScrollBar:vertical {
     background: transparent;

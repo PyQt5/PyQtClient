@@ -4,6 +4,8 @@ build
 build/*
 dist
 dist/*
+release
+release/*
 *.log
 Resources/Data/*
 Resources/Images/Avatars/*.jpg
