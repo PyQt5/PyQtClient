@@ -132,6 +132,7 @@ QLineEdit {
     outline: none;  /*去掉虚线框*/
     border: none;       /*无边框*/
     color: rgba(255, 255, 255, 200);
+    font-weight: bold;
     background: transparent;    /*背景透明*/
 }
 
