@@ -25,7 +25,9 @@ sys.path.append(os.path.abspath('Lib/site-packages'))
 sys.path.append(os.path.abspath('Library.zip'))
 
 from PyQt5.QtWidgets import QApplication
-QApplication.addLibraryPath(os.path.abspath('Lib/site-packages/PyQt5/Qt/plugins'))
+libpath = os.path.abspath('Lib/site-packages/PyQt5/Qt/plugins')
+if os.path.exists(libpath):
+    QApplication.addLibraryPath(libpath)
 
 
 def escape(s):
@@ -40,7 +42,7 @@ def escape(s):
 
 
 def showError(message):
-    from PyQt5.QtWidgets import QApplication, QErrorMessage, QCheckBox, \
+    from PyQt5.QtWidgets import QErrorMessage, QCheckBox, \
         QPushButton, QLabel, QStyle
     from PyQt5.QtCore import Qt
     app = QApplication(sys.argv)
