@@ -247,6 +247,9 @@
            <property name="text">
             <string/>
            </property>
+           <property name="autoDefault">
+            <bool>false</bool>
+           </property>
           </widget>
          </item>
         </layout>
@@ -344,12 +347,12 @@
   <customwidget>
    <class>RotateButton</class>
    <extends>QPushButton</extends>
-   <header location="global">Widgets.RotateButton</header>
+   <header location="global">Widgets.Buttons.RotateButton</header>
   </customwidget>
   <customwidget>
    <class>ProgressButton</class>
    <extends>QPushButton</extends>
-   <header location="global">Widgets.ProgressButton</header>
+   <header location="global">Widgets.Buttons.ProgressButton</header>
   </customwidget>
  </customwidgets>
  <resources/>

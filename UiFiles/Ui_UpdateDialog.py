@@ -37,6 +37,7 @@ class Ui_FormUpdateDialog(object):
         self.horizontalLayout.addItem(spacerItem)
         self.buttonClose = QtWidgets.QPushButton(self.dialogTitlebar)
         self.buttonClose.setText("")
+        self.buttonClose.setAutoDefault(False)
         self.buttonClose.setObjectName("buttonClose")
         self.horizontalLayout.addWidget(self.buttonClose)
         self.verticalLayout_2.addWidget(self.dialogTitlebar)

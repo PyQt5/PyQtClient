@@ -410,12 +410,12 @@
   <customwidget>
    <class>RotateButton</class>
    <extends>QPushButton</extends>
-   <header location="global">Widgets.RotateButton</header>
+   <header location="global">Widgets.Buttons.RotateButton</header>
   </customwidget>
   <customwidget>
    <class>RubberBandButton</class>
    <extends>QPushButton</extends>
-   <header location="global">Widgets.RubberBandButton</header>
+   <header location="global">Widgets.Buttons.RubberBandButton</header>
   </customwidget>
   <customwidget>
    <class>TreeView</class>

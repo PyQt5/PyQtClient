@@ -72,6 +72,7 @@ class Ui_FormLoginDialog(object):
         self.horizontalLayout.addItem(spacerItem4)
         self.buttonClose = QtWidgets.QPushButton(self.dialogTitlebar)
         self.buttonClose.setText("")
+        self.buttonClose.setAutoDefault(False)
         self.buttonClose.setObjectName("buttonClose")
         self.horizontalLayout.addWidget(self.buttonClose)
         self.gridLayout.addWidget(self.dialogTitlebar, 0, 0, 1, 3)
@@ -116,8 +117,8 @@ class Ui_FormLoginDialog(object):
         self.labelRegister.setText(_translate("FormLoginDialog", "<html><head/><body><p><a href=\"https://github.com/join?source=login\"><span style=\" text-decoration: none; color:#ffffff;\">Register</span></a></p></body></html>"))
         self.labelForgot.setText(_translate("FormLoginDialog", "<html><head/><body><p><a href=\"https://github.com/password_reset\"><span style=\" text-decoration: none; color:#e6e6e6;\">Forgot?</span></a></p></body></html>"))
 
-from Widgets.ProgressButton import ProgressButton
-from Widgets.RotateButton import RotateButton
+from Widgets.Buttons.ProgressButton import ProgressButton
+from Widgets.Buttons.RotateButton import RotateButton
 
 if __name__ == "__main__":
     import sys

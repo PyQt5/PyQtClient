@@ -140,6 +140,13 @@ class _Signals(QObject):
     # 登录成功发送用户的id和昵称
     loginSuccessed = pyqtSignal(str, str)
 
+    # 添加多彩item
+    colourfulItemAdded = pyqtSignal(int, int, str, object)
+    # 添加item完成
+    colourfulItemAddFinished = pyqtSignal()
+    # 多彩item点击,色彩
+    colourfulItemClicked = pyqtSignal(str, object)
+
 
 # 说白了就是全局信号定义
 Signals = _Signals()

@@ -81,7 +81,7 @@ class ThemeManager:
         # 加载主题中的字体
         path = cls.fontPath()
         AppLog.info('fontPath: {}'.format(path))
-        if os.path.exists(path):
+        if os.path.isfile(path):
             QFontDatabase.addApplicationFont(path)
         # 加载主题取样式
         path = cls.stylePath()

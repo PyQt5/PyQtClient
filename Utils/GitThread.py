@@ -264,8 +264,8 @@ class UpgradeThread(QObject):
     """自动更新
     """
 
-    Url = 'https://raw.githubusercontent.com/PyQt5/PyQtClient/master/Update/Upgrade.json'
-    ZipUrl = 'https://raw.githubusercontent.com/PyQt5/PyQtClient/master/Update/Upgrade.{}.zip'
+    Url = 'https://raw.githubusercontent.com/PyQt5/PyQtClient/master/.Update/Upgrade.json'
+    ZipUrl = 'https://raw.githubusercontent.com/PyQt5/PyQtClient/master/.Update/Upgrade.{}.zip'
 
 #     Url = 'https://raw.githubusercontent.com/IronyYou/test/master/Update/Upgrade.json'
 #     ZipUrl = 'https://raw.githubusercontent.com/IronyYou/test/master/Update/Upgrade.{}.zip'

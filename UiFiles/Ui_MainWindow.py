@@ -165,8 +165,8 @@ class Ui_FormMainWindow(object):
         self.buttonBackToUp.setToolTip(_translate("FormMainWindow", "Back to Top"))
 
 from PyQt5 import QtWebKitWidgets
-from Widgets.RotateButton import RotateButton
-from Widgets.RubberBandButton import RubberBandButton
+from Widgets.Buttons.RotateButton import RotateButton
+from Widgets.Buttons.RubberBandButton import RubberBandButton
 from Widgets.TreeView import TreeView
 from Widgets.WaterWidget import WaterWidget
 
