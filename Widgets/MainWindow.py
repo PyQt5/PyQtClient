@@ -14,18 +14,19 @@ import os
 from random import randint
 import sys
 
-from PyQt5.QtCore import QEvent, Qt, QTimer, pyqtSlot, QUrl, QProcess
+from PyQt5.QtCore import QEvent, Qt, QTimer, pyqtSlot, QUrl, QProcess,\
+    QProcessEnvironment, QLibraryInfo
 from PyQt5.QtGui import QEnterEvent, QIcon
 
-from Dialogs.DonateDialog import DonateDialog
-from Dialogs.ErrorDialog import ErrorDialog
-from Dialogs.LoginDialog import LoginDialog
-from Dialogs.UpdateDialog import UpdateDialog
 from UiFiles.Ui_MainWindow import Ui_FormMainWindow
 from Utils import Constants
 from Utils.Application import QSingleApplication
 from Utils.CommonUtil import initLog, AppLog, Setting
 from Utils.GitThread import CloneThread, UpgradeThread
+from Widgets.Dialogs.DonateDialog import DonateDialog
+from Widgets.Dialogs.ErrorDialog import ErrorDialog
+from Widgets.Dialogs.LoginDialog import LoginDialog
+from Widgets.Dialogs.UpdateDialog import UpdateDialog
 from Widgets.FramelessWindow import FramelessWindow
 from Widgets.MainWindowBase import MainWindowBase
 
@@ -85,6 +86,13 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         CloneThread.start()
 
     @pyqtSlot(str)
+    def renderCode(self, code):
+        """显示代码
+        """
+        content = repr(code)
+        self._runJs("updateCode({});".format(content))
+
+    @pyqtSlot(str)
     def renderReadme(self, path=''):
         """加载README.md并显示
         """
@@ -126,6 +134,14 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         process = QProcess(self)
         process.setProperty('file', file)
         process.readChannelFinished.connect(self.onReadChannelFinished)
+
+        env = QProcessEnvironment.systemEnvironment()
+        env.insert(
+            'PATH', QLibraryInfo.location(
+                QLibraryInfo.BinariesPath) + ';' + env.value('PATH')
+        )
+        process.setProcessEnvironment(env)
+
         if sys.executable.endswith('python.exe'):
             process.setWorkingDirectory(os.path.dirname(file))
         process.start(sys.executable, [file])

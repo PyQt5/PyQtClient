@@ -42,6 +42,7 @@ class TreeView(QTreeView):
     def _initSignals(self):
         Signals.itemJumped.connect(self.onItemJumped)
         Signals.filterChanged.connect(self._fmodel.setFilterRegExp)
+        self.clicked.connect(self.onClicked)
         self.doubleClicked.connect(self.onDoubleClicked)
 
     def rootItem(self):
@@ -93,6 +94,12 @@ class TreeView(QTreeView):
             # 添加自定义的数据
             item.setData(False, Constants.RoleRoot)       # 不是根目录
             item.setData(file, Constants.RolePath)
+            try:
+                item.setData(open(file, 'rb').read().decode(
+                    errors='ignore'), Constants.RoleCode)
+            except Exception as e:
+                AppLog.warn(
+                    'read file({}) code error: {}'.format(file, str(e)))
             pitem.appendRow(item)
 
     def initCatalog(self):
@@ -127,6 +134,22 @@ class TreeView(QTreeView):
         # 排序
         self._fmodel.sort(0, Qt.AscendingOrder)
 
+    def onClicked(self, modelIndex):
+        """Item单击
+        :param modelIndex:        此处是代理模型中的QModelIndex, 并不是真实的
+        """
+        root = modelIndex.data(Constants.RoleRoot)
+        path = modelIndex.data(Constants.RolePath)
+        code = modelIndex.data(Constants.RoleCode)
+        AppLog.debug('is root: {}'.format(root))
+        AppLog.debug('path: {}'.format(path))
+        if not root and os.path.isfile(path) and code:
+            # 右侧显示代码
+            Signals.showCoded.emit(code)
+        if root and os.path.isdir(path):
+            # 显示readme
+            Signals.showReadmed.emit(os.path.join(path, 'README.md'))
+
     def onDoubleClicked(self, modelIndex):
         """Item双击
         :param modelIndex:        此处是代理模型中的QModelIndex, 并不是真实的
@@ -138,9 +161,9 @@ class TreeView(QTreeView):
         if not root and os.path.isfile(path):
             # 运行代码
             Signals.runExampled.emit(path)
-        if root and os.path.isdir(path):
-            # 显示readme
-            Signals.showReadmed.emit(os.path.join(path, 'README.md'))
+#         if root and os.path.isdir(path):
+#             # 显示readme
+#             Signals.showReadmed.emit(os.path.join(path, 'README.md'))
 
     def enterEvent(self, event):
         super(TreeView, self).enterEvent(event)

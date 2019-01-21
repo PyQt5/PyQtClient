@@ -24,6 +24,7 @@ RoleRoot = Qt.UserRole + 1            # 根目录各个目录
 RolePath = Qt.UserRole + 2          # item的绝对
 RoleValue = Qt.UserRole + 3         # item当前进度条
 RoleTotal = Qt.UserRole + 4         # item进度条总的值
+RoleCode = Qt.UserRole + 5          # item代码
 
 HomeFile = 'Resources/Markdown/index.html'
 

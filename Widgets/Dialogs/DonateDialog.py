@@ -12,7 +12,7 @@ Created on 2019年1月11日
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
 
-from Dialogs.MoveDialog import MoveDialog
+from Widgets.Dialogs.MoveDialog import MoveDialog
 from UiFiles.Ui_DonateDialog import Ui_FormDonateDialog
 from Utils.ThemeManager import ThemeManager
 

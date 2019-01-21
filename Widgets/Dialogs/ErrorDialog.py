@@ -15,7 +15,7 @@ import sys
 
 from PyQt5.QtCore import Qt, pyqtSlot, QProcess
 
-from Dialogs.MoveDialog import MoveDialog
+from Widgets.Dialogs.MoveDialog import MoveDialog
 from UiFiles.Ui_ErrorDialog import Ui_FormErrorDialog
 from Utils.ThemeManager import ThemeManager
 

@@ -62,6 +62,7 @@ class MainWindowBase:
         self.webViewContent.loadFinished.connect(self._exposeInterface)
         self.webViewContent.linkClicked.connect(self.onLinkClicked)
         # 绑定信号槽
+        Signals.showCoded.connect(self.renderCode)
         Signals.showReadmed.connect(self.renderReadme)
         Signals.urlLoaded.connect(self.onUrlLoaded)
         Signals.runExampled.connect(self._runFile)

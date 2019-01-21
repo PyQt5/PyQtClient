@@ -15,8 +15,8 @@ import os
 from PyQt5.QtCore import Qt, pyqtSlot, QVariant, QTimer
 from PyQt5.QtWidgets import QCompleter
 
-from Dialogs.MoveDialog import MoveDialog
-from Dialogs.TwinkleDialog import TwinkleDialog
+from Widgets.Dialogs.MoveDialog import MoveDialog
+from Widgets.Dialogs.TwinkleDialog import TwinkleDialog
 from UiFiles.Ui_LoginDialog import Ui_FormLoginDialog
 from Utils import Constants
 from Utils.CommonUtil import AppLog, Setting, Signals

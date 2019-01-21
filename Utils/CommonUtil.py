@@ -109,6 +109,8 @@ class Setting:
 
 class _Signals(QObject):
 
+    # 显示代码
+    showCoded = pyqtSignal(str)
     # 显示Readme.md
     showReadmed = pyqtSignal(str)
     # 加载网址

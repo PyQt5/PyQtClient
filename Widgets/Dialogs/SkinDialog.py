@@ -11,7 +11,7 @@ Created on 2019年1月19日
 """
 from PyQt5.QtCore import Qt
 
-from Dialogs.MoveDialog import MoveDialog
+from Widgets.Dialogs.MoveDialog import MoveDialog
 from UiFiles.Ui_SkinDialog import Ui_FormSkinDialog
 from Utils.ThemeManager import ThemeManager
 

@@ -1,6 +1,6 @@
 html, body {
-    -webkit-user-select: none;
-    user-select: none;
+    /* -webkit-user-select: none;
+    user-select: none; */
     cursor: url('../cursor/default.png'), default;
     background-color: transparent;
 }

@@ -5,8 +5,10 @@
         <link rel="stylesheet" href="css/bootstrap.min.css">
         <link rel="stylesheet" href="css/github.min.css">
         <link rel="stylesheet" href="css/app.css">
+        <script src="js/jquery.min.js"></script>
         <script src="js/highlight.pack.js"></script>
         <script src="js/markdown-it.min.js"></script>
+        <script src="js/layer.js"></script>
         <script src="js/index.js"></script>
     </head>
     <body>
@@ -17,6 +19,9 @@
             <div class="row full-height">
                 <section class="col-xs-12 full-height">
                     <div id="result" class="result"></div>
+                    <div id="codediv" style="display:none;">
+                        <pre style="border:none;"><code id="code" class="python"></code></pre>
+                    </div>
                 </section>
             </div>
         </div>
