@@ -9,6 +9,7 @@ Created on 2019年1月1日
 @file: PyQtClient
 @description:
 """
+from distutils.sysconfig import get_python_lib
 import os
 import sys
 import traceback
@@ -22,10 +23,11 @@ __Version__ = 1.0
 
 sys.path.append(os.path.abspath('Library.zip'))
 
-from PyQt5.QtWidgets import QApplication
-libpath = os.path.abspath('Lib/site-packages/PyQt5/Qt/plugins')
-if os.path.exists(libpath):
-    QApplication.addLibraryPath(libpath)
+libpath = get_python_lib()
+os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = os.path.join(
+    libpath, 'PyQt5', 'Qt', 'plugins', 'platforms')
+os.environ['QML_IMPORT_PATH'] = os.path.join(libpath, 'Qt', 'qml')
+os.environ['QML2_IMPORT_PATH'] = os.environ['QML_IMPORT_PATH']
 
 
 def escape(s):
@@ -40,7 +42,7 @@ def escape(s):
 
 
 def showError(message):
-    from PyQt5.QtWidgets import QErrorMessage, QCheckBox, \
+    from PyQt5.QtWidgets import QApplication, QErrorMessage, QCheckBox, \
         QPushButton, QLabel, QStyle
     from PyQt5.QtCore import Qt
     app = QApplication(sys.argv)

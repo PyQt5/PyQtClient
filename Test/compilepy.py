@@ -33,8 +33,6 @@ os.makedirs(dirPath, exist_ok=True)
 shutil.copytree(os.path.abspath('UiFiles'),
                 os.path.join(dirPath, 'UiFiles'))
 shutil.copytree(os.path.abspath('Utils'), os.path.join(dirPath, 'Utils'))
-shutil.copytree(os.path.abspath('Dialogs'),
-                os.path.join(dirPath, 'Dialogs'))
 shutil.copytree(os.path.abspath('Widgets'),
                 os.path.join(dirPath, 'Widgets'))
 

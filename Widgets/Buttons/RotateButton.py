@@ -87,7 +87,6 @@ class RotateButton(QPushButton):
         effect.setBlurRadius(self._padding * 2)
         effect.setOffset(0, 0)
         effect.setColor(self._shadowColor)
-        effect.setBlurRadius(self._padding * 2)
         self.setGraphicsEffect(effect)
 
         # 开启旋转动画
