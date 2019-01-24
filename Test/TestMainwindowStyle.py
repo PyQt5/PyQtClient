@@ -29,7 +29,7 @@ class Window(QWidget, Ui_FormMainWindow):
         self.setupUi(self)
         ThemeManager.loadTheme()
         ThemeManager.loadCursor(self)
-        ThemeManager.loadCursor(self.buttonHead, 'pointer.png')
+        ThemeManager.loadCursor(self.buttonHead, ThemeManager.CursorPointer)
 
 
 if __name__ == '__main__':

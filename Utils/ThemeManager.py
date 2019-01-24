@@ -71,6 +71,10 @@ class ThemeManager:
     ThemeDir = 'Resources/Themes'
     ThemeName = 'Default'
 
+    # 鼠标
+    CursorDefault = 'default.png'
+    CursorPointer = 'pointer.png'
+
     @classmethod
     def loadTheme(cls):
         """根据配置加载主题
@@ -150,7 +154,7 @@ class ThemeManager:
     def cursorPath(cls, name='default.png'):
         """
         :param cls:
-        :return: 主题中 default.png 的绝对路径
+        :return: 主题中 鼠标图片 的绝对路径
         """
         return os.path.abspath(os.path.join(cls.ThemeDir, cls.ThemeName, 'cursor', name)).replace('\\', '/')
 
@@ -160,7 +164,7 @@ class ThemeManager:
         :param cls:
         """
         path = os.path.abspath(os.path.join(
-            cls.ThemeDir, cls.ThemeName, 'cursor', 'pointer.png')).replace('\\', '/')
+            cls.ThemeDir, cls.ThemeName, 'cursor', cls.CursorPointer)).replace('\\', '/')
         if os.path.exists(path):
             cursor = QCursor(QPixmap(path), 0, 0)
             for w in widgets:

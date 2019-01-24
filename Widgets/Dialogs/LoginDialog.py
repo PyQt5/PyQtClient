@@ -15,13 +15,13 @@ import os
 from PyQt5.QtCore import Qt, pyqtSlot, QVariant, QTimer
 from PyQt5.QtWidgets import QCompleter
 
-from Widgets.Dialogs.MoveDialog import MoveDialog
-from Widgets.Dialogs.TwinkleDialog import TwinkleDialog
 from UiFiles.Ui_LoginDialog import Ui_FormLoginDialog
 from Utils import Constants
 from Utils.CommonUtil import AppLog, Setting, Signals
 from Utils.GitThread import LoginThread
 from Utils.ThemeManager import ThemeManager
+from Widgets.Dialogs.MoveDialog import MoveDialog
+from Widgets.Dialogs.TwinkleDialog import TwinkleDialog
 
 
 __Author__ = """By: Irony
@@ -47,7 +47,7 @@ class LoginDialog(MoveDialog, TwinkleDialog, Ui_FormLoginDialog):
         # 加载鼠标样式
         ThemeManager.loadCursor(self)
         # 加载鼠标样式
-        ThemeManager.loadCursor(self.buttonHead, 'pointer.png')
+        ThemeManager.loadCursor(self.buttonHead, ThemeManager.CursorPointer)
         # 是否正在登录
         self._isLogin = False
         Signals.loginErrored.connect(self.onLoginErrored)

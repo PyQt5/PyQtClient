@@ -12,9 +12,9 @@ Created on 2019年1月11日
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
 
-from Widgets.Dialogs.MoveDialog import MoveDialog
 from UiFiles.Ui_DonateDialog import Ui_FormDonateDialog
 from Utils.ThemeManager import ThemeManager
+from Widgets.Dialogs.MoveDialog import MoveDialog
 
 
 __Author__ = "Irony"
@@ -36,7 +36,8 @@ class DonateDialog(MoveDialog, Ui_FormDonateDialog):
         ThemeManager.loadCursor(self)
         # 加载鼠标样式
         ThemeManager.loadCursor(self.labelAlipayImg)
-        ThemeManager.loadCursor(self.labelWechatImg, 'pointer.png')
+        ThemeManager.loadCursor(self.labelWechatImg,
+                                ThemeManager.CursorPointer)
         # 加载图片
         self.labelAlipayImg.setPixmap(QPixmap(alipayImg).scaled(
             300, 300, Qt.IgnoreAspectRatio, Qt.SmoothTransformation))

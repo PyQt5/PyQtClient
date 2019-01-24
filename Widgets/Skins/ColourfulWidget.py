@@ -32,7 +32,7 @@ class ColourfulItemWidget(QWidget):
     def __init__(self, name, color, *args, **kwargs):
         super(ColourfulItemWidget, self).__init__(*args, **kwargs)
         # 加载鼠标样式
-        ThemeManager.loadCursor(self, 'pointer.png')
+        ThemeManager.loadCursor(self, ThemeManager.CursorPointer)
         self.name = name
         self.color = color
         self.hovered = False
@@ -115,7 +115,7 @@ class ColourfulWidget(QWidget, Ui_FormColourful):
         self.buttonAdd = QPushButton(
             '+', self, objectName='buttonAdd', clicked=self.onAddNewColor)
         # 加载鼠标样式
-        ThemeManager.loadCursor(self.buttonAdd, 'pointer.png')
+        ThemeManager.loadCursor(self.buttonAdd, ThemeManager.CursorPointer)
         if self.lastCol == 4:
             self.lastCol = 0
             self.lastRow += 1
