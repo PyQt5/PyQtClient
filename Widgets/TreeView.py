@@ -147,6 +147,10 @@ class TreeView(QTreeView):
             # 右侧显示代码
             Signals.showCoded.emit(code)
         if root and os.path.isdir(path):
+            if self.isExpanded(modelIndex):
+                self.collapse(modelIndex)
+            else:
+                self.expand(modelIndex)
             # 显示readme
             Signals.showReadmed.emit(os.path.join(path, 'README.md'))
 

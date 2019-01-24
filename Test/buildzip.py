@@ -21,10 +21,9 @@ __Copyright__ = "Copyright (c) 2019"
 
 os.chdir('../')
 
-os.makedirs('dist', exist_ok=True)
 
 # 压缩文件到zip
-zipfp = ZipFile(os.path.abspath('测试/Library.zip'), 'w', ZIP_DEFLATED)
+zipfp = ZipFile(os.path.abspath('Library.zip'), 'w', ZIP_DEFLATED)
 for file in Path('Library').rglob('*.pyc'):
     print('add file: %s' % file)
     zipfp.write(os.path.abspath(str(file)), str(file)[len('Library'):])

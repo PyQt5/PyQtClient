@@ -6,8 +6,9 @@ dist
 dist/*
 release
 release/*
-测试
-测试/*
+Library
+Library/*
+Library.zip
 *.log
 Resources/Data/*
 Resources/Images/Avatars/*.jpg

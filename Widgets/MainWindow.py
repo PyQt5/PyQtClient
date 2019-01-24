@@ -10,13 +10,11 @@ Created on 2019年1月3日
 @description:
 """
 import cgitb
-from distutils.sysconfig import get_python_lib
 import os
 from random import randint
 import sys
 
-from PyQt5.QtCore import QEvent, Qt, QTimer, pyqtSlot, QUrl, QProcess,\
-    QProcessEnvironment, QLibraryInfo
+from PyQt5.QtCore import QEvent, Qt, QTimer, pyqtSlot, QUrl, QProcess
 from PyQt5.QtGui import QEnterEvent, QIcon
 
 from UiFiles.Ui_MainWindow import Ui_FormMainWindow
@@ -136,17 +134,17 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         process.setProperty('file', file)
         process.readChannelFinished.connect(self.onReadChannelFinished)
 
-        env = QProcessEnvironment.systemEnvironment()
-        libpath = get_python_lib()
-        env.insert('QT_QPA_PLATFORM_PLUGIN_PATH', os.path.join(
-            libpath, 'PyQt5', 'Qt', 'plugins', 'platforms'))
-        env.insert('QML_IMPORT_PATH', os.path.join(libpath, 'Qt', 'qml'))
-        env.insert('QML2_IMPORT_PATH', env.value('QML_IMPORT_PATH'))
-        env.insert(
-            'PATH', QLibraryInfo.location(
-                QLibraryInfo.BinariesPath) + ';' + env.value('PATH')
-        )
-        process.setProcessEnvironment(env)
+#         env = QProcessEnvironment.systemEnvironment()
+#         libpath = get_python_lib()
+#         env.insert('QT_QPA_PLATFORM_PLUGIN_PATH', os.path.join(
+#             libpath, 'PyQt5', 'Qt', 'plugins', 'platforms'))
+#         env.insert('QML_IMPORT_PATH', os.path.join(libpath, 'Qt', 'qml'))
+#         env.insert('QML2_IMPORT_PATH', env.value('QML_IMPORT_PATH'))
+#         env.insert(
+#             'PATH', QLibraryInfo.location(
+#                 QLibraryInfo.BinariesPath) + ';' + env.value('PATH')
+#         )
+#         process.setProcessEnvironment(env)
 
         if sys.executable.endswith('python.exe'):
             process.setWorkingDirectory(os.path.dirname(file))

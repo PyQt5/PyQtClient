@@ -105,6 +105,7 @@ class Ui_FormMainWindow(object):
         self.treeViewCatalogs.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         self.treeViewCatalogs.setAnimated(True)
         self.treeViewCatalogs.setHeaderHidden(True)
+        self.treeViewCatalogs.setExpandsOnDoubleClick(False)
         self.treeViewCatalogs.setObjectName("treeViewCatalogs")
         self.verticalLayout_4.addWidget(self.treeViewCatalogs)
         self.horizontalLayout_2.addWidget(self.widgetCatalogs)

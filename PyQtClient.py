@@ -9,7 +9,7 @@ Created on 2019年1月1日
 @file: PyQtClient
 @description:
 """
-from distutils.sysconfig import get_python_lib
+
 import os
 import sys
 import traceback
@@ -23,11 +23,11 @@ __Version__ = 1.0
 
 sys.path.append(os.path.abspath('Library.zip'))
 
-libpath = get_python_lib()
-os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = os.path.join(
-    libpath, 'PyQt5', 'Qt', 'plugins', 'platforms')
-os.environ['QML_IMPORT_PATH'] = os.path.join(libpath, 'Qt', 'qml')
-os.environ['QML2_IMPORT_PATH'] = os.environ['QML_IMPORT_PATH']
+# libpath = get_python_lib()
+# os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = os.path.join(
+#     libpath, 'PyQt5', 'Qt', 'plugins', 'platforms')
+# os.environ['QML_IMPORT_PATH'] = os.path.join(libpath, 'Qt', 'qml')
+# os.environ['QML2_IMPORT_PATH'] = os.environ['QML_IMPORT_PATH']
 
 
 def escape(s):
