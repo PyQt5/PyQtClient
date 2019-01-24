@@ -89,14 +89,32 @@ class ThemeManager:
         try:
             QApplication.instance().setStyleSheet(
                 open(path, 'rb').read().decode('utf-8', errors='ignore'))
+            return 1
         except Exception as e:
             AppLog.error(str(e))
 
     @classmethod
-    def loadFestivalTheme(cls, image=None):
-        """根据配置加载主题
+    def loadUserTheme(cls, theme='Default'):
+        """加载主题目录里的主题
         :param cls:
-        :param parent:
+        :param theme:        文件夹名字
+        """
+        cls.ThemeName = theme
+        if cls.loadTheme():
+            Setting.setValue('theme', theme)
+
+    @classmethod
+    def loadColourfulTheme(cls, color):
+        """基于当前设置主题颜色
+        :param cls:
+        :param color:        背景颜色
+        """
+        pass
+
+    @classmethod
+    def loadPictureTheme(cls, image=None):
+        """设置图片背景的主题
+        :param cls:
         :param image:         背景图片
         """
         cls.ThemeName = Setting.value('theme', 'Default', str)
