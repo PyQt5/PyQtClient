@@ -255,13 +255,13 @@ ToolTip > QLabel {
 
 /*登录窗口*/
 #widgetLogin {
-    border: 1px solid rgba(44, 144, 92, 255);
+    border: 1px solid rgba(200, 200, 200, 255);
     border-radius: 4px;    /*窗口最外层圆角*/
-    background: rgba(64, 187, 107, 255);    /*背景颜色*/
+    background: rgba(38, 38, 38, 255);    /*背景颜色*/
 }
 /*激活状态*/
 #widgetLogin[_active="true"] {
-    border: 1px solid rgba(44, 144, 92, 255);
+    border: 1px solid rgba(200, 200, 200, 255);
 }
 /*非激活状态*/
 #widgetLogin[_active="false"] {
@@ -275,9 +275,6 @@ ToolTip > QLabel {
     padding-right: 10px;
     background-color: rgba(255, 255, 255, 255);
     border-radius: 12px;
-}
-#lineEditPassword {
-    font-size: 10px;
 }
 #lineEditPassword[echoMode="2"] {
     lineedit-password-character: 1422;
@@ -307,13 +304,13 @@ ToolTip > QLabel {
 
 /*捐赠,更新,错误窗口*/
 #widgetDonate, #widgetUpdate, #widgetError {
-    border: 1px solid rgba(44, 144, 92, 255);
+    border: 1px solid rgba(200, 200, 200, 255);
     border-radius: 4px;    /*窗口最外层圆角*/
-    background: rgba(64, 187, 107, 255);    /*背景颜色*/
+    background: rgba(38, 38, 38, 255);    /*背景颜色*/
 }
 /*捐赠窗口,更新窗口,错误窗口背景*/
 #widgetImage, #widgetUpdateBg, #widgetErrorBg {
-    border: 1px solid rgba(44, 144, 92, 255);
+    border: 1px solid rgba(200, 200, 200, 255);
     border-top: none;
     background: rgba(235, 235, 235, 255);    /*背景颜色*/
     border-bottom-left-radius: 4px;
@@ -338,13 +335,13 @@ ToolTip > QLabel {
     min-height: 36px;
     max-height: 36px;
     border-radius: 4px;
-    background: rgba(64, 187, 107, 255);    /*背景颜色*/
+    background: rgba(38, 38, 38, 255);    /*背景颜色*/
 }
 #buttonInstall:hover {
-    background: rgba(64, 187, 107, 150);
+    background: rgba(38, 38, 38, 150);
 }
 #buttonInstall:pressed {
-    background: rgba(64, 187, 107, 200);
+    background: rgba(38, 38, 38, 200);
 }
 /*pip输入框*/
 #lineEditPip {
