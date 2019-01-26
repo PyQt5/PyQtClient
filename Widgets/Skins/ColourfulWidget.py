@@ -13,7 +13,7 @@ from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtGui import QPainter, QBrush, QColor
 from PyQt5.QtWidgets import QWidget, QPushButton
 
-from UiFiles.Ui_ColourfulWidget import Ui_FormColourful
+from UiFiles.Ui_ScrollArea import Ui_FormScrollArea
 from Utils.CommonUtil import Signals
 from Utils.ThemeManager import ThemeManager
 from Utils.ThemeThread import ColourfulThread
@@ -90,7 +90,7 @@ class ColourfulItemWidget(QWidget):
         return QSize(PixmapWidth, PixmapHeight + MarginBottom)
 
 
-class ColourfulWidget(QWidget, Ui_FormColourful):
+class ColourfulWidget(QWidget, Ui_FormScrollArea):
 
     def __init__(self, *args, **kwargs):
         super(ColourfulWidget, self).__init__(*args, **kwargs)

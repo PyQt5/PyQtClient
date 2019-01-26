@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'G:\Workspace\PyQtClient\UiFiles\ColourfulWidget.ui'
+# Form implementation generated from reading ui file 'G:\Workspace\PyQtClient\UiFiles\ScrollArea.ui'
 #
 # Created by: PyQt5 UI code generator 5.10.1
 #
@@ -8,15 +8,15 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-class Ui_FormColourful(object):
-    def setupUi(self, FormColourful):
-        FormColourful.setObjectName("FormColourful")
-        FormColourful.resize(900, 612)
-        self.horizontalLayout = QtWidgets.QHBoxLayout(FormColourful)
+class Ui_FormScrollArea(object):
+    def setupUi(self, FormScrollArea):
+        FormScrollArea.setObjectName("FormScrollArea")
+        FormScrollArea.resize(900, 612)
+        self.horizontalLayout = QtWidgets.QHBoxLayout(FormScrollArea)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.scrollArea = QtWidgets.QScrollArea(FormColourful)
+        self.scrollArea = QtWidgets.QScrollArea(FormScrollArea)
         self.scrollArea.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setAlignment(QtCore.Qt.AlignCenter)
@@ -33,20 +33,20 @@ class Ui_FormColourful(object):
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
         self.horizontalLayout.addWidget(self.scrollArea)
 
-        self.retranslateUi(FormColourful)
-        QtCore.QMetaObject.connectSlotsByName(FormColourful)
+        self.retranslateUi(FormScrollArea)
+        QtCore.QMetaObject.connectSlotsByName(FormScrollArea)
 
-    def retranslateUi(self, FormColourful):
+    def retranslateUi(self, FormScrollArea):
         _translate = QtCore.QCoreApplication.translate
-        FormColourful.setWindowTitle(_translate("FormColourful", "Colourful"))
+        FormScrollArea.setWindowTitle(_translate("FormScrollArea", "ScrollArea"))
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    FormColourful = QtWidgets.QWidget()
-    ui = Ui_FormColourful()
-    ui.setupUi(FormColourful)
-    FormColourful.show()
+    FormScrollArea = QtWidgets.QWidget()
+    ui = Ui_FormScrollArea()
+    ui.setupUi(FormScrollArea)
+    FormScrollArea.show()
     sys.exit(app.exec_())
 

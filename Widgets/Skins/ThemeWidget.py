@@ -9,17 +9,25 @@ Created on 2019年1月20日
 @file: Widgets.Skins.ThemeWidget
 @description: 
 """
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget
+
+from UiFiles.Ui_ScrollArea import Ui_FormScrollArea
 
 
 __Author__ = "Irony"
 __Copyright__ = "Copyright (c) 2019"
 
 
-class ThemeWidget(QWidget):
+class ThemeWidget(QWidget, Ui_FormScrollArea):
 
     def __init__(self, *args, **kwargs):
         super(ThemeWidget, self).__init__(*args, **kwargs)
+        self.setupUi(self)
+        self.setAttribute(Qt.WA_StyledBackground, True)
 
     def init(self):
-        pass
+        """初始化主题
+        """
+        if self.gridLayout.count() > 0:
+            return

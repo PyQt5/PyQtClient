@@ -9,7 +9,7 @@ Created on 2019年1月20日
 @file: Test.TestSkinDialog
 @description: 
 """
-from Dialogs.SkinDialog import SkinDialog
+from Widgets.Dialogs.SkinDialog import SkinDialog
 from Utils.ThemeManager import ThemeManager
 
 

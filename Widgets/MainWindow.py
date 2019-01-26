@@ -50,6 +50,7 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
             self.restoreGeometry(geometry)
         # 200毫秒后显示登录对话框
         QTimer.singleShot(200, self._initCatalog)
+        QTimer.singleShot(500, self.treeViewCatalogs.initCatalog)
         # 初始化网页
         QTimer.singleShot(500, self._initWebView)
         # 检测更新

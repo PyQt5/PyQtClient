@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>FormColourful</class>
- <widget class="QWidget" name="FormColourful">
+ <class>FormScrollArea</class>
+ <widget class="QWidget" name="FormScrollArea">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Colourful</string>
+   <string>ScrollArea</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <property name="spacing">

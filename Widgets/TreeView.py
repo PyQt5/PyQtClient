@@ -30,7 +30,6 @@ class TreeView(QTreeView):
         super(TreeView, self).__init__(*args, **kwargs)
         self._initModel()
         self._initSignals()
-        self.initCatalog()
 
     def _initModel(self):
         """设置目录树Model"""
