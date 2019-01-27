@@ -302,14 +302,14 @@ ToolTip > QLabel {
     background-color: rgba(230, 230, 230, 255);
 }
 
-/*捐赠,更新,错误窗口*/
-#widgetDonate, #widgetUpdate, #widgetError {
+/*捐赠,更新,错误,主题窗口*/
+#widgetDonate, #widgetUpdate, #widgetError, #widgetSkin {
     border: 1px solid rgba(44, 144, 92, 255);
     border-radius: 4px;    /*窗口最外层圆角*/
     background: rgba(64, 187, 107, 255);    /*背景颜色*/
 }
-/*捐赠窗口,更新窗口,错误窗口背景*/
-#widgetImage, #widgetUpdateBg, #widgetErrorBg {
+/*捐赠窗口,更新窗口,错误,主题窗口背景*/
+#widgetImage, #widgetUpdateBg, #widgetErrorBg, #widgetSkinBg {
     border: 1px solid rgba(44, 144, 92, 255);
     border-top: none;
     background: rgba(235, 235, 235, 255);    /*背景颜色*/

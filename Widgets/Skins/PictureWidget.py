@@ -9,17 +9,19 @@ Created on 2019年1月20日
 @file: Widgets.Skins.PictureWidget
 @description: 
 """
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QTabWidget
 
 
 __Author__ = 'Irony'
 __Copyright__ = 'Copyright (c) 2019'
 
 
-class PictureWidget(QWidget):
+class PictureWidget(QTabWidget):
 
     def __init__(self, *args, **kwargs):
         super(PictureWidget, self).__init__(*args, **kwargs)
-    
+
     def init(self):
+        """初始化下载图片
+        """
         pass
