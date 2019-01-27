@@ -39,6 +39,7 @@ LogFormatterDebug = '[%(asctime)s %(name)s %(module)s:%(funcName)s:%(lineno)s] %
 LogFormatter = '[%(asctime)s %(name)s] %(levelname)-8s %(message)s'
 LogFile = 'Resources/Data/app.log'
 
+DirThemes = 'Resources/Themes'                   # 主题目录
 DirErrors = 'Resources/Data/Errors'              # 错误日志目录
 DirProject = 'Resources/Data/Projects'           # 本地项目目录
 DirProjects = 'Resources/Data/Projects/PyQt'     # 本地项目目录

@@ -144,10 +144,17 @@ class _Signals(QObject):
 
     # 添加多彩item
     colourfulItemAdded = pyqtSignal(int, int, str, object)
-    # 添加item完成
+    # 添加多彩item完成
     colourfulItemAddFinished = pyqtSignal()
     # 多彩item点击,色彩
     colourfulItemClicked = pyqtSignal(str, object)
+
+    # 添加主题item
+    themeItemAdded = pyqtSignal(int, int, str, object)
+    # 添加主题item完成
+    themeItemAddFinished = pyqtSignal()
+    # 主推item点击,路径
+    themeItemClicked = pyqtSignal(str, object)
 
 
 # 说白了就是全局信号定义

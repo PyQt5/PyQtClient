@@ -9,11 +9,10 @@ Created on 2019年1月19日
 @file: Dialogs.SkinDialog
 @description: 
 """
-from PyQt5.QtCore import Qt
 
-from Widgets.Dialogs.MoveDialog import MoveDialog
 from UiFiles.Ui_SkinDialog import Ui_FormSkinDialog
 from Utils.ThemeManager import ThemeManager
+from Widgets.Dialogs.MoveDialog import MoveDialog
 
 
 __Author__ = "Irony"
@@ -31,6 +30,7 @@ class SkinDialog(MoveDialog, Ui_FormSkinDialog):
 #         self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
         # 加载鼠标样式
         ThemeManager.loadCursor(self)
+        self.on_tabWidget_currentChanged(0)
 
     def on_tabWidget_currentChanged(self, index):
         self.tabWidget.widget(index).init()

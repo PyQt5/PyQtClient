@@ -9,25 +9,44 @@ Created on 2019年1月20日
 @file: Widgets.Skins.ThemeWidget
 @description: 
 """
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget
-
-from UiFiles.Ui_ScrollArea import Ui_FormScrollArea
+from Utils.CommonUtil import Signals
+from Utils.ThemeThread import ThemeThread
+from Widgets.Skins.SkinBaseWidget import PixmapWidth, PixmapHeight,\
+    SkinBaseItemWidget, SkinBaseWidget
 
 
 __Author__ = "Irony"
 __Copyright__ = "Copyright (c) 2019"
 
 
-class ThemeWidget(QWidget, Ui_FormScrollArea):
+class ThemeWidget(SkinBaseWidget):
 
     def __init__(self, *args, **kwargs):
         super(ThemeWidget, self).__init__(*args, **kwargs)
-        self.setupUi(self)
-        self.setAttribute(Qt.WA_StyledBackground, True)
+        Signals.themeItemAdded.connect(self.onThemeItemAdded)
+        Signals.themeItemAddFinished.connect(
+            self.onThemeItemAddFinished)
 
     def init(self):
         """初始化主题
         """
         if self.gridLayout.count() > 0:
             return
+        ThemeThread.start(PixmapWidth, PixmapHeight)
+
+    def onThemeItemAddFinished(self):
+        """添加完成
+        """
+        return
+
+    def onThemeItemAdded(self, row, col, name, path):
+        """
+        :param row:            行
+        :param col:            列
+        :param name:           名字
+        :param path:           路径
+        """
+        self.lastRow = row
+        self.lastCol = col
+        self.gridLayout.addWidget(
+            SkinBaseItemWidget(name, path, Signals.colourfulItemClicked, self), row, col)

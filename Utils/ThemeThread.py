@@ -9,14 +9,22 @@ Created on 2019年1月20日
 @file: Utils.ThemeThread
 @description: 
 """
+from pathlib import Path
+
 from PyQt5.QtCore import QObject, QThread
 from PyQt5.QtGui import QLinearGradient, QColor
 
 from Utils.CommonUtil import AppLog, Signals
+from Utils.Constants import DirThemes
 
 
 __Author__ = "Irony"
 __Copyright__ = "Copyright (c) 2019"
+
+
+def splistList(src, length):
+    # 等分列表
+    return [src[i:i + length] for i in range(len(src)) if i % length == 0]
 
 
 class ColourfulThread(QObject):
@@ -65,7 +73,7 @@ class ColourfulThread(QObject):
         acolor.setColorAt(0, acolor.startColor)
         acolor.setColorAt(1, acolor.endColor)
 
-        defaults = self.splistList([
+        defaults = splistList([
             [self.tr('MidnightParis'), mcolor],             # 午夜巴黎
             [self.tr('PrimroseGreenOnion'), pcolor],        # 樱草青葱
             [self.tr('AutumnSun'), acolor],                 # 秋日暖阳
@@ -91,6 +99,45 @@ class ColourfulThread(QObject):
         Signals.colourfulItemAddFinished.emit()
         AppLog.info('colourful thread end')
 
-    def splistList(self, src, length):
-        # 等分列表
-        return [src[i:i + length] for i in range(len(src)) if i % length == 0]
+
+class ThemeThread(QObject):
+    """获取所有的主题（本地和云端）
+    """
+
+    def __init__(self, width, height, *args, **kwargs):
+        super(ThemeThread, self).__init__(*args, **kwargs)
+        self.width = width
+        self.height = height
+
+    @classmethod
+    def start(cls, width, height, parent=None):
+        """启动线程
+        :param cls:
+        :param width:        宽度
+        :param width:        高度
+        :param parent:
+        """
+        cls._thread = QThread(parent)
+        cls._worker = ThemeThread(width, height)
+        cls._worker.moveToThread(cls._thread)
+        cls._thread.started.connect(cls._worker.run)
+        cls._thread.finished.connect(cls._worker.deleteLater)
+        cls._thread.start()
+        AppLog.info('theme thread started')
+
+    def run(self):
+        AppLog.info('start get all theme')
+
+        defaults = [[p.parent.name, str(p)]
+                    for p in Path(DirThemes).rglob('style.qss')]
+
+        defaults = splistList(defaults, 5)
+
+        for row, default in enumerate(defaults):
+            for col, (name, path) in enumerate(default):
+                Signals.themeItemAdded.emit(row, col, name, path)
+                QThread.msleep(100)
+                QThread.yieldCurrentThread()
+
+        Signals.themeItemAddFinished.emit()
+        AppLog.info('theme thread end')

@@ -52,6 +52,7 @@ encoding//Widgets/MainWindow.py=utf-8
 encoding//Widgets/MainWindowBase.py=utf-8
 encoding//Widgets/Skins/ColourfulWidget.py=utf-8
 encoding//Widgets/Skins/PictureWidget.py=utf-8
+encoding//Widgets/Skins/SkinBaseWidget.py=utf-8
 encoding//Widgets/Skins/ThemeWidget.py=utf-8
 encoding//Widgets/ToolTip.py=utf-8
 encoding//Widgets/TreeView.py=utf-8
