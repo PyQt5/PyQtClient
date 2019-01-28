@@ -1,5 +1,5 @@
-pygit2==0.27.2
 requests
+pygit2==0.27.2
 PyQt5==5.10.1
 PyQt3D==5.10.1
 PyQtChart==5.10.1

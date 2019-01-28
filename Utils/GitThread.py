@@ -88,7 +88,7 @@ class LoginThread(QObject):
                 else:
                     AppLog.warn('can not load from image data')
         except Exception as e:
-            AppLog.warn(str(e))
+            AppLog.exception(e)
 
     def run(self):
         AppLog.info('start login github')
@@ -121,15 +121,15 @@ class LoginThread(QObject):
         except ConnectTimeout as e:
             Signals.loginErrored.emit(QCoreApplication.translate(
                 'Repository', 'Connect Timeout'))
-            AppLog.warn(str(e))
+            AppLog.exception(e)
         except ConnectionError as e:
             Signals.loginErrored.emit(QCoreApplication.translate(
                 'Repository', 'Connection Error'))
-            AppLog.warn(str(e))
+            AppLog.exception(e)
         except Exception as e:
             Signals.loginErrored.emit(QCoreApplication.translate(
                 'Repository', 'Unknown Error'))
-            AppLog.warn(str(e))
+            AppLog.exception(e)
 
         AppLog.info('login thread end')
 
@@ -253,7 +253,7 @@ class CloneThread(QObject):
                     self.pull(repo)
                     Signals.progressStoped.emit()
         except Exception as e:
-            AppLog.warn(str(e))
+            AppLog.exception(e)
 
         AppLog.info('clone thread end')
         Signals.progressStoped.emit()
@@ -347,5 +347,5 @@ class UpgradeThread(QObject):
         except Exception as e:
             Signals.updateFinished.emit(
                 self.tr('update failed: {}').format(str(e)))
-            AppLog.warn(str(e))
+            AppLog.exception(e)
         AppLog.info('update thread end')

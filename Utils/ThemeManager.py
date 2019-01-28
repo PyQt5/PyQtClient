@@ -95,7 +95,7 @@ class ThemeManager:
                 open(path, 'rb').read().decode('utf-8', errors='ignore'))
             return 1
         except Exception as e:
-            AppLog.error(str(e))
+            AppLog.exception(e)
 
     @classmethod
     def loadUserTheme(cls, theme='Default'):
@@ -139,7 +139,7 @@ class ThemeManager:
                     *color)
             QApplication.instance().setStyleSheet(styleSheet)
         except Exception as e:
-            AppLog.error(str(e))
+            AppLog.exception(e)
 
     @classmethod
     def loadCursor(cls, widget, name='default.png'):

@@ -80,7 +80,7 @@ class LoginDialog(MoveDialog, TwinkleDialog, Ui_FormLoginDialog):
                 self._accounts[account][1].encode()).decode())
         except Exception as e:
             self.lineEditPassword.setText('')
-            AppLog.warn(str(e))
+            AppLog.exception(e)
         # 更新头像
         path = os.path.join(Constants.ImageDir, self._accounts[account][0]).replace(
             '\\', '/') + '.jpg'
