@@ -9,8 +9,9 @@ Created on 2019年1月20日
 @file: Test.TestSkinDialog
 @description: 
 """
-from Widgets.Dialogs.SkinDialog import SkinDialog
+from Test.BaseApplyStyle import StyleWindow
 from Utils.ThemeManager import ThemeManager
+from Widgets.Dialogs.SkinDialog import SkinDialog
 
 
 __Author__ = 'Irony'
@@ -28,4 +29,6 @@ if __name__ == '__main__':
     w = SkinDialog()
     ThemeManager.loadTheme()
     w.show()
+    ww = StyleWindow()
+    ww.show()
     sys.exit(app.exec_())

@@ -36,27 +36,27 @@ StyleTemplate = """
 
 /*存放网页控件*/
 #widgetContents {{
-    background: rgba(248, 248, 248, 150);
+    background: rgba(248, 248, 248, 200);
 }}
 
 /*搜索框中的按钮*/
 #buttonSearch {{
-    qproperty-bgColor: rgb({1}, {2}, {3}, 255);
+    qproperty-bgColor: rgba({1}, {2}, {3}, 255);
 }}
 
 /*返回顶部,主页按钮*/
 #buttonBackToUp, #buttonHome {{
-    qproperty-bgColor: rgb({1}, {2}, {3}, 255);
+    qproperty-bgColor: rgba({1}, {2}, {3}, 255);
 }}
 
 /*工具栏中的按钮*/
 #buttonGithub, #buttonQQ, #buttonGroup {{
-    background: rgb({1}, {2}, {3}, 255);
+    background: rgba({1}, {2}, {3}, 255);
 }}
 
 /*登录窗口*/
 #widgetLogin {{
-    background: rgb({1}, {2}, {3}, 210);
+    background: rgba({1}, {2}, {3}, 210);
 }}
 
 /*激活状态*/

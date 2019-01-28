@@ -30,7 +30,7 @@ class SkinDialog(MoveDialog, Ui_FormSkinDialog):
 #         self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
         # 加载鼠标样式
         ThemeManager.loadCursor(self)
-        self.on_tabWidget_currentChanged(0)
+        self.on_tabWidgetSkinMain_currentChanged(0)
 
-    def on_tabWidget_currentChanged(self, index):
-        self.tabWidget.widget(index).init()
+    def on_tabWidgetSkinMain_currentChanged(self, index):
+        self.tabWidgetSkinMain.widget(index).init()

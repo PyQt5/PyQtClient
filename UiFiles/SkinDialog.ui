@@ -111,19 +111,19 @@
           <number>0</number>
          </property>
          <property name="leftMargin">
-          <number>0</number>
+          <number>2</number>
          </property>
          <property name="topMargin">
           <number>0</number>
          </property>
          <property name="rightMargin">
-          <number>0</number>
+          <number>2</number>
          </property>
          <property name="bottomMargin">
-          <number>0</number>
+          <number>2</number>
          </property>
          <item>
-          <widget class="QTabWidget" name="tabWidget">
+          <widget class="QTabWidget" name="tabWidgetSkinMain">
            <property name="currentIndex">
             <number>0</number>
            </property>
@@ -177,6 +177,9 @@
             </item>
             <item>
              <widget class="QSlider" name="sliderOpacity">
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>

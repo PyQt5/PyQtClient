@@ -10,6 +10,9 @@ a {
 p, li {
     font-size: 20px;
 }
+.table-striped>tbody>tr:nth-child(odd)>td, .table-striped>tbody>tr:nth-child(odd)>th {
+    background-color: transparent;
+}
 .container {
     width: 90%;
 }
@@ -65,7 +68,7 @@ p, li {
 .container1 > div, .container2 > div, .container3 > div {
   width: 16px;
   height: 16px;
-  background-color: #67CF22;
+  background-color: white;
  
   border-radius: 100%;
   position: absolute;
