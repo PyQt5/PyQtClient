@@ -6,7 +6,7 @@ QLineEdit {
 /*主窗口*/
 #widgetMain {
     border-radius: 4px;    /*窗口最外层圆角*/
-    background: rgba(230, 0, 0, 255);    /*背景颜色*/
+    background: rgba(200, 47, 10, 255);    /*背景颜色*/
     border-image: url(Resources/Themes/春节/background.jpg);    /*背景图片*/
 }
 
@@ -122,7 +122,7 @@ QLineEdit {
     max-height: 26px;
     border: none;
     color: white;
-    qproperty-bgColor: rgba(230, 0, 0, 255);
+    qproperty-bgColor: rgba(200, 47, 10, 255);
     outline: none;
     font-family: "pyqtclient";
     qproperty-text: "\5100";
@@ -166,7 +166,7 @@ QLineEdit {
 #widgetTools {
     min-width: 60px;
     max-width: 60px;
-    background-color: rgba(142, 11, 15, 100);
+    background-color: rgba(200, 47, 10, 100);
 }
 /*工具栏中的按钮*/
 #buttonGithub, #buttonQQ, #buttonGroup {
@@ -180,7 +180,7 @@ QLineEdit {
     outline: none;
     font-family: "pyqtclient";
     font-size: 20px;
-    background: rgba(230, 0, 0, 255);
+    background: rgba(200, 47, 10, 255);
     qproperty-shadowColor: rgba(255, 255, 255, 255);
 }
 
@@ -216,7 +216,7 @@ QLineEdit {
     max-height: 36px;
     border: none;
     color: rgba(255, 255, 255, 255);
-    qproperty-bgColor: rgba(230, 0, 0, 255);
+    qproperty-bgColor: rgba(200, 47, 10, 255);
     outline: none;
     font-family: "pyqtclient";
 }
@@ -256,13 +256,13 @@ ToolTip > QLabel {
 
 /*登录窗口*/
 #widgetLogin {
-    border: 1px solid rgba(142, 11, 15, 255);
+    border: 1px solid rgba(200, 47, 10, 255);
     border-radius: 4px;    /*窗口最外层圆角*/
-    background: rgba(142, 11, 15, 210);    /*背景颜色*/
+    background: rgba(200, 47, 10, 240);    /*背景颜色*/
 }
 /*激活状态*/
 #widgetLogin[_active="true"] {
-    border: 1px solid rgba(142, 11, 15, 255);
+    border: 1px solid rgba(200, 47, 10, 255);
 }
 /*非激活状态*/
 #widgetLogin[_active="false"] {
@@ -307,7 +307,7 @@ ToolTip > QLabel {
 #widgetDonate, #widgetUpdate, #widgetError, #widgetSkin {
     border: 1px solid rgba(200, 200, 200, 255);
     border-radius: 4px;    /*窗口最外层圆角*/
-    background: rgba(230, 0, 0, 255);    /*背景颜色*/
+    background: rgba(200, 47, 10, 255);    /*背景颜色*/
 }
 /*捐赠窗口,更新窗口,错误,主题窗口背景*/
 #widgetImage, #widgetUpdateBg, #widgetErrorBg, #widgetSkinBg {
@@ -329,7 +329,7 @@ ToolTip > QLabel {
 }
 /*更新进度条*/
 #progressBarUpdate::chunk {
-    background-color: rgba(230, 0, 0, 255);
+    background-color: rgba(200, 47, 10, 255);
 }
 
 /*pip按钮*/
@@ -339,13 +339,13 @@ ToolTip > QLabel {
     min-height: 36px;
     max-height: 36px;
     border-radius: 4px;
-    background: rgba(230, 0, 0, 255);    /*背景颜色*/
+    background: rgba(200, 47, 10, 255);    /*背景颜色*/
 }
 #buttonInstall:hover {
-    background: rgba(230, 0, 0, 150);
+    background: rgba(200, 47, 10, 150);
 }
 #buttonInstall:pressed {
-    background: rgba(230, 0, 0, 200);
+    background: rgba(200, 47, 10, 200);
 }
 /*pip输入框*/
 #lineEditPip {
