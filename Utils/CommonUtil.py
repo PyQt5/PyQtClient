@@ -156,6 +156,15 @@ class _Signals(QObject):
     # 主推item点击,路径
     themeItemClicked = pyqtSignal(str, object)
 
+    # 获取壁纸目录
+    getCategoriesFinished = pyqtSignal(list)
+    # 分类获取完成
+    getCategoryFinished = pyqtSignal(object, list)
+    # 分类图片下载完成信号
+    pictureDownloadFinished = pyqtSignal(object, int, list)
+    # 分类图片item点击,路径
+    pictureItemClicked = pyqtSignal(str, object)
+
 
 # 说白了就是全局信号定义
 Signals = _Signals()

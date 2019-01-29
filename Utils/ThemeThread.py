@@ -9,17 +9,28 @@ Created on 2019年1月20日
 @file: Utils.ThemeThread
 @description: 
 """
+import os
 from pathlib import Path
 
-from PyQt5.QtCore import QObject, QThread
+from PyQt5.QtCore import QObject, QThread, QRunnable
 from PyQt5.QtGui import QLinearGradient, QColor
+import requests
 
 from Utils.CommonUtil import AppLog, Signals
-from Utils.Constants import DirThemes
+from Utils.Constants import DirThemes, UrlGetAllCategoriesV2,\
+    UrlGetAppsByCategory, DirImages
 
 
 __Author__ = "Irony"
 __Copyright__ = "Copyright (c) 2019"
+
+Headers = {
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+    'Accept-Language': 'zh-CN,zh;q=0.9',
+    'Cache-Control': 'max-age=0',
+    'Upgrade-Insecure-Requests': '1',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.26 Safari/537.36 Core/1.63.6824.400 QQBrowser/10.3.3137.400'
+}
 
 
 def splistList(src, length):
@@ -141,3 +152,65 @@ class ThemeThread(QObject):
 
         Signals.themeItemAddFinished.emit()
         AppLog.info('theme thread end')
+
+
+class GetAllCategoriesRunnable(QRunnable):
+
+    def __init__(self, *args, **kwargs):
+        super(GetAllCategoriesRunnable, self).__init__(*args, **kwargs)
+        self.setAutoDelete(True)
+
+    def run(self):
+        categories = []
+        try:
+            req = requests.get(UrlGetAllCategoriesV2)
+            content = req.json()
+            categories = content.get('data', [])
+            AppLog.debug('errmsg: %s', content.get('errmsg', ''))
+            AppLog.debug('consume: %s', content.get('consume', ''))
+            AppLog.debug('total: %s', content.get('total', ''))
+        except Exception as e:
+            AppLog.exception(e)
+        Signals.getCategoriesFinished.emit(categories)
+
+
+class GetAllCategoryRunnable(QRunnable):
+
+    def __init__(self, cid, widget, *args, **kwargs):
+        super(GetAllCategoryRunnable, self).__init__(*args, **kwargs)
+        self.setAutoDelete(True)
+        self.cid = cid
+        self.widget = widget
+
+    def download(self, index, url):
+        try:
+            dirPath = os.path.join(DirImages, self.cid)
+            os.makedirs(dirPath, exist_ok=True)
+            req = requests.get(url, headers=Headers)
+            if req.status_code == 200:
+                path = os.path.join(dirPath, os.path.basename(url))
+                with open(path, 'wb') as fp:
+                    fp.write(req.content)
+                self.pictureDownloadFinished.emit(self, index, path)
+        except Exception as e:
+            AppLog.exception(e)
+
+    def run(self):
+        datas = []
+        try:
+            req = requests.get(UrlGetAppsByCategory.format(
+                cid=self.cid, start=0, count=200))
+            content = req.json()
+            datas = content.get('data', [])
+            AppLog.debug('errmsg: %s', content.get('errmsg', ''))
+            AppLog.debug('consume: %s', content.get('consume', ''))
+            AppLog.debug('total: %s', content.get('total', ''))
+            # 加载前20个
+            for i, item in enumerate(datas[:20]):
+                url = item.get('url', None)
+                if not url:
+                    continue
+                self.download(i, url)
+        except Exception as e:
+            AppLog.exception(e)
+        Signals.getCategoryFinished.emit(self.widget, datas)

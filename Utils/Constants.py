@@ -39,6 +39,7 @@ LogFormatterDebug = '[%(asctime)s %(name)s %(module)s:%(funcName)s:%(lineno)s] %
 LogFormatter = '[%(asctime)s %(name)s] %(levelname)-8s %(message)s'
 LogFile = 'Resources/Data/app.log'
 
+DirImages = 'Resources/Images'
 DirThemes = 'Resources/Themes'                   # 主题目录
 DirErrors = 'Resources/Data/Errors'              # 错误日志目录
 DirProject = 'Resources/Data/Projects'           # 本地项目目录
@@ -52,6 +53,8 @@ UrlProject = 'https://github.com/PyQt5/PyQtClient'
 UrlQQ = 'tencent://message/?uin=892768447'
 UrlGroup = 'tencent://groupwpa/?subcmd=all&param=7B2267726F757055696E223A3234363236393931392C2274696D655374616D70223A313531383537323831357D0A'
 UrlIssues = 'https://github.com/PyQt5/PyQtClient/issues/new'
+UrlGetAllCategoriesV2 = 'http://wallpaper.apc.360.cn/index.php?c=WallPaper&a=getAllCategoriesV2'
+UrlGetAppsByCategory = 'http://wallpaper.apc.360.cn/index.php?c=WallPaper&a=getAppsByCategory&cid={cid}&start={start}&count={count}&from=360chrome'
 
 _Sha = ''
 _Account = ''

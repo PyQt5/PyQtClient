@@ -55,8 +55,25 @@ class Ui_FormSkinDialog(object):
         self.tabColourful = ColourfulWidget()
         self.tabColourful.setObjectName("tabColourful")
         self.tabWidgetSkinMain.addTab(self.tabColourful, "")
-        self.tabPicture = PictureWidget()
+        self.tabPicture = QtWidgets.QWidget()
         self.tabPicture.setObjectName("tabPicture")
+        self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.tabPicture)
+        self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_4.setSpacing(0)
+        self.verticalLayout_4.setObjectName("verticalLayout_4")
+        self.widget = QtWidgets.QWidget(self.tabPicture)
+        self.widget.setObjectName("widget")
+        self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.widget)
+        self.verticalLayout_5.setContentsMargins(30, 20, 30, 20)
+        self.verticalLayout_5.setSpacing(0)
+        self.verticalLayout_5.setObjectName("verticalLayout_5")
+        self.widgetCategories = QtWidgets.QWidget(self.widget)
+        self.widgetCategories.setObjectName("widgetCategories")
+        self.verticalLayout_5.addWidget(self.widgetCategories)
+        self.verticalLayout_4.addWidget(self.widget)
+        self.stackedWidgetPictures = QtWidgets.QStackedWidget(self.tabPicture)
+        self.stackedWidgetPictures.setObjectName("stackedWidgetPictures")
+        self.verticalLayout_4.addWidget(self.stackedWidgetPictures)
         self.tabWidgetSkinMain.addTab(self.tabPicture, "")
         self.verticalLayout_3.addWidget(self.tabWidgetSkinMain)
         self.widgetBottom = QtWidgets.QWidget(self.widgetSkinBg)
@@ -104,7 +121,6 @@ class Ui_FormSkinDialog(object):
         self.buttonRestore.setText(_translate("FormSkinDialog", "Restore the default theme"))
 
 from Widgets.Skins.ColourfulWidget import ColourfulWidget
-from Widgets.Skins.PictureWidget import PictureWidget
 from Widgets.Skins.ThemeWidget import ThemeWidget
 
 if __name__ == "__main__":
