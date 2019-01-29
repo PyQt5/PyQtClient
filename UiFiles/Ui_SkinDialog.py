@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_FormSkinDialog(object):
     def setupUi(self, FormSkinDialog):
         FormSkinDialog.setObjectName("FormSkinDialog")
-        FormSkinDialog.resize(930, 635)
+        FormSkinDialog.resize(916, 635)
         self.verticalLayout = QtWidgets.QVBoxLayout(FormSkinDialog)
         self.verticalLayout.setContentsMargins(2, 2, 2, 2)
         self.verticalLayout.setSpacing(0)
@@ -71,7 +71,11 @@ class Ui_FormSkinDialog(object):
         self.horizontalLayout_2.addWidget(self.label)
         self.sliderOpacity = QtWidgets.QSlider(self.widgetBottom)
         self.sliderOpacity.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.sliderOpacity.setMaximum(100)
+        self.sliderOpacity.setPageStep(1)
+        self.sliderOpacity.setProperty("value", 100)
         self.sliderOpacity.setOrientation(QtCore.Qt.Horizontal)
+        self.sliderOpacity.setInvertedAppearance(True)
         self.sliderOpacity.setObjectName("sliderOpacity")
         self.horizontalLayout_2.addWidget(self.sliderOpacity)
         spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>930</width>
+    <width>916</width>
     <height>635</height>
    </rect>
   </property>
@@ -180,8 +180,20 @@
               <property name="cursor">
                <cursorShape>PointingHandCursor</cursorShape>
               </property>
+              <property name="maximum">
+               <number>100</number>
+              </property>
+              <property name="pageStep">
+               <number>1</number>
+              </property>
+              <property name="value">
+               <number>100</number>
+              </property>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="invertedAppearance">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
