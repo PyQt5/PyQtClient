@@ -36,6 +36,7 @@ class SkinDialog(MoveDialog, Ui_FormSkinDialog):
         self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
         self.widgetBottom.setVisible(False)
         Signals.pictureItemAdded.connect(self.onPictureItemAdded)
+        Signals.pictureDownFinished.connect(self.onPictureDownFinished)
         # 加载鼠标样式
         ThemeManager.loadCursor(self)
         self.on_tabWidgetSkinMain_currentChanged(0)
@@ -82,7 +83,11 @@ class SkinDialog(MoveDialog, Ui_FormSkinDialog):
             if not hasattr(self, '_threadPool'):
                 self._threadPool = QThreadPool(self)
                 self._threadPool.setMaxThreadCount(5)
+            widget.showWaiting()
             self._threadPool.start(runnable)
+
+    def onPictureDownFinished(self, widget):
+        widget.showWaiting(False)
 
     def onPictureItemAdded(self, widget, index, title, path):
         """添加分类图片Item
