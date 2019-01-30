@@ -422,6 +422,55 @@ ToolTip > QLabel {
     background: rgba(225, 226, 227, 255);
 }
 
+/*主题预览界面*/
+#FormPreviewWidget {
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 240);
+}
+#buttonPreviewPrevious, #buttonPreviewNext, #buttonPreviewClose {
+    min-width: 48px;
+    max-width: 48px;
+    min-height: 48px;
+    max-height: 48px;
+    color: rgb(181, 182, 185);
+    font-family: "pyqtclient";
+    font-size: 40px;
+    border: none; /*无边框*/
+    background: transparent; /*背景透明*/
+}
+#buttonPreviewPrevious:hover,#buttonPreviewNext:hover, #buttonPreviewClose:hover {
+    color: rgb(118, 122, 126);
+}
+#buttonPreviewPrevious:pressed,#buttonPreviewNext:pressed, #buttonPreviewClose:pressed {
+    color: rgb(27, 36, 42);
+}
+
+#buttonPreviewPrevious {
+    qproperty-text: "\5106";
+}
+#buttonPreviewNext {
+    qproperty-text: "\5107";
+}
+#buttonPreviewClose {
+    qproperty-text: "\5105";
+}
+#buttonPreviewApply {
+    color: white;
+    font-size: 20px;
+    font-family: "微软雅黑";
+    min-height: 35px;
+    min-width: 120px;
+    border: none;
+    border-radius: 2px;
+    background: rgb(39, 174, 97);
+}
+#buttonPreviewApply:hover {
+    background: rgba(39, 174, 97, 200);
+}
+#buttonPreviewApply:pressed {
+    background: rgba(39, 174, 97, 230);
+}
+
 /*滚动条样式*/
 QScrollBar:vertical {
     background: transparent;

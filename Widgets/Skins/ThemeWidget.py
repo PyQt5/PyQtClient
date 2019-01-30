@@ -53,4 +53,4 @@ class ThemeWidget(SkinBaseWidget):
         self.gridLayout.addWidget(
             SkinBaseItemWidget(
                 name, os.path.join(os.path.dirname(path), 'preview.png'),
-                Signals.colourfulItemClicked, self), row, col)
+                Signals.themeItemClicked, self), row, col)

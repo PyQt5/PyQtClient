@@ -76,6 +76,12 @@ class ThemeManager:
     CursorPointer = 'pointer.png'
 
     @classmethod
+    def styleSheet(cls):
+        """获取Application的样式
+        """
+        return QApplication.instance().styleSheet()
+
+    @classmethod
     def loadTheme(cls):
         """根据配置加载主题
         :param cls:
