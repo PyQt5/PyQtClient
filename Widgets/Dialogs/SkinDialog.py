@@ -16,7 +16,6 @@ from PyQt5.QtWidgets import QPushButton, QButtonGroup
 from UiFiles.Ui_SkinDialog import Ui_FormSkinDialog
 from Utils.CommonUtil import Signals
 from Utils.ThemeManager import ThemeManager
-from Utils.ThemeThread import GetAllCategoriesRunnable
 from Widgets.Dialogs.MoveDialog import MoveDialog
 from Widgets.Layouts.FlowLayout import FlowLayout
 from Widgets.Skins.PictureWidget import PictureWidget
@@ -36,12 +35,7 @@ class SkinDialog(MoveDialog, Ui_FormSkinDialog):
         # 无边框
         self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
         self.widgetBottom.setVisible(False)
-        # 背景图片面板
-        Signals.getCategoriesFinished.connect(self.onGetCategoriesFinished)
-        Signals.getCategoryFinished.connect(self.onGetCategoryFinished)
-        Signals.pictureDownloadFinished.connect(self.onPictureDownloadFinished)
-        self.categoryLayout = FlowLayout(self.widgetCategories)
-        self.categoryLayout.setSpacing(20)
+        Signals.pictureItemAdded.connect(self.onPictureItemAdded)
         # 加载鼠标样式
         ThemeManager.loadCursor(self)
         self.on_tabWidgetSkinMain_currentChanged(0)
@@ -52,24 +46,26 @@ class SkinDialog(MoveDialog, Ui_FormSkinDialog):
         if w == self.tabPicture:
             if self.stackedWidgetPictures.count() > 0:
                 return
-            QThreadPool.globalInstance().start(GetAllCategoriesRunnable())
+            self.initCategories()
         else:
             w.init()
 
-    def onGetCategoriesFinished(self, categories):
+    def initCategories(self):
         """添加分类标签页
         :param categories:        分类
         """
+        self.categoryLayout = FlowLayout(self.widgetCategories)
+        self.categoryLayout.setSpacing(10)
         self.categoryBtnGroups = QButtonGroup(self)
         self.categoryBtnGroups.buttonToggled.connect(self.onCategoryChanged)
-        for category in categories:
-            button = QPushButton(category.get(
-                'name', '未知'), self.widgetCategories)
+        for category in ('4K', '双屏', '美女', '动漫', '风景', '明星', '萌宠', '游戏', '科技', '其他'):
+            button = QPushButton(category, self.widgetCategories)
             button.setCheckable(True)
             self.categoryBtnGroups.addButton(button)
             self.categoryLayout.addWidget(button)
-            self.stackedWidgetPictures.addWidget(
-                PictureWidget(category.get('id', '36'), self.stackedWidgetPictures))
+            widget = PictureWidget(category, self.stackedWidgetPictures)
+            button.setProperty('widget', widget)
+            self.stackedWidgetPictures.addWidget(widget)
         self.categoryBtnGroups.buttons()[0].setChecked(True)
 
     def onCategoryChanged(self, button, toggled):
@@ -79,21 +75,20 @@ class SkinDialog(MoveDialog, Ui_FormSkinDialog):
         """
         if not toggled:
             return
-        index = self.categoryBtnGroups.id(button)
-        self.stackedWidgetPictures.setCurrentIndex(index)
-        self.stackedWidgetPictures.widget(index).init()
+        widget = button.property('widget')
+        self.stackedWidgetPictures.setCurrentWidget(widget)
+        runnable = widget.init()
+        if runnable:
+            if not hasattr(self, '_threadPool'):
+                self._threadPool = QThreadPool(self)
+                self._threadPool.setMaxThreadCount(5)
+            self._threadPool.start(runnable)
 
-    def onGetCategoryFinished(self, widget, items):
-        """某个分类json下载完成
-        :param widget:            该分类对应的PictureWidget
-        :param items:             分类中的数组
-        """
-        widget.setItems(items)
-
-    def onPictureDownloadFinished(self, widget, index, path):
-        """分类图片下载完成
+    def onPictureItemAdded(self, widget, index, title, path):
+        """添加分类图片Item
         :param widget:            该分类对应的PictureWidget
         :param index:             序号
+        :param title:             标题
         :param path:              图片路径
         """
-        widget.addItem(index, path)
+        widget.addItem(index, title, path)

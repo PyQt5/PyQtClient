@@ -11,14 +11,14 @@ Created on 2019年1月20日
 """
 import os
 from pathlib import Path
+from time import time
 
 from PyQt5.QtCore import QObject, QThread, QRunnable
 from PyQt5.QtGui import QLinearGradient, QColor
 import requests
 
 from Utils.CommonUtil import AppLog, Signals
-from Utils.Constants import DirThemes, UrlGetAllCategoriesV2,\
-    UrlGetAppsByCategory, DirImages
+from Utils.Constants import DirThemes, UrlGetAppsByCategory, DirWallpaper
 
 
 __Author__ = "Irony"
@@ -154,63 +154,56 @@ class ThemeThread(QObject):
         AppLog.info('theme thread end')
 
 
-class GetAllCategoriesRunnable(QRunnable):
-
-    def __init__(self, *args, **kwargs):
-        super(GetAllCategoriesRunnable, self).__init__(*args, **kwargs)
-        self.setAutoDelete(True)
-
-    def run(self):
-        categories = []
-        try:
-            req = requests.get(UrlGetAllCategoriesV2)
-            content = req.json()
-            categories = content.get('data', [])
-            AppLog.debug('errmsg: %s', content.get('errmsg', ''))
-            AppLog.debug('consume: %s', content.get('consume', ''))
-            AppLog.debug('total: %s', content.get('total', ''))
-        except Exception as e:
-            AppLog.exception(e)
-        Signals.getCategoriesFinished.emit(categories)
-
-
 class GetAllCategoryRunnable(QRunnable):
 
-    def __init__(self, cid, widget, *args, **kwargs):
+    def __init__(self, category, widget, *args, **kwargs):
         super(GetAllCategoryRunnable, self).__init__(*args, **kwargs)
         self.setAutoDelete(True)
-        self.cid = cid
+        self.category = category
         self.widget = widget
 
-    def download(self, index, url):
+    def download(self, index, title, url):
         try:
-            dirPath = os.path.join(DirImages, self.cid)
+            dirPath = os.path.join(DirWallpaper, self.category)
             os.makedirs(dirPath, exist_ok=True)
+            path = os.path.join(dirPath, os.path.basename(url))
+            if os.path.exists(path) and os.path.isfile(path):
+                Signals.pictureItemAdded.emit(
+                    self.widget, index, title, path)
+                return
             req = requests.get(url, headers=Headers)
             if req.status_code == 200:
-                path = os.path.join(dirPath, os.path.basename(url))
                 with open(path, 'wb') as fp:
                     fp.write(req.content)
-                self.pictureDownloadFinished.emit(self, index, path)
+                Signals.pictureItemAdded.emit(
+                    self.widget, index, title, path)
         except Exception as e:
             AppLog.exception(e)
 
     def run(self):
-        datas = []
         try:
             req = requests.get(UrlGetAppsByCategory.format(
-                cid=self.cid, start=0, count=200))
+                category=self.category, pageno=1, count=20, time=time()))
             content = req.json()
-            datas = content.get('data', [])
-            AppLog.debug('errmsg: %s', content.get('errmsg', ''))
-            AppLog.debug('consume: %s', content.get('consume', ''))
-            AppLog.debug('total: %s', content.get('total', ''))
-            # 加载前20个
-            for i, item in enumerate(datas[:20]):
-                url = item.get('url', None)
+            errno = content.get('errno', 0)
+            AppLog.debug('errno: %s', errno)
+            AppLog.debug('msg: %s', content.get('msg', ''))
+            if errno != 0:
+                return
+
+            content = content.get('data', {})
+            AppLog.debug('total_count: %s', content.get('total_count', ''))
+            AppLog.debug('total_page: %s', content.get('total_page', ''))
+            items = content.get('list', [])
+
+            for i, item in enumerate(items):
+                title = item.get('title', '')
+                url = item.get('image', None)
                 if not url:
                     continue
-                self.download(i, url)
+                self.download(i, title, url)
+                QThread.msleep(200)
+                QThread.yieldCurrentThread()
         except Exception as e:
             AppLog.exception(e)
-        Signals.getCategoryFinished.emit(self.widget, datas)
+        Signals.pictureDownFinished.emit(self.widget)

@@ -41,12 +41,10 @@ class SkinBaseItemWidget(QWidget):
         self.textColor = QColor(102, 102, 102)
         self.image = None
         # 图片
-        if isinstance(self.colorimg, str):
-            path = os.path.join(os.path.dirname(self.colorimg), 'preview.png')
-            if os.path.isfile(path):
-                self.image = QPixmap(path).scaled(
-                    PixmapWidth, PixmapHeight,
-                    Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
+        if isinstance(self.colorimg, str) and os.path.isfile(self.colorimg):
+            self.image = QPixmap(self.colorimg).scaled(
+                PixmapWidth, PixmapHeight,
+                Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
 
     def mousePressEvent(self, event):
         super(SkinBaseItemWidget, self).mousePressEvent(event)

@@ -377,20 +377,16 @@ ToolTip > QLabel {
 }
 
 /*主题图片tab标签*/
-PictureWidget::pane {
+#widgetCategories > QPushButton {
     border: none;
-}
-PictureWidget > QTabBar::tab {
     color: rgb(140, 140, 140);
-    font-size: 18px;
-    min-width: 100px;
-    min-height: 46px;
+    min-height: 26px;
     background: transparent;
 }
-PictureWidget > QTabBar::tab:hover {
+#widgetCategories > QPushButton:hover {
     color: black;
 }
-PictureWidget > QTabBar::tab:selected {
+#widgetCategories > QPushButton:checked {
     color: rgb(18, 183, 245);
 }
 

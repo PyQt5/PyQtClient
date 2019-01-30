@@ -9,6 +9,8 @@ Created on 2019年1月20日
 @file: Widgets.Skins.ThemeWidget
 @description: 
 """
+import os
+
 from Utils.CommonUtil import Signals
 from Utils.ThemeThread import ThemeThread
 from Widgets.Skins.SkinBaseWidget import PixmapWidth, PixmapHeight,\
@@ -49,4 +51,6 @@ class ThemeWidget(SkinBaseWidget):
         self.lastRow = row
         self.lastCol = col
         self.gridLayout.addWidget(
-            SkinBaseItemWidget(name, path, Signals.colourfulItemClicked, self), row, col)
+            SkinBaseItemWidget(
+                name, os.path.join(os.path.dirname(path), 'preview.png'),
+                Signals.colourfulItemClicked, self), row, col)

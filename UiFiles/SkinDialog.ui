@@ -167,13 +167,13 @@
                  <number>30</number>
                 </property>
                 <property name="topMargin">
-                 <number>20</number>
+                 <number>10</number>
                 </property>
                 <property name="rightMargin">
                  <number>30</number>
                 </property>
                 <property name="bottomMargin">
-                 <number>20</number>
+                 <number>10</number>
                 </property>
                 <item>
                  <widget class="QWidget" name="widgetCategories" native="true"/>

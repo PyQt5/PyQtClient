@@ -64,7 +64,7 @@ class Ui_FormSkinDialog(object):
         self.widget = QtWidgets.QWidget(self.tabPicture)
         self.widget.setObjectName("widget")
         self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.widget)
-        self.verticalLayout_5.setContentsMargins(30, 20, 30, 20)
+        self.verticalLayout_5.setContentsMargins(30, 10, 30, 10)
         self.verticalLayout_5.setSpacing(0)
         self.verticalLayout_5.setObjectName("verticalLayout_5")
         self.widgetCategories = QtWidgets.QWidget(self.widget)
