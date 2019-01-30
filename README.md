@@ -2,7 +2,7 @@
 
 PyQt Examples Client For https://github.com/PyQt5/PyQt
 
-The project is currently under development. It requires both PyQt 5.10 and QtWebKit.
+The project is currently under development. It requires both Python35-32 and PyQt 5.10 and QtWebKit.
 
 ## Installing
 
