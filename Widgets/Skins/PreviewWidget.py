@@ -9,11 +9,15 @@ Created on 2019年1月30日
 @file: Widgets.Skins.PreviewWidget
 @description: 主题预览
 """
-from PyQt5.QtCore import Qt, pyqtSlot
+import os
+
+from PyQt5.QtCore import Qt, pyqtSlot, QTimer
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QWidget, QGraphicsDropShadowEffect
 
 from UiFiles.Ui_MainWindow import Ui_FormMainWindow
 from UiFiles.Ui_PreviewWidget import Ui_FormPreviewWidget
+from Utils.CommonUtil import Setting
 from Utils.ThemeManager import ThemeManager
 
 
@@ -58,22 +62,33 @@ class PreviewWidget(QWidget, Ui_FormPreviewWidget):
     def setPixmap(self, which, poc):
         """设置图片
         :param which:        Theme = 0,Color = 1,Picture = 2
-        :param poc:          QPixmap or color or path
+        :param poc:          color or path
         """
+        self._which = which
+        self._poc = poc
         if not hasattr(self, '_UiMainWindow'):
             # 创建一个隐藏的主界面
             self._UiMainWindow = QWidget()
             ui = Ui_FormMainWindow()
             ui.setupUi(self._UiMainWindow)
+            self._UiMainWindow.setAttribute(Qt.WA_TranslucentBackground, True)
+            self._UiMainWindow.setWindowFlags(
+                self.windowFlags() | Qt.FramelessWindowHint)
             self._UiMainWindow.hide()
         if which == self.Theme:
-            self.labelPreviewImage.setPixmap(poc)
+            self.labelPreviewImage.setPixmap(
+                QPixmap(poc).scaledToWidth(400, Qt.SmoothTransformation))
             return
         elif which == self.Color:
             ThemeManager.loadColourfulTheme(poc, self._UiMainWindow)
         elif which == self.Picture:
             ThemeManager.loadPictureTheme(poc, self._UiMainWindow)
         # 对隐藏窗口截图
+        # 至于为什么要加延迟, 设置样式后可能UI还没刷新
+        self._UiMainWindow.repaint()
+        QTimer.singleShot(100, self._updatePixmap)
+
+    def _updatePixmap(self):
         poc = self._UiMainWindow.grab().scaledToWidth(400, Qt.SmoothTransformation)
         self.labelPreviewImage.setPixmap(poc)
 
@@ -82,3 +97,17 @@ class PreviewWidget(QWidget, Ui_FormPreviewWidget):
         """隐藏自己
         """
         self.setVisible(False)
+
+    @pyqtSlot()
+    def on_buttonPreviewApply_clicked(self):
+        """设置主题
+        """
+        if self._which == self.Theme:
+            ThemeManager.loadUserTheme(
+                os.path.basename(os.path.dirname(self._poc)))
+        elif self._which == self.Color:
+            ThemeManager.loadColourfulTheme(self._poc)
+            Setting.setValue('colourful', self._poc)
+        elif self._which == self.Picture:
+            ThemeManager.loadPictureTheme(self._poc)
+            Setting.setValue('picture', self._poc)

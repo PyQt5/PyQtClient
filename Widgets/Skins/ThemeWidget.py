@@ -35,6 +35,14 @@ class ThemeWidget(SkinBaseWidget):
         if self.gridLayout.count() > 0:
             return
         ThemeThread.start(PixmapWidth, PixmapHeight)
+    
+    def doPreviewPrevious(self):
+        """上一个
+        """
+    
+    def doPreviewNext(self):
+        """下一个
+        """
 
     def onThemeItemAddFinished(self):
         """添加完成

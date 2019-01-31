@@ -11,7 +11,6 @@ Created on 2019年1月19日
 """
 
 from PyQt5.QtCore import Qt, QThreadPool
-from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QPushButton, QButtonGroup
 
 from UiFiles.Ui_SkinDialog import Ui_FormSkinDialog
@@ -31,8 +30,6 @@ class SkinDialog(MoveDialog, Ui_FormSkinDialog):
 
     def __init__(self, *args, **kwargs):
         super(SkinDialog, self).__init__(*args, **kwargs)
-        # 记录当前主题的样式表（用于后面修改背景或者颜色）
-        self._oldStyleSheet = ThemeManager.styleSheet()
         self.setupUi(self)
         # 背景透明
         self.setAttribute(Qt.WA_TranslucentBackground, True)
@@ -57,6 +54,30 @@ class SkinDialog(MoveDialog, Ui_FormSkinDialog):
         Signals.colourfulItemClicked.connect(self.onColourfulItemClicked)
         # 点击图片
         Signals.pictureItemClicked.connect(self.onPictureItemClicked)
+        # 上一个
+        self.previewWidget.buttonPreviewPrevious.clicked.connect(
+            self.onPreviewPrevious)
+        # 下一个
+        self.previewWidget.buttonPreviewNext.clicked.connect(
+            self.onPreviewNext)
+
+    def onPreviewPrevious(self):
+        """上一个
+        """
+        w = self.tabWidgetSkinMain.currentWidget()
+        if w == self.tabPicture:
+            self.categoryBtnGroups.checkedButton().property('widget').doPreviewPrevious()
+        else:
+            w.doPreviewPrevious()
+
+    def onPreviewNext(self):
+        """下一个
+        """
+        w = self.tabWidgetSkinMain.currentWidget()
+        if w == self.tabPicture:
+            self.categoryBtnGroups.checkedButton().property('widget').doPreviewNext()
+        else:
+            w.doPreviewNext()
 
     def onThemeItemClicked(self, name, path):
         """
@@ -65,9 +86,7 @@ class SkinDialog(MoveDialog, Ui_FormSkinDialog):
         """
         self.previewWidget.setVisible(True)
         self.previewWidget.setTitle(name)
-        self.previewWidget.setPixmap(
-            PreviewWidget.Theme,
-            QPixmap(path).scaledToWidth(400, Qt.SmoothTransformation))
+        self.previewWidget.setPixmap(PreviewWidget.Theme, path)
 
     def onColourfulItemClicked(self, name, color):
         """

@@ -11,7 +11,7 @@ Created on 2019年1月27日
 """
 import os
 
-from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtCore import Qt, QSize, pyqtProperty
 from PyQt5.QtGui import QColor, QPainter, QBrush, QPixmap
 from PyQt5.QtWidgets import QWidget
 
@@ -31,6 +31,7 @@ class SkinBaseItemWidget(QWidget):
 
     def __init__(self, name, colorimg, signal, *args, **kwargs):
         super(SkinBaseItemWidget, self).__init__(*args, **kwargs)
+        self.setObjectName('skinBaseItemWidget')
         # 加载鼠标样式
         ThemeManager.loadCursor(self, ThemeManager.CursorPointer)
         self.name = name
@@ -38,6 +39,7 @@ class SkinBaseItemWidget(QWidget):
         self.hovered = False
         self.signal = signal
         self.colorHover = QColor(0, 0, 0, 40)
+        self._textHoverColor = QColor(18, 183, 245)
         self.textColor = QColor(102, 102, 102)
         self.image = None
         # 图片
@@ -49,7 +51,7 @@ class SkinBaseItemWidget(QWidget):
     def mousePressEvent(self, event):
         super(SkinBaseItemWidget, self).mousePressEvent(event)
         self.hovered = True
-        self.textColor = QColor(18, 183, 245)
+        self.textColor = self._textHoverColor
         self.update()
 
     def mouseReleaseEvent(self, event):
@@ -100,6 +102,14 @@ class SkinBaseItemWidget(QWidget):
 
     def sizeHint(self):
         return QSize(PixmapWidth, PixmapHeight + MarginBottom)
+
+    @pyqtProperty(QColor)
+    def textHoverColor(self):
+        return self._textHoverColor
+
+    @textHoverColor.setter
+    def textHoverColor(self, color):
+        self._textHoverColor = QColor(color)
 
 
 class SkinBaseWidget(QWidget, Ui_FormScrollArea):

@@ -51,8 +51,8 @@ class ColourfulThread(QObject):
     def start(cls, width, height, parent=None):
         """启动线程
         :param cls:
-        :param width:        宽度
-        :param width:        高度
+        :param width:
+        :param height:
         :param parent:
         """
         cls._thread = QThread(parent)
@@ -67,18 +67,24 @@ class ColourfulThread(QObject):
         AppLog.info('start get all colourful')
         # 午夜巴黎
         mcolor = QLinearGradient(0, 0, self.width, self.height)
+        mcolor.ex = 1
+        mcolor.ey = 1
         mcolor.startColor = QColor(20, 179, 255, 255)
         mcolor.endColor = QColor(226, 14, 255, 255)
         mcolor.setColorAt(0, mcolor.startColor)
         mcolor.setColorAt(1, mcolor.endColor)
         # 樱草青葱
         pcolor = QLinearGradient(0, 0, self.width, self.height)
+        pcolor.ex = 1
+        pcolor.ey = 1
         pcolor.startColor = QColor(0, 173, 246, 255)
         pcolor.endColor = QColor(0, 234, 155, 255)
         pcolor.setColorAt(0, pcolor.startColor)
         pcolor.setColorAt(1, pcolor.endColor)
         # 秋日暖阳
         acolor = QLinearGradient(0, 0, self.width, self.height)
+        acolor.ex = 1
+        acolor.ey = 1
         acolor.startColor = QColor(255, 128, 27, 255)
         acolor.endColor = QColor(255, 0, 14, 255)
         acolor.setColorAt(0, acolor.startColor)

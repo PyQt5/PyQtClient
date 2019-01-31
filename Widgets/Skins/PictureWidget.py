@@ -57,6 +57,14 @@ class PictureWidget(SkinBaseWidget):
         super(PictureWidget, self).__init__(*args, **kwargs)
         self.category = category
         self._items = []
+    
+    def doPreviewPrevious(self):
+        """上一个
+        """
+    
+    def doPreviewNext(self):
+        """下一个
+        """
 
     def showWaiting(self, show=True):
         self.setEnabled(not show)
