@@ -38,7 +38,7 @@ StylePictureTemplate = """
 StyleColorTemplate = """
 /*主窗口*/
 #widgetMain {{
-    background-color: rgba({0}, {1}, {2}, 255);
+    background: rgba({0}, {1}, {2}, 255);
 }}
 
 /*搜索框中的按钮*/
@@ -145,7 +145,7 @@ PictureWidget {{
 StyleGradientTemplate = """
 /*主窗口*/
 #widgetMain {{
-    background-color: {3};
+    background: {3};
 }}
 
 /*搜索框中的按钮*/
@@ -305,9 +305,8 @@ class ThemeManager:
         :param color:        背景颜色
         :param widget:        指定控件
         """
-        ThemeManager.ThemeName = 'Default'
         # 加载主题取样式
-        path = cls.stylePath()
+        path = cls.stylePath('Default')
         AppLog.info('stylePath: {}'.format(path))
         try:
             styleSheet = open(path, 'rb').read().decode(
@@ -330,9 +329,8 @@ class ThemeManager:
         :param image:         背景图片
         :param widget:        指定控件
         """
-        ThemeManager.ThemeName = Setting.value('theme', 'Default', str)
         # 加载主题取样式
-        path = cls.stylePath()
+        path = cls.stylePath('Default')
         AppLog.info('stylePath: {}'.format(path))
         try:
             styleSheet = open(path, 'rb').read().decode(
@@ -393,9 +391,9 @@ class ThemeManager:
         return os.path.abspath(os.path.join(ThemeManager.ThemeDir, ThemeManager.ThemeName, 'font.ttf')).replace('\\', '/')
 
     @classmethod
-    def stylePath(cls):
+    def stylePath(cls, path=''):
         """
         :param cls:
         :return: 主题中 style.qss 的绝对路径
         """
-        return os.path.abspath(os.path.join(ThemeManager.ThemeDir, ThemeManager.ThemeName, 'style.qss')).replace('\\', '/')
+        return os.path.abspath(os.path.join(ThemeManager.ThemeDir, path or ThemeManager.ThemeName, 'style.qss')).replace('\\', '/')
