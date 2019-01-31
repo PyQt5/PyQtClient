@@ -24,14 +24,18 @@ Email: 892768447@qq.com"""
 __Copyright__ = "Copyright (c) 2019 Irony"
 __Version__ = "Version 1.0"
 
-StyleTemplate = """
+# 修改背景图片
+StylePictureTemplate = """
 #widgetMain {{
     border-image: url({0});    /*背景图片*/
 }}
+"""
 
+# 修改颜色
+StyleColorTemplate = """
 /*工具栏*/
 #widgetTools {{
-    background-color: rgba(38, 38, 38, 10);
+    background-color: rgba({0}, {1}, {2}, 10);
 }}
 
 /*存放网页控件*/
@@ -41,28 +45,32 @@ StyleTemplate = """
 
 /*搜索框中的按钮*/
 #buttonSearch {{
-    qproperty-bgColor: rgba({1}, {2}, {3}, 255);
+    qproperty-bgColor: rgba({0}, {1}, {2}, 255);
 }}
 
 /*返回顶部,主页按钮*/
 #buttonBackToUp, #buttonHome {{
-    qproperty-bgColor: rgba({1}, {2}, {3}, 255);
+    qproperty-bgColor: rgba({0}, {1}, {2}, 255);
 }}
 
 /*工具栏中的按钮*/
 #buttonGithub, #buttonQQ, #buttonGroup {{
-    background: rgba({1}, {2}, {3}, 255);
+    background: rgba({0}, {1}, {2}, 255);
 }}
 
 /*登录窗口*/
 #widgetLogin {{
-    background: rgba({1}, {2}, {3}, 210);
+    background: rgba({0}, {1}, {2}, 210);
 }}
 
 /*激活状态*/
 #widgetLogin[_active="true"] {{
-    border: 1px solid rgba({1}, {2}, {3}, 255);
+    border: 1px solid rgba({0}, {1}, {2}, 255);
 }}
+"""
+
+# 渐变颜色
+StyleGradientTemplate = """
 """
 
 
@@ -114,18 +122,32 @@ class ThemeManager:
             Setting.setValue('theme', theme)
 
     @classmethod
-    def loadColourfulTheme(cls, color):
+    def loadColourfulTheme(cls, color, widget=None):
         """基于当前设置主题颜色
         :param cls:
         :param color:        背景颜色
+        :param widget:        指定控件
         """
-        pass
+        cls.ThemeName = Setting.value('theme', 'Default', str)
+        # 加载主题取样式
+        path = cls.stylePath()
+        AppLog.info('stylePath: {}'.format(path))
+        try:
+            styleSheet = open(path, 'rb').read().decode(
+                'utf-8', errors='ignore')
+            # 需要替换部分样式
+            styleSheet += StyleColorTemplate.format(*color)
+            widget = widget or QApplication.instance()
+            widget.setStyleSheet(styleSheet)
+        except Exception as e:
+            AppLog.exception(e)
 
     @classmethod
-    def loadPictureTheme(cls, image=None):
+    def loadPictureTheme(cls, image=None, widget=None):
         """设置图片背景的主题
         :param cls:
         :param image:         背景图片
+        :param widget:        指定控件
         """
         cls.ThemeName = Setting.value('theme', 'Default', str)
         # 加载主题取样式
@@ -140,10 +162,10 @@ class ThemeManager:
                 color_thief = ColorThief(image)
                 color = color_thief.get_color()
                 AppLog.info('dominant color: {}'.format(str(color)))
-                styleSheet += StyleTemplate.format(
-                    os.path.abspath(image).replace('\\', '/'),
-                    *color)
-            QApplication.instance().setStyleSheet(styleSheet)
+                styleSheet += StylePictureTemplate.format(os.path.abspath(
+                    image).replace('\\', '/')) + StyleColorTemplate.format(*color)
+            widget = widget or QApplication.instance()
+            widget.setStyleSheet(styleSheet)
         except Exception as e:
             AppLog.exception(e)
 

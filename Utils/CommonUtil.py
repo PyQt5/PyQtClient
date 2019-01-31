@@ -56,8 +56,8 @@ def initLog(name, file=None, level=logging.DEBUG, formatter=None):
     stream_handler.setFormatter(formatter)
     logger.addHandler(stream_handler)
 
-    file = os.path.abspath(str(file))
-    if file:
+    if file != None:
+        file = os.path.abspath(str(file))
         file_handler = logging.FileHandler(file, mode='w', encoding='utf-8')
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)

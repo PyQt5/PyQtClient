@@ -12,6 +12,8 @@ Created on 2019年1月20日
 from Test.BaseApplyStyle import StyleWindow
 from Utils.ThemeManager import ThemeManager
 from Widgets.Dialogs.SkinDialog import SkinDialog
+from Utils.CommonUtil import initLog
+from Utils.Constants import LogName
 
 
 __Author__ = 'Irony'
@@ -24,6 +26,9 @@ if __name__ == '__main__':
     import cgitb
     os.chdir('../')
     sys.excepthook = cgitb.enable(1, None, 5, '')
+    
+    initLog(LogName)
+    
     from PyQt5.QtWidgets import QApplication
     app = QApplication(sys.argv)
     w = SkinDialog()

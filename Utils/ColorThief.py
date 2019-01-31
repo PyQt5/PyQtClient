@@ -53,7 +53,9 @@ class ColorThief(object):
                      must implement `read()`, `seek()`, and `tell()` methods,
                      and be opened in binary mode.
         """
-        self.image = QImage(file).scaledToWidth(400, Qt.SmoothTransformation)
+        self.image = QImage(file)
+        if self.image.width() > 420:
+            self.image = self.image.scaledToWidth(400, Qt.SmoothTransformation)
 
     def get_color(self, quality=10):
         """Get the dominant color.

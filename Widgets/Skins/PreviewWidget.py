@@ -12,6 +12,7 @@ Created on 2019年1月30日
 from PyQt5.QtCore import Qt, pyqtSlot
 from PyQt5.QtWidgets import QWidget, QGraphicsDropShadowEffect
 
+from UiFiles.Ui_MainWindow import Ui_FormMainWindow
 from UiFiles.Ui_PreviewWidget import Ui_FormPreviewWidget
 from Utils.ThemeManager import ThemeManager
 
@@ -21,6 +22,10 @@ __Copyright__ = 'Copyright (c) 2019'
 
 
 class PreviewWidget(QWidget, Ui_FormPreviewWidget):
+
+    Theme = 0
+    Color = 1
+    Picture = 2
 
     def __init__(self, *args, **kwargs):
         super(PreviewWidget, self).__init__(*args, **kwargs)
@@ -50,11 +55,27 @@ class PreviewWidget(QWidget, Ui_FormPreviewWidget):
         self.labelPreviewTitle.setText(title)
         self.setWindowTitle(title)
 
-    def setPixmap(self, pixmap):
+    def setPixmap(self, which, poc):
         """设置图片
-        :param pixmap:
+        :param which:        Theme = 0,Color = 1,Picture = 2
+        :param poc:          QPixmap or color or path
         """
-        self.labelPreviewImage.setPixmap(pixmap)
+        if not hasattr(self, '_UiMainWindow'):
+            # 创建一个隐藏的主界面
+            self._UiMainWindow = QWidget()
+            ui = Ui_FormMainWindow()
+            ui.setupUi(self._UiMainWindow)
+            self._UiMainWindow.hide()
+        if which == self.Theme:
+            self.labelPreviewImage.setPixmap(poc)
+            return
+        elif which == self.Color:
+            ThemeManager.loadColourfulTheme(poc, self._UiMainWindow)
+        elif which == self.Picture:
+            ThemeManager.loadPictureTheme(poc, self._UiMainWindow)
+        # 对隐藏窗口截图
+        poc = self._UiMainWindow.grab().scaledToWidth(400, Qt.SmoothTransformation)
+        self.labelPreviewImage.setPixmap(poc)
 
     @pyqtSlot()
     def on_buttonPreviewClose_clicked(self):

@@ -19,8 +19,8 @@ from Utils.CommonUtil import Signals
 from Utils.ThemeManager import ThemeManager
 from Widgets.Dialogs.MoveDialog import MoveDialog
 from Widgets.Layouts.FlowLayout import FlowLayout
-from Widgets.Skins.PreviewWidget import PreviewWidget
 from Widgets.Skins.PictureWidget import PictureWidget
+from Widgets.Skins.PreviewWidget import PreviewWidget
 
 
 __Author__ = "Irony"
@@ -66,6 +66,7 @@ class SkinDialog(MoveDialog, Ui_FormSkinDialog):
         self.previewWidget.setVisible(True)
         self.previewWidget.setTitle(name)
         self.previewWidget.setPixmap(
+            PreviewWidget.Theme,
             QPixmap(path).scaledToWidth(400, Qt.SmoothTransformation))
 
     def onColourfulItemClicked(self, name, color):
@@ -73,6 +74,9 @@ class SkinDialog(MoveDialog, Ui_FormSkinDialog):
         :param name:        颜色名字
         :param color:       颜色
         """
+        self.previewWidget.setVisible(True)
+        self.previewWidget.setTitle(name)
+        self.previewWidget.setPixmap(PreviewWidget.Color, color)
 
     def onPictureItemClicked(self, name, path):
         """
@@ -81,8 +85,7 @@ class SkinDialog(MoveDialog, Ui_FormSkinDialog):
         """
         self.previewWidget.setVisible(True)
         self.previewWidget.setTitle(name)
-        self.previewWidget.setPixmap(
-            QPixmap(path).scaledToHeight(385, Qt.SmoothTransformation))
+        self.previewWidget.setPixmap(PreviewWidget.Picture, path)
 
     def on_tabWidgetSkinMain_currentChanged(self, index):
         """tab标签切换"""
