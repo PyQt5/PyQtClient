@@ -13,7 +13,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
 
 from Utils.ThemeManager import ThemeManager
-from Widgets.PreviewWidget import PreviewWidget
+from Widgets.Skins.PreviewWidget import PreviewWidget
 
 
 __Author__ = 'Irony'

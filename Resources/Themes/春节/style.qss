@@ -423,6 +423,12 @@ ToolTip > QLabel {
     background: rgba(225, 226, 227, 255);
 }
 
+/*壁纸控件进度条*/
+PictureWidget {
+    /*圆圈颜色*/
+    qproperty-circleColor: rgb(200, 47, 10);
+}
+
 /*主题预览界面*/
 #FormPreviewWidget {
     border-radius: 4px;

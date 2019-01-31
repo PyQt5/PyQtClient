@@ -6,7 +6,7 @@ Created on 2019年1月30日
 @author: Irony
 @site: https://pyqt5.com https://github.com/892768447
 @email: 892768447@qq.com
-@file: Widgets.PreviewWidget
+@file: Widgets.Skins.PreviewWidget
 @description: 主题预览
 """
 from PyQt5.QtCore import Qt, pyqtSlot

@@ -19,7 +19,7 @@ from Utils.CommonUtil import Signals
 from Utils.ThemeManager import ThemeManager
 from Widgets.Dialogs.MoveDialog import MoveDialog
 from Widgets.Layouts.FlowLayout import FlowLayout
-from Widgets.PreviewWidget import PreviewWidget
+from Widgets.Skins.PreviewWidget import PreviewWidget
 from Widgets.Skins.PictureWidget import PictureWidget
 
 
