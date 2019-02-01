@@ -48,6 +48,9 @@ class SkinBaseItemWidget(QWidget):
                 PixmapWidth, PixmapHeight,
                 Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
 
+    def click(self):
+        self.signal.emit(self.name, self.colorimg)
+
     def mousePressEvent(self, event):
         super(SkinBaseItemWidget, self).mousePressEvent(event)
         self.hovered = True

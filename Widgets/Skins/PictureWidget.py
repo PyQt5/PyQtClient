@@ -55,16 +55,28 @@ class PictureWidget(SkinBaseWidget):
 
     def __init__(self, category, *args, **kwargs):
         super(PictureWidget, self).__init__(*args, **kwargs)
+        self._index = 0
         self.category = category
         self._items = []
-    
+
     def doPreviewPrevious(self):
         """上一个
         """
-    
+        self._index -= 1
+        self._index = max(self._index, 0)
+        self.doPreview()
+
     def doPreviewNext(self):
         """下一个
         """
+        self._index += 1
+        self._index = min(self._index, self.gridLayout.count() - 1)
+        self.doPreview()
+
+    def doPreview(self):
+        """主动发送预览信号
+        """
+        self.gridLayout.itemAt(self._index).widget().click()
 
     def showWaiting(self, show=True):
         self.setEnabled(not show)

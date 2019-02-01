@@ -27,6 +27,7 @@ class ColourfulWidget(SkinBaseWidget):
 
     def __init__(self, *args, **kwargs):
         super(ColourfulWidget, self).__init__(*args, **kwargs)
+        self._index = 0
         Signals.colourfulItemAdded.connect(self.onColourfulItemAdded)
         Signals.colourfulItemAddFinished.connect(
             self.onColourfulItemAddFinished)
@@ -37,14 +38,25 @@ class ColourfulWidget(SkinBaseWidget):
         if self.gridLayout.count() > 0:
             return
         ColourfulThread.start(PixmapWidth, PixmapHeight)
-    
+
     def doPreviewPrevious(self):
         """上一个
         """
-    
+        self._index -= 1
+        self._index = max(self._index, 0)
+        self.doPreview()
+
     def doPreviewNext(self):
         """下一个
         """
+        self._index += 1
+        self._index = min(self._index, self.gridLayout.count() - 1)
+        self.doPreview()
+
+    def doPreview(self):
+        """主动发送预览信号
+        """
+        self.gridLayout.itemAt(self._index).widget().click()
 
     def onColourfulItemAddFinished(self):
         """添加完成
