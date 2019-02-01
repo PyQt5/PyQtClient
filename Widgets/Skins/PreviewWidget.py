@@ -71,6 +71,8 @@ class PreviewWidget(QWidget, Ui_FormPreviewWidget):
             self._UiMainWindow = QWidget()
             ui = Ui_FormMainWindow()
             ui.setupUi(self._UiMainWindow)
+            # 修改名字防止受app的style影响
+            ui.widgetMain.setObjectName('widgetMain1')
             self._UiMainWindow.setAttribute(Qt.WA_TranslucentBackground, True)
             self._UiMainWindow.setWindowFlags(
                 self.windowFlags() | Qt.FramelessWindowHint)
@@ -80,9 +82,11 @@ class PreviewWidget(QWidget, Ui_FormPreviewWidget):
                 QPixmap(poc).scaledToWidth(400, Qt.SmoothTransformation))
             return
         elif which == self.Color:
-            ThemeManager.loadColourfulTheme(poc, self._UiMainWindow)
+            ThemeManager.loadColourfulTheme(poc, self._UiMainWindow, {
+                                            'widgetMain': 'widgetMain1'})
         elif which == self.Picture:
-            ThemeManager.loadPictureTheme(poc, self._UiMainWindow)
+            ThemeManager.loadPictureTheme(poc, self._UiMainWindow, {
+                                          'widgetMain': 'widgetMain1'})
         # 对隐藏窗口截图
         # 至于为什么要加延迟, 设置样式后可能UI还没刷新
         self._UiMainWindow.repaint()

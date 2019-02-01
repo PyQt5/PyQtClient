@@ -9,6 +9,8 @@ Created on 2019年1月18日
 @file: Test.TestMainwindowStyle
 @description: 
 """
+from time import time
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QListWidget
 
@@ -27,7 +29,9 @@ class Window(QWidget, Ui_FormMainWindow):
         self.setAttribute(Qt.WA_TranslucentBackground, True)
         self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
         self.setupUi(self)
+        t = time()
         ThemeManager.loadTheme()
+        print(time() - t)
         ThemeManager.loadCursor(self)
         ThemeManager.loadCursor(self.buttonHead, ThemeManager.CursorPointer)
 
@@ -50,7 +54,9 @@ if __name__ == '__main__':
     def setStyle(item):
         path = os.path.join('Resources/Themes', item.text(), 'style.qss')
         if os.path.isfile(path):
+            t = time()
             ThemeManager.loadUserTheme(item.text())
+            print(time()-t)
             w.grab().save('Resources/Themes/{}/preview.png'.format(item.text()))
     lw.itemClicked.connect(setStyle)
 

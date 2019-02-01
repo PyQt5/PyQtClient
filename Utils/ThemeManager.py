@@ -299,7 +299,7 @@ class ThemeManager:
         cls.loadTheme()
 
     @classmethod
-    def loadColourfulTheme(cls, color, widget=None):
+    def loadColourfulTheme(cls, color, widget=None, replaces={}):
         """基于当前设置主题颜色
         :param cls:
         :param color:        背景颜色
@@ -315,7 +315,12 @@ class ThemeManager:
             colorstr = GradientUtils.styleSheetCode(color)
             if isinstance(color, QLinearGradient) or isinstance(color, QRadialGradient) or isinstance(color, QConicalGradient):
                 color = color.stops()[0][1]
-            styleSheet += StyleGradientTemplate.format(
+            # 替换name
+            templates = StyleGradientTemplate
+            for name, value in replaces.items():
+                templates = templates.replace(name, value)
+
+            styleSheet += templates.format(
                 color.red(), color.green(), color.blue(), colorstr)
             widget = widget or QApplication.instance()
             widget.setStyleSheet(styleSheet)
@@ -323,7 +328,7 @@ class ThemeManager:
             AppLog.exception(e)
 
     @classmethod
-    def loadPictureTheme(cls, image=None, widget=None):
+    def loadPictureTheme(cls, image=None, widget=None, replaces={}):
         """设置图片背景的主题
         :param cls:
         :param image:         背景图片
@@ -341,7 +346,13 @@ class ThemeManager:
                 color_thief = ColorThief(image)
                 color = color_thief.get_color()
                 AppLog.info('dominant color: {}'.format(str(color)))
-                styleSheet += StylePictureTemplate.format(os.path.abspath(
+
+                # 替换name
+                templates = StylePictureTemplate
+                for name, value in replaces.items():
+                    templates = templates.replace(name, value)
+
+                styleSheet += templates.format(os.path.abspath(
                     image).replace('\\', '/')) + StyleColorTemplate.format(*color)
             widget = widget or QApplication.instance()
             widget.setStyleSheet(styleSheet)
