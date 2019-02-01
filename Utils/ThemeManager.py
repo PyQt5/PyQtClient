@@ -48,7 +48,7 @@ StyleColorTemplate = """
 
 /*工具栏*/
 #widgetTools {{
-    background-color: rgba({0}, {1}, {2}, 20);
+    background-color: rgba({0}, {1}, {2}, 60);
 }}
 
 /*工具栏中的按钮*/
@@ -155,7 +155,7 @@ StyleGradientTemplate = """
 
 /*工具栏*/
 #widgetTools {{
-    background-color: rgba({0}, {1}, {2}, 20);
+    background-color: rgba({0}, {1}, {2}, 60);
 }}
 
 /*工具栏中的按钮*/

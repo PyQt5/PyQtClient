@@ -12,12 +12,13 @@ Created on 2019年1月30日
 import os
 
 from PyQt5.QtCore import Qt, pyqtSlot, QTimer
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QColor
 from PyQt5.QtWidgets import QWidget, QGraphicsDropShadowEffect
 
 from UiFiles.Ui_MainWindow import Ui_FormMainWindow
 from UiFiles.Ui_PreviewWidget import Ui_FormPreviewWidget
 from Utils.CommonUtil import Setting
+from Utils.GradientUtils import GradientUtils
 from Utils.ThemeManager import ThemeManager
 
 
@@ -109,9 +110,17 @@ class PreviewWidget(QWidget, Ui_FormPreviewWidget):
         if self._which == self.Theme:
             ThemeManager.loadUserTheme(
                 os.path.basename(os.path.dirname(self._poc)))
+            Setting.setValue('picture', None)
+            Setting.setValue('colourful', None)
         elif self._which == self.Color:
             ThemeManager.loadColourfulTheme(self._poc)
-            Setting.setValue('colourful', self._poc)
+            if isinstance(self._poc, QColor):
+                Setting.setValue('colourful', self._poc)
+            else:
+                # 渐变需要转成字典数据
+                Setting.setValue('colourful', GradientUtils.toJson(self._poc))
+            Setting.setValue('picture', None)
         elif self._which == self.Picture:
             ThemeManager.loadPictureTheme(self._poc)
-            Setting.setValue('picture', self._poc)
+            Setting.setValue('colourful', None)
+            Setting.setValue('picture', self._poc.replace('\\', '/'))

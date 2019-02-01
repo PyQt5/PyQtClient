@@ -9,6 +9,7 @@ encoding//Test/TestColorThief.py=utf-8
 encoding//Test/TestDownProgress.py=utf-8
 encoding//Test/TestGitTree.py=utf-8
 encoding//Test/TestGradientUtils.py=utf-8
+encoding//Test/TestLoadGradientFile.py=utf-8
 encoding//Test/TestMainwindowStyle.py=utf-8
 encoding//Test/TestPreviewWidget.py=utf-8
 encoding//Test/TestPropertyAnimation.py=utf-8

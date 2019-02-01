@@ -86,7 +86,7 @@ QLineEdit {
     max-width: 130px;
     max-height: 130px;
     background: transparent;
-    qproperty-shadowColor: rgba(33, 33, 33, 255);
+    qproperty-shadowColor: rgba(255, 255, 255, 255);
     qproperty-image: "Resources/Images/Avatars/avatar.png";
 }
 

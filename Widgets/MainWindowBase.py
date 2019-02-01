@@ -13,13 +13,16 @@ import os
 import webbrowser
 
 from PyQt5.QtCore import pyqtSlot, QUrl
+from PyQt5.QtGui import QColor
 from PyQt5.QtWebKit import QWebSettings
 from PyQt5.QtWebKitWidgets import QWebPage
 
 from Utils import Constants
-from Utils.CommonUtil import Signals
+from Utils.CommonUtil import Signals, Setting, AppLog
+from Utils.GradientUtils import GradientUtils
 from Utils.NetworkAccessManager import NetworkAccessManager
 from Utils.ThemeManager import ThemeManager
+from Widgets.Dialogs.SkinDialog import SkinDialog
 from Widgets.ToolTip import ToolTip
 
 
@@ -36,8 +39,6 @@ class MainWindowBase:
         self.buttonNormal.setVisible(False)
         # 隐藏目录树的滑动条
         self.treeViewCatalogs.verticalScrollBar().setVisible(False)
-        # 加载主题
-        ThemeManager.loadTheme()
         # 加载鼠标样式
         ThemeManager.loadCursor(self.widgetMain)
         ThemeManager.setPointerCursors([
@@ -56,6 +57,22 @@ class MainWindowBase:
         ToolTip.bind(self.buttonHome)
         # 头像提示控件
         ToolTip.bind(self.buttonHead)
+        # 加载主题
+        colourful = Setting.value('colourful')
+        picture = Setting.value('picture', '', str)
+        AppLog.debug('colourful: %s', str(colourful))
+        AppLog.debug('picture: %s', picture)
+        if picture:
+            ThemeManager.loadPictureTheme(picture)
+        elif colourful:
+            if isinstance(picture, QColor):
+                ThemeManager.loadColourfulTheme(colourful)
+            else:
+                # json数据转渐变
+                ThemeManager.loadColourfulTheme(
+                    GradientUtils.toGradient(colourful))
+        else:
+            ThemeManager.loadTheme()
 
     def _initSignals(self):
         """初始化信号槽"""
@@ -94,7 +111,9 @@ class MainWindowBase:
     def on_buttonSkin_clicked(self):
         """选择主题样式
         """
-        pass
+        if not hasattr(self, 'skinDialog'):
+            self.skinDialog = SkinDialog(self)
+        self.skinDialog.exec_()
 
     @pyqtSlot()
     def on_buttonIssues_clicked(self):

@@ -9,7 +9,9 @@ Created on 2019年1月31日
 @file: Utils.GradientUtils
 @description: 渐变颜色工具类
 """
-from PyQt5.QtGui import QGradient, QColor
+from PyQt5.QtCore import QPointF
+from PyQt5.QtGui import QGradient, QColor, QLinearGradient, QRadialGradient,\
+    QConicalGradient
 
 
 __Author__ = 'Irony'
@@ -97,6 +99,44 @@ class GradientUtils:
             print('GradientUtils::_styleSheetFillName(): gradient type ',
                   gradient.type(), ' not supported!')
             return ''
+
+    @classmethod
+    def toJson(cls, gradient):
+        """把渐变转成字典
+        :param cls:
+        :param gradient:    渐变
+        """
+        return {
+            'type': gradient.type(),
+            'spread': gradient.spread(),
+            'start': gradient.start(),
+            'finalStop': QPointF(1, 1) if hasattr(gradient, 'ex') else gradient.finalStop(),
+            'stops': gradient.stops()
+        }
+
+    @classmethod
+    def toGradient(cls, data):
+        """把字典转成渐变
+        :param cls:
+        :param data:        字典数据
+        """
+        gtype = data.get('type', -1)
+        if gtype == QGradient.LinearGradient:
+            gradient = QLinearGradient()
+        elif gtype == QGradient.RadialGradient:
+            gradient = QRadialGradient()
+        elif gtype == QGradient.ConicalGradient:
+            gradient = QConicalGradient()
+        else:
+            gradient = QLinearGradient()
+        gradient.setSpread(data.get('spread', QGradient.PadSpread))
+        gradient.setStart(data.get('start', QPointF(0, 0)))
+        gradient.setFinalStop(data.get('finalStop', QPointF(1, 1)))
+        stops = data.get('stops', None)
+        if stops:
+            gradient.setStops(stops)
+
+        return gradient
 
     @classmethod
     def styleSheetCode(cls, colorgradient):
