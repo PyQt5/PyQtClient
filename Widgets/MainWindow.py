@@ -14,6 +14,7 @@ import os
 from random import randint
 import sys
 
+from PyQt5 import QtCore
 from PyQt5.QtCore import QEvent, Qt, QTimer, pyqtSlot, QUrl, QProcess
 from PyQt5.QtGui import QEnterEvent, QIcon
 
@@ -136,17 +137,20 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         process.setProperty('file', file)
         process.readChannelFinished.connect(self.onReadChannelFinished)
 
-#         env = QProcessEnvironment.systemEnvironment()
-#         libpath = get_python_lib()
-#         env.insert('QT_QPA_PLATFORM_PLUGIN_PATH', os.path.join(
-#             libpath, 'PyQt5', 'Qt', 'plugins', 'platforms'))
-#         env.insert('QML_IMPORT_PATH', os.path.join(libpath, 'Qt', 'qml'))
-#         env.insert('QML2_IMPORT_PATH', env.value('QML_IMPORT_PATH'))
-#         env.insert(
-#             'PATH', QLibraryInfo.location(
-#                 QLibraryInfo.BinariesPath) + ';' + env.value('PATH')
-#         )
-#         process.setProcessEnvironment(env)
+#         if os.path.exists('platforms'):
+#             env = QProcessEnvironment.systemEnvironment()
+# #         libpath = get_python_lib()
+# #         env.insert('QT_QPA_PLATFORM_PLUGIN_PATH', os.path.join(
+# #             libpath, 'PyQt5', 'Qt', 'plugins', 'platforms'))
+#             env.insert('QT_QPA_PLATFORM_PLUGIN_PATH',
+#                        os.path.abspath('platforms'))
+#             env.insert('QML_IMPORT_PATH', os.path.abspath('qml'))
+#             env.insert('QML2_IMPORT_PATH', env.value('QML_IMPORT_PATH'))
+#             env.insert(
+#                 'PATH', QLibraryInfo.location(
+#                     QLibraryInfo.BinariesPath) + ';' + env.value('PATH')
+#             )
+#             process.setProcessEnvironment(env)
 
         if sys.executable.endswith('python.exe'):
             process.setWorkingDirectory(os.path.dirname(file))
@@ -160,7 +164,12 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
 
     def onReadChannelFinished(self):
         process = self.sender()
-        message = process.readAllStandardError().data().decode()
+        message = process.readAllStandardError().data()
+        try:
+            message = message.decode(errors='ignore')
+        except Exception as e:
+            AppLog.exception(e)
+            return
         if process.exitCode() != 0 and len(message.strip()) > 0:
             file = str(process.property('file'))
             reqfile = os.path.abspath(os.path.join(
@@ -211,10 +220,12 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
 
 
 def main():
-    # for Qt 5.5
-    os.putenv('QT_DEVICE_PIXEL_RATIO', 'auto')
-    # for > Qt 5.5
-    os.putenv('QT_AUTO_SCREEN_SCALE_FACTOR', '1')
+    if int(QtCore.PYQT_VERSION_STR.split('.')[1]) > 5:
+        # for > Qt 5.5
+        os.putenv('QT_AUTO_SCREEN_SCALE_FACTOR', '1')
+    else:
+        # for Qt 5.5
+        os.putenv('QT_DEVICE_PIXEL_RATIO', 'auto')
     os.makedirs(Constants.DirErrors, exist_ok=True)
     os.makedirs(Constants.DirProject, exist_ok=True)
     os.makedirs(os.path.dirname(Constants.UpgradeFile), exist_ok=True)
