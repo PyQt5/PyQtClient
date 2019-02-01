@@ -12,10 +12,11 @@ Created on 2019年1月9日
 import os
 import webbrowser
 
-from PyQt5.QtCore import pyqtSlot, QUrl
+from PyQt5.QtCore import pyqtSlot, QUrl, QLocale, QTranslator
 from PyQt5.QtGui import QColor
 from PyQt5.QtWebKit import QWebSettings
 from PyQt5.QtWebKitWidgets import QWebPage
+from PyQt5.QtWidgets import QApplication
 
 from Utils import Constants
 from Utils.CommonUtil import Signals, Setting, AppLog
@@ -43,7 +44,7 @@ class MainWindowBase:
         ThemeManager.loadCursor(self.widgetMain)
         ThemeManager.setPointerCursors([
             self.buttonHead,            # 主界面头像
-            self.buttonSearch,          # 主界面搜索按钮
+            self.buttonClear,           # 主界面清空按钮
             self.buttonGithub,          # Github按钮
             self.buttonQQ,              # QQ按钮
             self.buttonGroup,           # 群按钮
@@ -88,6 +89,15 @@ class MainWindowBase:
         Signals.progressStoped.connect(self.widgetCatalogs.stop)
         Signals.progressUpdated.connect(self.widgetCatalogs.setValue)
         Signals.updateDialogShowed.connect(self._initUpdate)
+
+    def _initLanguage(self):
+        """加载国际化翻译
+        """
+        if QLocale.system().language() in (QLocale.China, QLocale.Chinese, QLocale.Taiwan, QLocale.HongKong):
+            # 加载中文
+            translator = QTranslator(self)
+            translator.load('translations/pyqtclient_zh_CN.qm')
+            QApplication.instance().installTranslator(translator)
 
     def _initWebView(self):
         """初始化网页"""
@@ -157,14 +167,13 @@ class MainWindowBase:
     def on_lineEditSearch_textChanged(self, text):
         """过滤筛选
         """
-        return
         Signals.filterChanged.emit(text)
 
     @pyqtSlot()
-    def on_buttonSearch_clicked(self):
-        """点击搜索按钮
+    def on_buttonClear_clicked(self):
+        """点击清空按钮
         """
-        pass
+        self.lineEditSearch.setText('')
 
     @pyqtSlot()
     def on_buttonGithub_clicked(self):

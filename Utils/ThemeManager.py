@@ -42,7 +42,7 @@ StyleColorTemplate = """
 }}
 
 /*搜索框中的按钮*/
-#buttonSearch {{
+#buttonClear {{
     qproperty-bgColor: rgba({0}, {1}, {2}, 255);
 }}
 
@@ -149,7 +149,7 @@ StyleGradientTemplate = """
 }}
 
 /*搜索框中的按钮*/
-#buttonSearch {{
+#buttonClear {{
     qproperty-bgColor: rgba({0}, {1}, {2}, 255);
 }}
 

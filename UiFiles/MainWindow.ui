@@ -245,7 +245,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="RubberBandButton" name="buttonSearch">
+                <widget class="RubberBandButton" name="buttonClear">
                  <property name="text">
                   <string/>
                  </property>

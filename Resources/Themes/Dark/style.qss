@@ -114,7 +114,7 @@ QLineEdit {
     border-bottom-left-radius: 15px;
 }
 /*搜索框中的按钮*/
-#buttonSearch {
+#buttonClear {
     min-width: 26px;
     max-width: 26px;
     min-height: 26px;
@@ -124,7 +124,7 @@ QLineEdit {
     qproperty-bgColor: rgba(38, 38, 38, 255);
     outline: none;
     font-family: "pyqtclient";
-    qproperty-text: "\5100";
+    qproperty-text: "\2103";
 }
 
 /*目录树*/

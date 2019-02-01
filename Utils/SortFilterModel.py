@@ -39,3 +39,16 @@ class SortFilterModel(QSortFilterProxyModel):
         # return super(SortFilterModel, self).lessThan(source_left,
         # source_right)
         return len(leftData) < len(rightData)
+
+    def filterAcceptsRow(self, sourceRow, sourceParent):
+        # 过滤
+        result = super(SortFilterModel, self).filterAcceptsRow(
+            sourceRow, sourceParent)
+        if result:
+            return result
+        else:
+            sourceIndex = self.sourceModel().index(sourceRow, 0, sourceParent)
+            for k in range(self.sourceModel().rowCount(sourceIndex)):
+                if self.filterAcceptsRow(k, sourceIndex):
+                    return True
+        return False

@@ -42,6 +42,7 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
         Setting.init(self)
+        self._initLanguage()
         self._initUi()
         self._initSignals()
         # 加载窗口大小并恢复
