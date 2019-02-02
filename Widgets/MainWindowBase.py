@@ -64,8 +64,10 @@ class MainWindowBase:
         AppLog.debug('colourful: %s', str(colourful))
         AppLog.debug('picture: %s', picture)
         if picture:
+            ThemeManager.loadFont()
             ThemeManager.loadPictureTheme(picture)
         elif colourful:
+            ThemeManager.loadFont()
             if isinstance(picture, QColor):
                 ThemeManager.loadColourfulTheme(colourful)
             else:
@@ -96,7 +98,7 @@ class MainWindowBase:
         if QLocale.system().language() in (QLocale.China, QLocale.Chinese, QLocale.Taiwan, QLocale.HongKong):
             # 加载中文
             translator = QTranslator(self)
-            translator.load('translations/pyqtclient_zh_CN.qm')
+            translator.load('Resources/pyqtclient_zh_CN.qm')
             QApplication.instance().installTranslator(translator)
 
     def _initWebView(self):

@@ -15,7 +15,8 @@ from random import randint
 import sys
 
 from PyQt5 import QtCore
-from PyQt5.QtCore import QEvent, Qt, QTimer, pyqtSlot, QUrl, QProcess
+from PyQt5.QtCore import QEvent, Qt, QTimer, pyqtSlot, QUrl, QProcess,\
+    QProcessEnvironment, QLibraryInfo
 from PyQt5.QtGui import QEnterEvent, QIcon
 
 from UiFiles.Ui_MainWindow import Ui_FormMainWindow
@@ -137,20 +138,24 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         process.setProperty('file', file)
         process.readChannelFinished.connect(self.onReadChannelFinished)
 
-#         if os.path.exists('platforms'):
-#             env = QProcessEnvironment.systemEnvironment()
-# #         libpath = get_python_lib()
-# #         env.insert('QT_QPA_PLATFORM_PLUGIN_PATH', os.path.join(
-# #             libpath, 'PyQt5', 'Qt', 'plugins', 'platforms'))
-#             env.insert('QT_QPA_PLATFORM_PLUGIN_PATH',
-#                        os.path.abspath('platforms'))
-#             env.insert('QML_IMPORT_PATH', os.path.abspath('qml'))
-#             env.insert('QML2_IMPORT_PATH', env.value('QML_IMPORT_PATH'))
-#             env.insert(
-#                 'PATH', QLibraryInfo.location(
-#                     QLibraryInfo.BinariesPath) + ';' + env.value('PATH')
-#             )
-#             process.setProcessEnvironment(env)
+        env = QProcessEnvironment.systemEnvironment()
+#         libpath = get_python_lib()
+#         env.insert('QT_QPA_PLATFORM_PLUGIN_PATH', os.path.join(
+#             libpath, 'PyQt5', 'Qt', 'plugins', 'platforms'))
+#         env.insert('QT_QPA_PLATFORM_PLUGIN_PATH',
+#                    os.path.abspath('platforms'))
+        env.insert('QML_IMPORT_PATH', os.path.abspath('qml'))
+        env.insert('QML2_IMPORT_PATH', env.value('QML_IMPORT_PATH'))
+        if os.name == 'nt':
+            env.insert(
+                'PATH', QLibraryInfo.location(
+                    QLibraryInfo.BinariesPath) + os.pathsep + env.value('PATH')
+            )
+        env.insert(
+            'PATH', os.path.dirname(
+                os.path.abspath(sys.argv[0])) + os.pathsep + env.value('PATH')
+        )
+        process.setProcessEnvironment(env)
 
         if sys.executable.endswith('python.exe'):
             process.setWorkingDirectory(os.path.dirname(file))
@@ -226,6 +231,9 @@ def main():
     else:
         # for Qt 5.5
         os.putenv('QT_DEVICE_PIXEL_RATIO', 'auto')
+    if os.name == 'nt':
+        os.environ['PATH'] = QLibraryInfo.location(
+            QLibraryInfo.BinariesPath) + os.pathsep + os.environ['PATH']
     os.makedirs(Constants.DirErrors, exist_ok=True)
     os.makedirs(Constants.DirProject, exist_ok=True)
     os.makedirs(os.path.dirname(Constants.UpgradeFile), exist_ok=True)

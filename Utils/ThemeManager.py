@@ -290,6 +290,17 @@ class ThemeManager:
             AppLog.exception(e)
 
     @classmethod
+    def loadFont(cls):
+        """加载字体
+        """
+        ThemeManager.ThemeName = Setting.value('theme', 'Default', str)
+        # 加载主题中的字体
+        path = cls.fontPath()
+        AppLog.info('fontPath: {}'.format(path))
+        if os.path.isfile(path):
+            QFontDatabase.addApplicationFont(path)
+
+    @classmethod
     def loadUserTheme(cls, theme='Default'):
         """加载主题目录里的主题
         :param cls:
