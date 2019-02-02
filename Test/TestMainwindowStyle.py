@@ -16,6 +16,7 @@ from PyQt5.QtWidgets import QWidget, QListWidget
 
 from UiFiles.Ui_MainWindow import Ui_FormMainWindow
 from Utils.ThemeManager import ThemeManager
+from Utils.ColorThief import ColorThief
 
 
 __Author__ = "Irony"
@@ -57,6 +58,9 @@ if __name__ == '__main__':
             t = time()
             ThemeManager.loadUserTheme(item.text())
             print(time()-t)
+            path = 'Resources/Themes/{}/background.jpg'.format(item.text())
+            if os.path.exists(path):
+                print(ColorThief(path).get_color())
             w.grab().save('Resources/Themes/{}/preview.png'.format(item.text()))
     lw.itemClicked.connect(setStyle)
 
