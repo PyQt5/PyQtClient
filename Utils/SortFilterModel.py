@@ -30,15 +30,15 @@ class SortFilterModel(QSortFilterProxyModel):
         # 自动
         self.setDynamicSortFilter(True)
 
-    def lessThan(self, source_left, source_right):
-        # 按照文字长度和字母比较排序
-        if not source_left.isValid() or not source_right.isValid():
-            return False
-        leftData = self.sourceModel().data(source_left)
-        rightData = self.sourceModel().data(source_right)
-        # return super(SortFilterModel, self).lessThan(source_left,
-        # source_right)
-        return len(leftData) < len(rightData)
+#     def lessThan(self, source_left, source_right):
+#         # 按照文字长度和字母比较排序
+#         if not source_left.isValid() or not source_right.isValid():
+#             return False
+#         leftData = self.sourceModel().data(source_left)
+#         rightData = self.sourceModel().data(source_right)
+#         # return super(SortFilterModel, self).lessThan(source_left,
+#         # source_right)
+#         return len(leftData) < len(rightData)
 
     def filterAcceptsRow(self, sourceRow, sourceParent):
         # 过滤
