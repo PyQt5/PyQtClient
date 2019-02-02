@@ -157,8 +157,8 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         )
         process.setProcessEnvironment(env)
 
-        if sys.executable.endswith('python.exe'):
-            process.setWorkingDirectory(os.path.dirname(file))
+#         if sys.executable.endswith('python.exe'):
+        process.setWorkingDirectory(os.path.dirname(file))
         process.start(sys.executable, [file])
 
     def _runJs(self, code):
