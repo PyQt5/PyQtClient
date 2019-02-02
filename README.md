@@ -27,3 +27,8 @@ download [QtWebKit](https://github.com/annulen/webkit/releases/) and extract to 
 3.install QtWebKit pyd
 
 copy .Data/site-packages to PYTHONPATH/Lib/site-packages
+
+
+## ScreenShot
+
+![PyQtClient](ScreenShot/PyQtClient.gif)
