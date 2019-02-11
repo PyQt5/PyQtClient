@@ -256,6 +256,9 @@
             </item>
             <item>
              <widget class="TreeView" name="treeViewCatalogs">
+              <property name="contextMenuPolicy">
+               <enum>Qt::CustomContextMenu</enum>
+              </property>
               <property name="frameShape">
                <enum>QFrame::NoFrame</enum>
               </property>

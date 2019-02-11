@@ -100,6 +100,7 @@ class Ui_FormMainWindow(object):
         self.horizontalLayout_3.addWidget(self.buttonClear)
         self.verticalLayout_4.addWidget(self.widgetSearch)
         self.treeViewCatalogs = TreeView(self.widgetCatalogs)
+        self.treeViewCatalogs.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.treeViewCatalogs.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.treeViewCatalogs.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.treeViewCatalogs.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
