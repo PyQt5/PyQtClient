@@ -28,6 +28,13 @@ download [QtWebKit](https://github.com/annulen/webkit/releases/) and extract to 
 
 copy .Data/site-packages to PYTHONPATH/Lib/site-packages
 
+## Notice
+
+If the first boot is slow
+
+    1. git clone https://github.com/PyQt5/PyQt.git
+    2. move PyQt to PyQtClient\Resources\Data\Projects
+    3. start PyQtClient
 
 ## ScreenShot
 
