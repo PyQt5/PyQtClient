@@ -72,9 +72,36 @@ def showError(message):
     sys.exit(app.exec_())
 
 
-try:
+def do_analysis():
     from Widgets import MainWindow
-    MainWindow.main()
+    try:
+        # 获取函数调用图
+        from pycallgraph2.config import Config
+        from pycallgraph2.globbing_filter import GlobbingFilter
+        from pycallgraph2.output.graphviz import GraphvizOutput
+        from pycallgraph2.pycallgraph import PyCallGraph
+        # 函数流程图调用
+        config = Config()
+        config.trace_filter = GlobbingFilter(
+            include=['Widgets.*', 'Utils.*'],
+            exclude=['pycallgraph2.*', '*.secret_function']
+        )
+        with PyCallGraph(
+                GraphvizOutput(
+                    tool='D:/soft/Graphviz/bin/dot',
+                    output_file='call_detail.png'),
+                config=config):
+            MainWindow.main()
+    except:
+        MainWindow.main()
+
+
+try:
+    if '-analysis' in sys.argv:
+        do_analysis()
+    else:
+        from Widgets import MainWindow
+        MainWindow.main()
 except SystemExit:
     pass
 except:
