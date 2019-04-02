@@ -12,7 +12,7 @@ Created on 2019年1月9日
 import os
 import webbrowser
 
-from PyQt5.QtCore import pyqtSlot, QUrl, QLocale, QTranslator
+from PyQt5.QtCore import pyqtSlot, QUrl, QLocale, QTranslator, QCoreApplication
 from PyQt5.QtGui import QColor, QCursor
 from PyQt5.QtWebKit import QWebSettings
 from PyQt5.QtWebKitWidgets import QWebPage
@@ -86,7 +86,9 @@ class MainWindowBase:
         Signals.showReadmed.connect(self.renderReadme)
         Signals.urlLoaded.connect(self.onUrlLoaded)
         Signals.runExampled.connect(self._runFile)
-        Signals.cloneFinished.connect(lambda: self._showNotice('更新例子完成'))
+        Signals.cloneFinished.connect(lambda: self._showNotice(
+            QCoreApplication.translate(
+                'MainWindowBase', 'Update Example Finished')))
         Signals.cloneFinished.connect(self.treeViewCatalogs.initCatalog)
         Signals.cloneFinished.connect(self.renderReadme)
         Signals.progressStoped.connect(self.widgetCatalogs.stop)
@@ -101,17 +103,22 @@ class MainWindowBase:
             translator = QTranslator(self)
             translator.load('Resources/pyqtclient_zh_CN.qm')
             QApplication.instance().installTranslator(translator)
+            AppLog.info('install local language')
 
     def _initWebView(self):
         """初始化网页"""
         # 右键菜单
-        self._webviewMenu = QMenu(self.tr('Menu'), self.webViewContent)
+        self._webviewMenu = QMenu(QCoreApplication.translate(
+            'MainWindowBase', 'Menu'), self.webViewContent)
         self._webviewactRun = QAction(
-            self.tr('Run'), self._webviewMenu, triggered=self._doActRun)
+            QCoreApplication.translate(
+                'MainWindowBase', 'Run'), self._webviewMenu, triggered=self._doActRun)
         self._webviewactView = QAction(
-            self.tr('View'), self._webviewMenu, triggered=self._doActView)
+            QCoreApplication.translate(
+                'MainWindowBase', 'View'), self._webviewMenu, triggered=self._doActView)
         self._webviewactFolder = QAction(
-            self.tr('Open'), self._webviewMenu, triggered=self._doActOpen)
+            QCoreApplication.translate(
+                'MainWindowBase', 'Open'), self._webviewMenu, triggered=self._doActOpen)
         self._webviewMenu.addAction(self._webviewactRun)
         self._webviewMenu.addAction(self._webviewactView)
         self._webviewMenu.addAction(self._webviewactFolder)

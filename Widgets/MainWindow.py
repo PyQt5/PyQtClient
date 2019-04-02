@@ -16,7 +16,7 @@ import sys
 
 from PyQt5 import QtCore
 from PyQt5.QtCore import QEvent, Qt, QTimer, pyqtSlot, QUrl, QProcess,\
-    QProcessEnvironment, QLibraryInfo
+    QProcessEnvironment, QLibraryInfo, QCoreApplication
 from PyQt5.QtGui import QEnterEvent, QIcon
 
 from UiFiles.Ui_MainWindow import Ui_FormMainWindow
@@ -86,7 +86,8 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
 
     def _initCatalog(self):
         # 更新目录
-        self._showNotice('正在更新例子代码')
+        self._showNotice(QCoreApplication.translate(
+            'MainWindow', 'Update Example Started'))
         CloneThread.start()
 
     @pyqtSlot(str)

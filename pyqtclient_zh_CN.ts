@@ -186,37 +186,37 @@
 <context>
     <name>FormMainWindow</name>
     <message>
-        <location filename="UiFiles/Ui_MainWindow.py" line="161"/>
+        <location filename="UiFiles/Ui_MainWindow.py" line="162"/>
         <source>PyQtClient</source>
         <translation>PyQtClient</translation>
     </message>
     <message>
-        <location filename="UiFiles/Ui_MainWindow.py" line="162"/>
+        <location filename="UiFiles/Ui_MainWindow.py" line="163"/>
         <source>Project Url</source>
         <translation>项目网址</translation>
     </message>
     <message>
-        <location filename="UiFiles/Ui_MainWindow.py" line="163"/>
+        <location filename="UiFiles/Ui_MainWindow.py" line="164"/>
         <source>QQ Chat</source>
         <translation>QQ聊天</translation>
     </message>
     <message>
-        <location filename="UiFiles/Ui_MainWindow.py" line="164"/>
+        <location filename="UiFiles/Ui_MainWindow.py" line="165"/>
         <source>QQ Group</source>
         <translation>QQ群聊</translation>
     </message>
     <message>
-        <location filename="UiFiles/Ui_MainWindow.py" line="165"/>
+        <location filename="UiFiles/Ui_MainWindow.py" line="166"/>
         <source>Home Page</source>
         <translation>主页</translation>
     </message>
     <message>
-        <location filename="UiFiles/Ui_MainWindow.py" line="166"/>
+        <location filename="UiFiles/Ui_MainWindow.py" line="167"/>
         <source>Back to Top</source>
         <translation>返回顶部</translation>
     </message>
     <message>
-        <location filename="UiFiles/MainWindow.ui" line="391"/>
+        <location filename="UiFiles/MainWindow.ui" line="394"/>
         <source>about:blank</source>
         <translation></translation>
     </message>
@@ -281,6 +281,42 @@
         <location filename="UiFiles/Ui_UpdateDialog.py" line="79"/>
         <source>Update</source>
         <translation>更新</translation>
+    </message>
+</context>
+<context>
+    <name>MainWindow</name>
+    <message>
+        <location filename="Widgets/MainWindow.py" line="89"/>
+        <source>Update Example Started</source>
+        <translation>正在更新例子代码文件</translation>
+    </message>
+</context>
+<context>
+    <name>MainWindowBase</name>
+    <message>
+        <location filename="Widgets/MainWindowBase.py" line="89"/>
+        <source>Update Example Finished</source>
+        <translation>更新例子代码完成</translation>
+    </message>
+    <message>
+        <location filename="Widgets/MainWindowBase.py" line="108"/>
+        <source>Menu</source>
+        <translation>菜单</translation>
+    </message>
+    <message>
+        <location filename="Widgets/MainWindowBase.py" line="109"/>
+        <source>Run</source>
+        <translation>运行</translation>
+    </message>
+    <message>
+        <location filename="Widgets/MainWindowBase.py" line="111"/>
+        <source>View</source>
+        <translation>查看</translation>
+    </message>
+    <message>
+        <location filename="Widgets/MainWindowBase.py" line="113"/>
+        <source>Open</source>
+        <translation>打开</translation>
     </message>
 </context>
 <context>
