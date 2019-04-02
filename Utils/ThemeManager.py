@@ -139,6 +139,12 @@ PictureWidget {{
 #buttonPreviewApply:pressed {{
     background: rgba({0}, {1}, {2}, 230);
 }}
+
+/*菜单*/
+QMenu::item:selected {{
+    color: white;
+    background: rgba({0}, {1}, {2}, 200);
+}}
 """
 
 # 渐变颜色
@@ -245,6 +251,12 @@ PictureWidget {{
 }}
 #buttonPreviewApply:pressed {{
     background: rgba({0}, {1}, {2}, 230);
+}}
+
+/*菜单*/
+QMenu::item:selected {{
+    color: white;
+    background: rgba({0}, {1}, {2}, 200);
 }}
 """
 

@@ -12,8 +12,8 @@ Created on 2019年1月13日
 import os
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QStandardItemModel, QStandardItem, QCursor
-from PyQt5.QtWidgets import QTreeView, QMenu, QAction
+from PyQt5.QtGui import QStandardItemModel, QStandardItem
+from PyQt5.QtWidgets import QTreeView
 
 from Utils import Constants
 from Utils.CommonUtil import AppLog, Signals
@@ -29,7 +29,6 @@ class TreeView(QTreeView):
     def __init__(self, *args, **kwargs):
         super(TreeView, self).__init__(*args, **kwargs)
         self._initModel()
-        self._initMenus()
         self._initSignals()
 
     def _initModel(self):
@@ -39,41 +38,11 @@ class TreeView(QTreeView):
         self._fmodel.setSourceModel(self._dmodel)
         self.setModel(self._fmodel)
 
-    def _initMenus(self):
-        """初始化菜单"""
-        self._menu = QMenu(self.tr('Catalogs'), self)
-        self._actRun = QAction(self.tr('Run File'), self._menu)
-        self._actFolder = QAction(self.tr('Open Folder'), self._menu)
-        self._menu.addAction(self._actRun)
-        self._menu.addAction(self._actFolder)
-
     def _initSignals(self):
         Signals.itemJumped.connect(self.onItemJumped)
         Signals.filterChanged.connect(self._fmodel.setFilterRegExp)
         self.clicked.connect(self.onClicked)
         self.doubleClicked.connect(self.onDoubleClicked)
-        self.customContextMenuRequested.connect(self._showMenu)
-        self._actRun.triggered.connect(self.doRunFile)
-        self._actFolder.triggered.connect(self.doOpenFolder)
-
-    def _showMenu(self, pos):
-        """右键显示菜单
-        :param pos:
-        """
-        mindex = self.indexAt(pos)
-        if not mindex or not mindex.isValid():
-            return
-        self._menu.exec_(QCursor.pos())
-
-    def doRunFile(self, triggered):
-        """运行文件
-        :param triggered:
-        """
-
-    def doOpenFolder(self, triggered):
-        """打开所在文件夹
-        :param triggered:
-        """
 
     def rootItem(self):
         """得到根节点Item"""

@@ -385,11 +385,11 @@
              <number>4</number>
             </property>
             <item>
-             <widget class="QWebView" name="webViewContent">
+             <widget class="QWebView" name="webViewContent" native="true">
               <property name="contextMenuPolicy">
-               <enum>Qt::NoContextMenu</enum>
+               <enum>Qt::CustomContextMenu</enum>
               </property>
-              <property name="url">
+              <property name="url" stdset="0">
                <url>
                 <string>about:blank</string>
                </url>

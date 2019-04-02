@@ -86,6 +86,7 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
 
     def _initCatalog(self):
         # 更新目录
+        self._showNotice('正在更新例子代码')
         CloneThread.start()
 
     @pyqtSlot(str)

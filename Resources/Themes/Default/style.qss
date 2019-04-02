@@ -529,3 +529,18 @@ QScrollBar::add-line:vertical {
     background: transparent;
     subcontrol-position:bottom;
 }
+
+/*菜单*/
+QMenu {
+    color: black;
+    border: 0px solid rgb(255, 255, 255);
+    background: rgb(255, 255, 255);
+}
+QMenu::item {
+    padding: 8px 30px;
+    border-bottom: 1px solid rgba(200, 200, 200, 255);
+}
+QMenu::item:selected {
+    color: white;
+    background: rgba(39, 174, 97, 200);
+}

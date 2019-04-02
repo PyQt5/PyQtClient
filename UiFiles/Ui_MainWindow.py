@@ -146,7 +146,7 @@ class Ui_FormMainWindow(object):
         self.verticalLayout_3.setSpacing(0)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.webViewContent = QtWebKitWidgets.QWebView(self.widgetContents)
-        self.webViewContent.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
+        self.webViewContent.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.webViewContent.setUrl(QtCore.QUrl("about:blank"))
         self.webViewContent.setObjectName("webViewContent")
         self.verticalLayout_3.addWidget(self.webViewContent)

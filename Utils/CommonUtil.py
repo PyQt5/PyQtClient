@@ -9,9 +9,12 @@ Created on 2019年1月3日
 @file: Utils.CommonUtil
 @description: 公共工具类
 """
+import ctypes
 import hashlib
 import logging
 import os
+import platform
+import subprocess
 
 from PyQt5.QtCore import QSettings, QTextCodec, QObject, pyqtSignal
 
@@ -27,6 +30,31 @@ __Version__ = "Version 1.0"
 
 def qBound(miv, cv, mxv):
     return max(min(cv, mxv), miv)
+
+
+def openFolder(path):
+    """打开文件夹
+    :param path:        文件/文件夹
+    """
+    system = platform.system()
+    if system.startswith('Window'):
+        try:
+            path = path.replace('/', '\\')
+            ctypes.windll.ole32.CoInitialize(None)
+            pidl = ctypes.windll.shell32.ILCreateFromPathW(path)
+            ctypes.windll.shell32.SHOpenFolderAndSelectItems(
+                pidl, 0, None, 0)
+            ctypes.windll.shell32.ILFree(pidl)
+            ctypes.windll.ole32.CoUninitialize()
+        except:
+            path = os.path.dirname(path).replace('/', '\\')
+            subprocess.call(['explorer', path])
+    elif system.startswith('Darwin'):
+        path = os.path.dirname(path).replace('\\', '/')
+        subprocess.call(['open', path])
+    else:
+        path = os.path.dirname(path).replace('\\', '/')
+        subprocess.call(['nautilus', path])
 
 
 def git_blob_hash(path):

@@ -13,13 +13,13 @@ import os
 import webbrowser
 
 from PyQt5.QtCore import pyqtSlot, QUrl, QLocale, QTranslator
-from PyQt5.QtGui import QColor
+from PyQt5.QtGui import QColor, QCursor
 from PyQt5.QtWebKit import QWebSettings
 from PyQt5.QtWebKitWidgets import QWebPage
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QMenu, QAction
 
 from Utils import Constants
-from Utils.CommonUtil import Signals, Setting, AppLog
+from Utils.CommonUtil import Signals, Setting, AppLog, openFolder
 from Utils.GradientUtils import GradientUtils
 from Utils.NetworkAccessManager import NetworkAccessManager
 from Utils.ThemeManager import ThemeManager
@@ -86,6 +86,7 @@ class MainWindowBase:
         Signals.showReadmed.connect(self.renderReadme)
         Signals.urlLoaded.connect(self.onUrlLoaded)
         Signals.runExampled.connect(self._runFile)
+        Signals.cloneFinished.connect(lambda: self._showNotice('更新例子完成'))
         Signals.cloneFinished.connect(self.treeViewCatalogs.initCatalog)
         Signals.cloneFinished.connect(self.renderReadme)
         Signals.progressStoped.connect(self.widgetCatalogs.stop)
@@ -103,6 +104,20 @@ class MainWindowBase:
 
     def _initWebView(self):
         """初始化网页"""
+        # 右键菜单
+        self._webviewMenu = QMenu(self.tr('Menu'), self.webViewContent)
+        self._webviewactRun = QAction(
+            self.tr('Run'), self._webviewMenu, triggered=self._doActRun)
+        self._webviewactView = QAction(
+            self.tr('View'), self._webviewMenu, triggered=self._doActView)
+        self._webviewactFolder = QAction(
+            self.tr('Open'), self._webviewMenu, triggered=self._doActOpen)
+        self._webviewMenu.addAction(self._webviewactRun)
+        self._webviewMenu.addAction(self._webviewactView)
+        self._webviewMenu.addAction(self._webviewactFolder)
+
+        self.webViewContent.customContextMenuRequested.connect(
+            self._showWebMenu)
         settings = self.webViewContent.settings()
         # 设置默认编码
         settings.setDefaultTextEncoding('UTF-8')
@@ -118,6 +133,75 @@ class MainWindowBase:
         # 加载readme
         self.webViewContent.load(QUrl.fromLocalFile(
             os.path.abspath(Constants.HomeFile)))
+
+    def _doActRun(self):
+        """右键菜单运行代码
+        """
+        path = self.sender().data()
+        Signals.runExampled.emit(path)
+
+    def _doActView(self):
+        """右键菜单查看代码
+        """
+        path = self.sender().data()
+        try:
+            code = open(path, 'rb').read().decode(errors='ignore')
+            Signals.showCoded.emit(code)
+        except Exception as e:
+            AppLog.warn(str(e))
+
+    def _doActOpen(self):
+        """右键菜单打开文件夹
+        """
+        path = self.sender().data()
+        openFolder(path)
+
+    def _showWebMenu(self, pos):
+        """显示网页右键菜单
+        :param pos:            点击位置
+        """
+        hit = self.webViewContent.page().currentFrame().hitTestContent(pos)
+        url = hit.linkUrl()
+        if url.isValid():
+            path = url.toLocalFile().strip().replace('\\', '/')
+            names = path.split('Markdown/')
+            if len(names) == 1:
+                return
+            path = os.path.abspath(os.path.join(
+                Constants.DirCurrent, names[1]))
+            AppLog.debug('path: {}'.format(path))
+            AppLog.debug('isdir: {}'.format(os.path.isdir(path)))
+            self._webviewactRun.setData(path)
+            self._webviewactView.setData(path)
+            self._webviewactFolder.setData(path)
+            if os.path.exists(path) and os.path.isdir(path):
+                self._webviewactRun.setVisible(False)
+                self._webviewactView.setVisible(False)
+                self._webviewactFolder.setVisible(True)
+            elif os.path.exists(path) and os.path.isfile(path):
+                self._webviewactRun.setVisible(True)
+                self._webviewactView.setVisible(True)
+                self._webviewactFolder.setVisible(True)
+            self._webviewMenu.exec_(QCursor.pos())
+
+    def _showNotice(self, message, timeout=2000):
+        """底部显示提示
+        :param message:        提示消息
+        """
+        if hasattr(self, '_tip'):
+            self._tip._hideTimer.stop()
+            self._tip.close()
+            self._tip.deleteLater()
+            del self._tip
+        self._tip = ToolTip()
+        self._tip.setText(message)
+        self._tip.show()
+        self._tip.move(
+            self.pos().x() + int((self.width() - self._tip.width()) / 2),
+            self.pos().y() + self.height() - 60,
+        )
+        self._tip._hideTimer.timeout.connect(self._tip.close)
+        self._tip._hideTimer.start(timeout)
 
     @pyqtSlot()
     def on_buttonSkin_clicked(self):
