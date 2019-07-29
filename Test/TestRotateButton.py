@@ -11,7 +11,7 @@ Created on 2019年1月2日
 """
 from PyQt5.QtWidgets import QWidget, QHBoxLayout
 
-from Widgets.RotateButton import RotateButton
+from Widgets.Buttons.RotateButton import RotateButton
 
 
 __Author__ = """By: Irony

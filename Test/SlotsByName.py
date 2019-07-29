@@ -14,7 +14,7 @@ import sys
 from PyQt5.QtCore import QMetaObject, pyqtSlot
 from PyQt5.QtWidgets import QWidget, QApplication, QVBoxLayout
 
-from Widgets.RotateButton import RotateButton
+from Widgets.Buttons.RotateButton import RotateButton
 
 
 __Author__ = """By: Irony

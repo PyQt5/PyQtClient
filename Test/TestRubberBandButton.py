@@ -9,7 +9,8 @@ Created on 2019年1月3日
 @file: Test.TestRubberBandButton
 @description: 
 """
-from Widgets.RubberBandButton import RubberBandButton
+
+from Widgets.Buttons.RubberBandButton import RubberBandButton
 
 
 __Author__ = """By: Irony

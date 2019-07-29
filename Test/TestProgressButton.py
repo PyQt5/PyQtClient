@@ -1,7 +1,7 @@
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QWidget, QVBoxLayout
 
-from Widgets.ProgressButton import ProgressButton
+from Widgets.Buttons.ProgressButton import ProgressButton
 
 
 class Window(QWidget):
