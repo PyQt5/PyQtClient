@@ -26,12 +26,15 @@ pip install PyQtPurchasing -U
 pip install PyQtWebKit -U
 ```
 
-### For Linux
+### For RHEL_7_6-X86_64
 
 1. Install Python35+
 2. Install Qt5.13.1 to ~/Qt5.13.1
 3. clone https://github.com/PyQt5/PyQtWebKit and run `./build.sh`
 
+## Todo
+
+Replace QtWebKit to QtWebEngine
 
 ## Notice
 
