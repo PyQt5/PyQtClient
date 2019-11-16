@@ -10,6 +10,9 @@ Library
 Library/*
 Library.zip
 *.log
+.settings
+.project
+.pydevproject
 call_detail.png
 Resources/Data/*
 Resources/Images/Avatars/*.jpg

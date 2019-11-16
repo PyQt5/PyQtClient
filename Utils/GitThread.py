@@ -46,6 +46,15 @@ class LoginThread(QObject):
         super(LoginThread, self).__init__(*args, **kwargs)
         self.account = account
         self.password = password
+    
+    @classmethod
+    def quit(cls):
+        """退出线程
+        :param cls:
+        """
+        if hasattr(cls, '_thread'):
+            cls._thread.quit()
+            AppLog.info('login thread quit')
 
     @classmethod
     def start(cls, account, password, parent=None):
@@ -54,11 +63,6 @@ class LoginThread(QObject):
         :param account:        账号
         :param password:       密码
         """
-        if hasattr(cls, '_thread'):
-            cls._thread.quit()
-            cls._thread.wait(1000)
-            cls._thread.deleteLater()
-            AppLog.info('login thread killed')
         cls._thread = QThread(parent)
         cls._worker = LoginThread(account, password)
         cls._worker.moveToThread(cls._thread)
@@ -105,11 +109,13 @@ class LoginThread(QObject):
                 Signals.loginErrored.emit(QCoreApplication.translate(
                     'Repository', 'Incorrect account or password'))
                 AppLog.warn('Incorrect account or password')
+                LoginThread.quit()
                 return
             if 'login' not in retval:
                 Signals.loginErrored.emit(QCoreApplication.translate(
                     'Repository', 'Login failed, Unknown reason'))
                 AppLog.warn('Login failed, Unknown reason')
+                LoginThread.quit()
                 return
             # 用户ID
             uid = retval.get('id', 0)
@@ -137,6 +143,7 @@ class LoginThread(QObject):
             AppLog.exception(e)
 
         AppLog.info('login thread end')
+        LoginThread.quit()
 
 
 class ProgressCallback(RemoteCallbacks):
@@ -155,6 +162,15 @@ class CloneThread(QObject):
     """
 
     Url = 'git://github.com/PyQt5/PyQt.git'
+    
+    @classmethod
+    def quit(cls):
+        """退出线程
+        :param cls:
+        """
+        if hasattr(cls, '_thread'):
+            cls._thread.quit()
+            AppLog.info('clone thread quit')
 
     @classmethod
     def start(cls, parent=None):
@@ -263,6 +279,7 @@ class CloneThread(QObject):
         AppLog.info('clone thread end')
         Signals.progressStoped.emit()
         Signals.cloneFinished.emit('')
+        CloneThread.quit()
 
 
 class UpgradeThread(QObject):
@@ -274,6 +291,15 @@ class UpgradeThread(QObject):
 
 #     Url = 'https://raw.githubusercontent.com/IronyYou/test/master/Update/Upgrade.json'
 #     ZipUrl = 'https://raw.githubusercontent.com/IronyYou/test/master/Update/Upgrade.{}.zip'
+    
+    @classmethod
+    def quit(cls):
+        """退出线程
+        :param cls:
+        """
+        if hasattr(cls, '_thread'):
+            cls._thread.quit()
+            AppLog.info('upgrade thread quit')
 
     @classmethod
     def start(cls, parent=None):
@@ -336,6 +362,7 @@ class UpgradeThread(QObject):
             AppLog.info(req.text)
             if req.status_code != 200:
                 AppLog.info('update thread end')
+                UpgradeThread.quit()
                 return
             content = req.json()
             for version, text in content:
@@ -354,3 +381,4 @@ class UpgradeThread(QObject):
                 self.tr('update failed: {}').format(str(e)))
             AppLog.exception(e)
         AppLog.info('update thread end')
+        UpgradeThread.quit()
