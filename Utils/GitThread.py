@@ -54,6 +54,11 @@ class LoginThread(QObject):
         :param account:        账号
         :param password:       密码
         """
+        if hasattr(cls, '_thread'):
+            cls._thread.quit()
+            cls._thread.wait(1000)
+            cls._thread.deleteLater()
+            AppLog.info('login thread killed')
         cls._thread = QThread(parent)
         cls._worker = LoginThread(account, password)
         cls._worker.moveToThread(cls._thread)
