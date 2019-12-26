@@ -1,4 +1,6 @@
 requests
+markdown2
+pygments
 pygit2==0.27.2
 PyQt5==5.10.1
 PyQtWebKit==5.10.1
