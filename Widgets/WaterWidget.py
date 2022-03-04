@@ -1,20 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on 2019年1月17日
 @author: Irony
-@site: https://pyqt5.com https://github.com/892768447
+@site: https://pyqt.site https://github.com/PyQt5
 @email: 892768447@qq.com
 @file: Widgets.WaterWidget
 @description: 水波纹进度
 """
+
 import math
 
-from PyQt5.QtCore import pyqtProperty, QTimer, Qt
-from PyQt5.QtGui import QColor, QPainterPath, QPainter
+from PyQt5.QtCore import Qt, QTimer, pyqtProperty
+from PyQt5.QtGui import QColor, QPainter, QPainterPath
 from PyQt5.QtWidgets import QWidget
-
 
 __Author__ = "Irony"
 __Copyright__ = "Copyright (c) 2019"

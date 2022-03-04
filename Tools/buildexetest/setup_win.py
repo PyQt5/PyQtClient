@@ -1,23 +1,21 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on 2019年1月18日
 @author: Irony
-@site: https://pyqt5.com https://github.com/892768447
+@site: https://pyqt.site https://github.com/PyQt5
 @email: 892768447@qq.com
 @file: setup_win
 @description: 
 """
-from distutils.core import setup
+
 import sys
+from distutils.core import setup
 
 import py2exe  # @UnusedImport
 
-
 __Author__ = "Irony"
 __Copyright__ = "Copyright (c) 2019"
-
 
 sys.path.append('../')
 
@@ -43,15 +41,13 @@ options = {
     }
 }
 
-setup(
-    version='1.0',
-    description='PyQtClient',
-    name='PyQtClient',
-    zipfile=None,
-    options=options,
-    windows=[{
-        'script': 'PyQtClient.py',
-                'icon_resources': [(1, 'app.ico')],
-    }],
-    data_files=[]
-)
+setup(version='1.0',
+      description='PyQtClient',
+      name='PyQtClient',
+      zipfile=None,
+      options=options,
+      windows=[{
+          'script': 'PyQtClient.py',
+          'icon_resources': [(1, 'app.ico')],
+      }],
+      data_files=[])

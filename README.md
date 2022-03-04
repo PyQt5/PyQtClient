@@ -6,7 +6,7 @@ It requires both Python35+ and PyQt5 and QtWebKit.
 
 需要 Python35+ PyQt5 和 QtWebKit
 
-## Installing （安装）
+## Installing
 
 install requirements
 
@@ -38,7 +38,9 @@ Replace QtWebKit to QtWebEngine
 
 ## Notice
 
-If the first boot is slow  第一次运行很慢（因为在clone例子源码）
+第一次运行很慢（因为在clone例子源码）
+
+If the first boot is slow
 
     1. git clone https://github.com/PyQt5/PyQt.git
     2. move PyQt to PyQtClient\Resources\Data\Projects

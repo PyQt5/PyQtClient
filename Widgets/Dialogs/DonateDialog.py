@@ -1,21 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on 2019年1月11日
 @author: Irony
-@site: https://pyqt5.com https://github.com/892768447
+@site: https://pyqt.site https://github.com/PyQt5
 @email: 892768447@qq.com
 @file: Dialogs.DonateDialog
 @description: 捐赠对话框
 """
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
-
 from UiFiles.Ui_DonateDialog import Ui_FormDonateDialog
 from Utils.ThemeManager import ThemeManager
 from Widgets.Dialogs.MoveDialog import MoveDialog
-
 
 __Author__ = "Irony"
 __Copyright__ = "Copyright (c) 2019"
@@ -36,10 +34,11 @@ class DonateDialog(MoveDialog, Ui_FormDonateDialog):
         ThemeManager.loadCursor(self)
         # 加载鼠标样式
         ThemeManager.loadCursor(self.labelAlipayImg)
-        ThemeManager.loadCursor(self.labelWechatImg,
-                                ThemeManager.CursorPointer)
+        ThemeManager.loadCursor(self.labelWechatImg, ThemeManager.CursorPointer)
         # 加载图片
-        self.labelAlipayImg.setPixmap(QPixmap(alipayImg).scaled(
-            300, 300, Qt.IgnoreAspectRatio, Qt.SmoothTransformation))
-        self.labelWechatImg.setPixmap(QPixmap(wechatImg).scaled(
-            300, 300, Qt.IgnoreAspectRatio, Qt.SmoothTransformation))
+        self.labelAlipayImg.setPixmap(
+            QPixmap(alipayImg).scaled(300, 300, Qt.IgnoreAspectRatio,
+                                      Qt.SmoothTransformation))
+        self.labelWechatImg.setPixmap(
+            QPixmap(wechatImg).scaled(300, 300, Qt.IgnoreAspectRatio,
+                                      Qt.SmoothTransformation))

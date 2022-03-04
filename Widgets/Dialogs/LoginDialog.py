@@ -1,20 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on 2019年1月5日
 @author: Irony
-@site: https://pyqt5.com https://github.com/892768447
+@site: https://pyqt.site https://github.com/PyQt5
 @email: 892768447@qq.com
 @file: Dialogs.LoginDialog
 @description: 登录对话框
 """
+
 import base64
 import os
 
-from PyQt5.QtCore import Qt, pyqtSlot, QVariant, QTimer
+from PyQt5.QtCore import Qt, QTimer, QVariant, pyqtSlot
 from PyQt5.QtWidgets import QCompleter
-
 from UiFiles.Ui_LoginDialog import Ui_FormLoginDialog
 from Utils import Constants
 from Utils.CommonUtil import AppLog, Setting, Signals
@@ -22,13 +21,6 @@ from Utils.GitThread import LoginThread
 from Utils.ThemeManager import ThemeManager
 from Widgets.Dialogs.MoveDialog import MoveDialog
 from Widgets.Dialogs.TwinkleDialog import TwinkleDialog
-
-
-__Author__ = """By: Irony
-QQ: 892768447
-Email: 892768447@qq.com"""
-__Copyright__ = "Copyright (c) 2019 Irony"
-__Version__ = "Version 1.0"
 
 
 class LoginDialog(MoveDialog, TwinkleDialog, Ui_FormLoginDialog):
@@ -76,14 +68,15 @@ class LoginDialog(MoveDialog, TwinkleDialog, Ui_FormLoginDialog):
             return
         # 填充密码
         try:
-            self.lineEditPassword.setText(base64.b85decode(
-                self._accounts[account][1].encode()).decode())
+            self.lineEditPassword.setText(
+                base64.b85decode(self._accounts[account][1].encode()).decode())
         except Exception as e:
             self.lineEditPassword.setText('')
             AppLog.exception(e)
         # 更新头像
-        path = os.path.join(Constants.ImageDir, self._accounts[account][0]).replace(
-            '\\', '/') + '.jpg'
+        path = os.path.join(Constants.ImageDir,
+                            self._accounts[account][0]).replace('\\',
+                                                                '/') + '.jpg'
         if os.path.exists(path) and self.buttonHead.image != path:
             # 更换头像
             self.buttonHead.image = path
@@ -113,7 +106,8 @@ class LoginDialog(MoveDialog, TwinkleDialog, Ui_FormLoginDialog):
         if account not in self._accounts:
             # 更新账号数组
             self._accounts[account] = [
-                uid, base64.b85encode(password.encode()).decode()]
+                uid, base64.b85encode(password.encode()).decode()
+            ]
             Setting.setValue('accounts', self._accounts)
         self.accept()
 

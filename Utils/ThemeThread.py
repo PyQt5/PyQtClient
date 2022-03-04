@@ -1,35 +1,39 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on 2019年1月20日
 @author: Irony
-@site: https://pyqt5.com https://github.com/892768447
+@site: https://pyqt.site https://github.com/PyQt5
 @email: 892768447@qq.com
 @file: Utils.ThemeThread
 @description: 
 """
+
 import os
 from pathlib import Path
 from time import time
 
-from PyQt5.QtCore import QObject, QThread, QRunnable
-from PyQt5.QtGui import QLinearGradient, QColor
 import requests
+from PyQt5.QtCore import QObject, QRunnable, QThread
+from PyQt5.QtGui import QColor, QLinearGradient
 
 from Utils.CommonUtil import AppLog, Signals
-from Utils.Constants import DirThemes, UrlGetAppsByCategory, DirWallpaper
-
+from Utils.Constants import DirThemes, DirWallpaper, UrlGetAppsByCategory
 
 __Author__ = "Irony"
 __Copyright__ = "Copyright (c) 2019"
 
 Headers = {
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-    'Accept-Language': 'zh-CN,zh;q=0.9',
-    'Cache-Control': 'max-age=0',
-    'Upgrade-Insecure-Requests': '1',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.26 Safari/537.36 Core/1.63.6824.400 QQBrowser/10.3.3137.400'
+    'Accept':
+        'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+    'Accept-Language':
+        'zh-CN,zh;q=0.9',
+    'Cache-Control':
+        'max-age=0',
+    'Upgrade-Insecure-Requests':
+        '1',
+    'User-Agent':
+        'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.26 Safari/537.36 Core/1.63.6824.400 QQBrowser/10.3.3137.400'
 }
 
 
@@ -90,22 +94,26 @@ class ColourfulThread(QObject):
         acolor.setColorAt(0, acolor.startColor)
         acolor.setColorAt(1, acolor.endColor)
 
-        defaults = splistList([
-            [self.tr('MidnightParis'), mcolor],             # 午夜巴黎
-            [self.tr('PrimroseGreenOnion'), pcolor],        # 樱草青葱
-            [self.tr('AutumnSun'), acolor],                 # 秋日暖阳
-            [self.tr('LightGray'), QColor(236, 236, 236)],  # 淡灰色
-            [self.tr('DarkBlack'), QColor(33, 33, 33)],     # 深黑色
-            [self.tr('BlueGreen'), QColor(0, 190, 172)],    # 蓝绿色
-            [self.tr('Orange'), QColor(255, 152, 0)],       # 橙色
-            [self.tr('Brown'), QColor(140, 100, 80)],       # 咖啡色
-            [self.tr('Green'), QColor(121, 190, 60)],       # 绿色
-            [self.tr('Pink'), QColor(236, 98, 161)],        # 粉色
-            [self.tr('Purple'), QColor(103, 58, 183)],      # 紫色
-            [self.tr('Blue'), QColor(0, 188, 212)],         # 蓝色
-            [self.tr('GreyBlue'), QColor(80, 126, 164)],    # 蓝灰色
-            [self.tr('Red'), QColor(244, 94, 99)],          # 红色
-        ], 5)
+        defaults = splistList(
+            [
+                [self.tr('MidnightParis'), mcolor],  # 午夜巴黎
+                [self.tr('PrimroseGreenOnion'), pcolor],  # 樱草青葱
+                [self.tr('AutumnSun'), acolor],  # 秋日暖阳
+                [self.tr('LightGray'),
+                 QColor(236, 236, 236)],  # 淡灰色
+                [self.tr('DarkBlack'), QColor(33, 33, 33)],  # 深黑色
+                [self.tr('BlueGreen'),
+                 QColor(0, 190, 172)],  # 蓝绿色
+                [self.tr('Orange'), QColor(255, 152, 0)],  # 橙色
+                [self.tr('Brown'), QColor(140, 100, 80)],  # 咖啡色
+                [self.tr('Green'), QColor(121, 190, 60)],  # 绿色
+                [self.tr('Pink'), QColor(236, 98, 161)],  # 粉色
+                [self.tr('Purple'), QColor(103, 58, 183)],  # 紫色
+                [self.tr('Blue'), QColor(0, 188, 212)],  # 蓝色
+                [self.tr('GreyBlue'), QColor(80, 126, 164)],  # 蓝灰色
+                [self.tr('Red'), QColor(244, 94, 99)],  # 红色
+            ],
+            5)
 
         for row, default in enumerate(defaults):
             for col, (name, color) in enumerate(default):
@@ -145,8 +153,9 @@ class ThemeThread(QObject):
     def run(self):
         AppLog.info('start get all theme')
 
-        defaults = [[p.parent.name, str(p)]
-                    for p in Path(DirThemes).rglob('style.qss')]
+        defaults = [
+            [p.parent.name, str(p)] for p in Path(DirThemes).rglob('style.qss')
+        ]
 
         defaults = splistList(defaults, 5)
 
@@ -174,22 +183,23 @@ class GetAllCategoryRunnable(QRunnable):
             os.makedirs(dirPath, exist_ok=True)
             path = os.path.join(dirPath, os.path.basename(url))
             if os.path.exists(path) and os.path.isfile(path):
-                Signals.pictureItemAdded.emit(
-                    self.widget, index, title, path)
+                Signals.pictureItemAdded.emit(self.widget, index, title, path)
                 return
             req = requests.get(url, headers=Headers)
             if req.status_code == 200:
                 with open(path, 'wb') as fp:
                     fp.write(req.content)
-                Signals.pictureItemAdded.emit(
-                    self.widget, index, title, path)
+                Signals.pictureItemAdded.emit(self.widget, index, title, path)
         except Exception as e:
             AppLog.exception(e)
 
     def run(self):
         try:
-            req = requests.get(UrlGetAppsByCategory.format(
-                category=self.category, pageno=1, count=20, time=time()))
+            req = requests.get(
+                UrlGetAppsByCategory.format(category=self.category,
+                                            pageno=1,
+                                            count=20,
+                                            time=time()))
             content = req.json()
             errno = content.get('errno', 0)
             AppLog.debug('errno: %s', errno)

@@ -1,25 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on 2019年1月9日
 @author: Irony
-@site: https://pyqt5.com https://github.com/892768447
+@site: https://pyqt.site https://github.com/PyQt5
 @email: 892768447@qq.com
 @file: Utils.RunCode
 @description: 过滤排序Model
 """
+
 import os
 import runpy
 import sys
 import traceback
-
-
-__Author__ = """By: Irony
-QQ: 892768447
-Email: 892768447@qq.com"""
-__Copyright__ = "Copyright (c) 2019 Irony"
-__Version__ = "Version 1.0"
 
 
 def escape(s):
@@ -34,9 +27,9 @@ def escape(s):
 
 
 def showError(message):
-    from PyQt5.QtWidgets import QApplication, QErrorMessage, QCheckBox, \
-        QPushButton, QLabel, QStyle
     from PyQt5.QtCore import Qt
+    from PyQt5.QtWidgets import (QApplication, QCheckBox, QErrorMessage, QLabel,
+                                 QPushButton, QStyle)
     QApplication.addLibraryPath('./Qt/plugins')
     app = QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(True)

@@ -1,30 +1,28 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on 2019年1月27日
 @author: Irony
-@site: https://pyqt5.com https://github.com/892768447
+@site: https://pyqt.site https://github.com/PyQt5
 @email: 892768447@qq.com
 @file: Widgets.Skins.SkinBaseWidget
 @description: 
 """
+
 import os
 
-from PyQt5.QtCore import Qt, QSize, pyqtProperty
-from PyQt5.QtGui import QColor, QPainter, QBrush, QPixmap
+from PyQt5.QtCore import QSize, Qt, pyqtProperty
+from PyQt5.QtGui import QBrush, QColor, QPainter, QPixmap
 from PyQt5.QtWidgets import QWidget
-
 from UiFiles.Ui_ScrollArea import Ui_FormScrollArea
 from Utils.ThemeManager import ThemeManager
-
 
 __Author__ = 'Irony'
 __Copyright__ = 'Copyright (c) 2019'
 
 PixmapWidth = 158
-PixmapHeight = 152              # 图片大小
-MarginBottom = 26               # 底部文字
+PixmapHeight = 152  # 图片大小
+MarginBottom = 26  # 底部文字
 
 
 class SkinBaseItemWidget(QWidget):
@@ -44,9 +42,10 @@ class SkinBaseItemWidget(QWidget):
         self.image = None
         # 图片
         if isinstance(self.colorimg, str) and os.path.isfile(self.colorimg):
-            self.image = QPixmap(self.colorimg).scaled(
-                PixmapWidth, PixmapHeight,
-                Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
+            self.image = QPixmap(self.colorimg).scaled(PixmapWidth,
+                                                       PixmapHeight,
+                                                       Qt.IgnoreAspectRatio,
+                                                       Qt.SmoothTransformation)
 
     def click(self):
         self.signal.emit(self.name, self.colorimg)
@@ -89,13 +88,11 @@ class SkinBaseItemWidget(QWidget):
         else:
             # 画颜色
             painter.setBrush(QBrush(self.colorimg))
-            painter.drawRoundedRect(
-                0, 0, PixmapWidth, PixmapHeight, 2, 2)
+            painter.drawRoundedRect(0, 0, PixmapWidth, PixmapHeight, 2, 2)
         if self.hovered:
             # 绘制一层灰色
             painter.setBrush(QBrush(self.colorHover))
-            painter.drawRoundedRect(
-                0, 0, PixmapWidth, PixmapHeight, 2, 2)
+            painter.drawRoundedRect(0, 0, PixmapWidth, PixmapHeight, 2, 2)
         painter.restore()
         # 绘制文字
         painter.setPen(self.textColor)

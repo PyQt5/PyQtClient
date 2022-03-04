@@ -1,20 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on 2019年1月31日
 @author: Irony
-@site: https://pyqt5.com https://github.com/892768447
+@site: https://pyqt.site https://github.com/PyQt5
 @email: 892768447@qq.com
 @file: Test.TestGradientUtils
 @description: 
 """
+
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QLinearGradient, QRadialGradient, QConicalGradient,\
-    QColor
-
+from PyQt5.QtGui import (QColor, QConicalGradient, QLinearGradient,
+                         QRadialGradient)
 from Utils.GradientUtils import GradientUtils
-
 
 __Author__ = 'Irony'
 __Copyright__ = 'Copyright (c) 2019'
@@ -37,7 +35,6 @@ radialGradient.setColorAt(1.0, Qt.yellow)
 
 print(GradientUtils.styleSheetCode(radialGradient))
 
-
 # 弧度渐变
 conicalGradient = QConicalGradient(0.5, 0.5, 0)
 conicalGradient.setAngle(0.5)
@@ -48,6 +45,5 @@ conicalGradient.setColorAt(0.6, Qt.red)
 conicalGradient.setColorAt(0.8, Qt.yellow)
 
 print(GradientUtils.styleSheetCode(conicalGradient))
-
 
 print(GradientUtils.styleSheetCode(QColor(Qt.blue)))

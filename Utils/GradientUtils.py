@@ -1,18 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on 2019年1月31日
 @author: Irony
-@site: https://pyqt5.com https://github.com/892768447
+@site: https://pyqt.site https://github.com/PyQt5
 @email: 892768447@qq.com
 @file: Utils.GradientUtils
 @description: 渐变颜色工具类
 """
-from PyQt5.QtCore import QPointF
-from PyQt5.QtGui import QGradient, QColor, QLinearGradient, QRadialGradient,\
-    QConicalGradient
 
+from PyQt5.QtCore import QPointF
+from PyQt5.QtGui import (QColor, QConicalGradient, QGradient, QLinearGradient,
+                         QRadialGradient)
 
 __Author__ = 'Irony'
 __Copyright__ = 'Copyright (c) 2019'
@@ -46,8 +45,9 @@ class GradientUtils:
             elif gradient.spread() == QGradient.RepeatSpread:
                 result.append('spread:repeat')
             else:
-                print('GradientUtils::_styleSheetParameters(): gradient spread ',
-                      gradient.spread(), ' not supported!')
+                print(
+                    'GradientUtils::_styleSheetParameters(): gradient spread ',
+                    gradient.spread(), ' not supported!')
                 result.append('')
 
         if gradient.type() == QGradient.LinearGradient:
@@ -107,11 +107,17 @@ class GradientUtils:
         :param gradient:    渐变
         """
         return {
-            'type': gradient.type(),
-            'spread': gradient.spread(),
-            'start': gradient.start(),
-            'finalStop': QPointF(1, 1) if hasattr(gradient, 'ex') else gradient.finalStop(),
-            'stops': gradient.stops()
+            'type':
+                gradient.type(),
+            'spread':
+                gradient.spread(),
+            'start':
+                gradient.start(),
+            'finalStop':
+                QPointF(1, 1)
+                if hasattr(gradient, 'ex') else gradient.finalStop(),
+            'stops':
+                gradient.stops()
         }
 
     @classmethod
@@ -145,9 +151,11 @@ class GradientUtils:
         :param gradient:
         """
         if isinstance(colorgradient, QColor):
-            return 'rgba({}, {}, {}, {})'.format(
-                colorgradient.red(), colorgradient.green(),
-                colorgradient.blue(), colorgradient.alpha())
+            return 'rgba({}, {}, {}, {})'.format(colorgradient.red(),
+                                                 colorgradient.green(),
+                                                 colorgradient.blue(),
+                                                 colorgradient.alpha())
         gradientParameters = cls._styleSheetParameters(
             colorgradient) + cls._styleSheetStops(colorgradient)
-        return cls._styleSheetFillName(colorgradient) + '(' + ', '.join(gradientParameters) + ')'
+        return cls._styleSheetFillName(colorgradient) + '(' + ', '.join(
+            gradientParameters) + ')'

@@ -1,29 +1,21 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on 2019年1月2日
 @author: Irony
-@site: https://pyqt5.com https://github.com/892768447
+@site: https://pyqt.site https://github.com/PyQt5
 @email: 892768447@qq.com
 @file: Widgets.RotateButton
 @description:
 """
+
 import os
 
-from PyQt5.QtCore import Qt, pyqtProperty, QRectF, QPropertyAnimation, QPointF
-from PyQt5.QtGui import QPainter, QColor, QPixmap, QPainterPath, QImage
-from PyQt5.QtWidgets import QPushButton, QGraphicsDropShadowEffect, \
-    QStyleOptionButton, QStylePainter, QStyle
-
+from PyQt5.QtCore import QPointF, QPropertyAnimation, QRectF, Qt, pyqtProperty
+from PyQt5.QtGui import QColor, QImage, QPainter, QPainterPath, QPixmap
+from PyQt5.QtWidgets import (QGraphicsDropShadowEffect, QPushButton, QStyle,
+                             QStyleOptionButton, QStylePainter)
 from Widgets.ToolTip import ToolTip
-
-
-__Author__ = """By: Irony
-QQ: 892768447
-Email: 892768447@qq.com"""
-__Copyright__ = 'Copyright (c) 2019 Irony'
-__Version__ = 1.0
 
 
 class RotateButton(QPushButton):
@@ -66,8 +58,7 @@ class RotateButton(QPushButton):
         if self._pixmap and not self._pixmap.isNull():
             w = self.width()
             h = self.height()
-            pos = QPointF(-self._pixmap.width() / 2, -
-                          self._pixmap.height() / 2)
+            pos = QPointF(-self._pixmap.width() / 2, -self._pixmap.height() / 2)
             painter.drawPixmap(pos, self._pixmap)
         elif text:
             # 在变换坐标后的正中间画文字
@@ -92,8 +83,9 @@ class RotateButton(QPushButton):
         # 开启旋转动画
         self._animation.stop()
         cv = self._animation.currentValue() or self.STARTVALUE
-        self._animation.setDuration(self.DURATION if cv == 0 else int(
-            cv / self.ENDVALUE * self.DURATION))
+        self._animation.setDuration(self.DURATION if cv ==
+                                    0 else int(cv / self.ENDVALUE *
+                                               self.DURATION))
         self._animation.setStartValue(cv)
         self._animation.setEndValue(self.ENDVALUE)
         self._animation.start()
@@ -121,8 +113,8 @@ class RotateButton(QPushButton):
         radius = int(size / 2)
         image = QImage(size, size, QImage.Format_ARGB32_Premultiplied)
         image.fill(Qt.transparent)  # 填充背景为透明
-        pixmap = QPixmap(path).scaled(
-            size, size, Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
+        pixmap = QPixmap(path).scaled(size, size, Qt.KeepAspectRatioByExpanding,
+                                      Qt.SmoothTransformation)
         # QPainter
         painter = QPainter()
         painter.begin(image)

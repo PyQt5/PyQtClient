@@ -1,24 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on 2019年1月2日
 @author: Irony
-@site: https://pyqt5.com https://github.com/892768447
+@site: https://pyqt.site https://github.com/PyQt5
 @email: 892768447@qq.com
 @file: Widgets.FramelessWindow
 @description: 无边框窗口
 """
-from PyQt5.QtCore import Qt, QEvent
-from PyQt5.QtGui import QPainter, QPen, QColor
+
+from PyQt5.QtCore import QEvent, Qt
+from PyQt5.QtGui import QColor, QPainter, QPen
 from PyQt5.QtWidgets import QWidget
-
-
-__Author__ = """By: Irony
-QQ: 892768447
-Email: 892768447@qq.com"""
-__Copyright__ = "Copyright (c) 2019 Irony"
-__Version__ = "Version 1.0"
 
 # 枚举左上右下以及四个定点
 Left, Top, Right, Bottom, LeftTop, RightTop, LeftBottom, RightBottom = range(8)
@@ -142,11 +135,12 @@ class FramelessWindow(QWidget):
                 self.layout().setContentsMargins(0, 0, 0, 0)
             else:
                 # 要保留上下左右边界,否则没有边框无法调整
-                self.layout().setContentsMargins(
-                    self.MARGIN, self.MARGIN, self.MARGIN, self.MARGIN)
+                self.layout().setContentsMargins(self.MARGIN, self.MARGIN,
+                                                 self.MARGIN, self.MARGIN)
 
     def move(self, pos):
-        if self.windowState() == Qt.WindowMaximized or self.windowState() == Qt.WindowFullScreen:
+        if self.windowState() == Qt.WindowMaximized or self.windowState(
+        ) == Qt.WindowFullScreen:
             # 最大化或者全屏则不允许移动
             return
         super(FramelessWindow, self).move(pos)
@@ -158,7 +152,8 @@ class FramelessWindow(QWidget):
         mpos = pos - self._pos
         xPos, yPos = mpos.x(), mpos.y()
         geometry = self.geometry()
-        x, y, w, h = geometry.x(), geometry.y(), geometry.width(), geometry.height()
+        x, y, w, h = geometry.x(), geometry.y(), geometry.width(
+        ), geometry.height()
         if self.Direction == LeftTop:  # 左上角
             if w - xPos > self.minimumWidth():
                 x += xPos

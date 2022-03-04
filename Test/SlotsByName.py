@@ -1,34 +1,27 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on 2019年1月5日
 @author: Irony
-@site: https://pyqt5.com https://github.com/892768447
+@site: https://pyqt.site https://github.com/PyQt5
 @email: 892768447@qq.com
 @file: Test.tSlotsByName
 @description:
 """
+
 import sys
 
 from PyQt5.QtCore import QMetaObject, pyqtSlot
-from PyQt5.QtWidgets import QWidget, QApplication, QVBoxLayout
-
+from PyQt5.QtWidgets import QApplication, QVBoxLayout, QWidget
 from Widgets.Buttons.RotateButton import RotateButton
-
-
-__Author__ = """By: Irony
-QQ: 892768447
-Email: 892768447@qq.com"""
-__Copyright__ = "Copyright (c) 2019 Irony"
-__Version__ = "Version 1.0"
 
 
 class Ui_FormMainWindow(object):
 
     def setupUi(self, FormMainWindow):
         layout = QVBoxLayout(FormMainWindow)
-        layout.addWidget(RotateButton('test', FormMainWindow, objectName='buttonTest'))
+        layout.addWidget(
+            RotateButton('test', FormMainWindow, objectName='buttonTest'))
         QMetaObject.connectSlotsByName(FormMainWindow)
 
 

@@ -1,21 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on 2019年1月20日
 @author: Irony
-@site: https://pyqt5.com https://github.com/892768447
+@site: https://pyqt.site https://github.com/PyQt5
 @email: 892768447@qq.com
 @file: Widgets.Skins.ThemeWidget
 @description: 
 """
+
 import os
 
 from Utils.CommonUtil import Signals
 from Utils.ThemeThread import ThemeThread
-from Widgets.Skins.SkinBaseWidget import PixmapWidth, PixmapHeight,\
-    SkinBaseItemWidget, SkinBaseWidget
-
+from Widgets.Skins.SkinBaseWidget import (PixmapHeight, PixmapWidth,
+                                          SkinBaseItemWidget, SkinBaseWidget)
 
 __Author__ = "Irony"
 __Copyright__ = "Copyright (c) 2019"
@@ -27,8 +26,7 @@ class ThemeWidget(SkinBaseWidget):
         super(ThemeWidget, self).__init__(*args, **kwargs)
         self._index = 0
         Signals.themeItemAdded.connect(self.onThemeItemAdded)
-        Signals.themeItemAddFinished.connect(
-            self.onThemeItemAddFinished)
+        Signals.themeItemAddFinished.connect(self.onThemeItemAddFinished)
 
     def init(self):
         """初始化主题
@@ -50,7 +48,7 @@ class ThemeWidget(SkinBaseWidget):
         self._index += 1
         self._index = min(self._index, self.gridLayout.count() - 1)
         self.doPreview()
-    
+
     def doPreview(self):
         """主动发送预览信号
         """

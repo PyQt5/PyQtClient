@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on 2019年1月18日
 @author: Irony
-@site: https://pyqt5.com https://github.com/892768447
+@site: https://pyqt.site https://github.com/PyQt5
 @email: 892768447@qq.com
 @file: Test.compilepy
 @description: 
@@ -12,10 +11,9 @@ Created on 2019年1月18日
 
 import compileall
 import os
-from pathlib import Path
 import shutil
 import sys
-
+from pathlib import Path
 
 __Author__ = "Irony"
 __Copyright__ = "Copyright (c) 2019"
@@ -30,17 +28,14 @@ shutil.rmtree(dirPath, ignore_errors=True)
 # 创建目录
 os.makedirs(dirPath, exist_ok=True)
 # 复制目录
-shutil.copytree(os.path.abspath('UiFiles'),
-                os.path.join(dirPath, 'UiFiles'))
+shutil.copytree(os.path.abspath('UiFiles'), os.path.join(dirPath, 'UiFiles'))
 shutil.copytree(os.path.abspath('Utils'), os.path.join(dirPath, 'Utils'))
-shutil.copytree(os.path.abspath('Widgets'),
-                os.path.join(dirPath, 'Widgets'))
+shutil.copytree(os.path.abspath('Widgets'), os.path.join(dirPath, 'Widgets'))
 
 open(os.path.join(dirPath, '__init__.py'), 'wb').write(b'')
 
 # 编译整个目录
 compileall.compile_dir(dirPath, force=True, optimize=0)
-
 
 info = sys.version_info
 cpythonname = '.cpython-{}{}'.format(info.major, info.minor)

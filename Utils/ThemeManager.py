@@ -1,30 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on 2019年1月3日
 @author: Irony
-@site: https://pyqt5.com https://github.com/892768447
+@site: https://pyqt.site https://github.com/PyQt5
 @email: 892768447@qq.com
 @file: Utils.ThemeManager
 @description: 主题管理
 """
+
 import os
 
-from PyQt5.QtGui import QFontDatabase, QCursor, QPixmap, QLinearGradient,\
-    QRadialGradient, QConicalGradient
+from PyQt5.QtGui import (QConicalGradient, QCursor, QFontDatabase,
+                         QLinearGradient, QPixmap, QRadialGradient)
 from PyQt5.QtWidgets import QApplication
 
 from Utils.ColorThief import ColorThief
 from Utils.CommonUtil import AppLog, Setting
 from Utils.GradientUtils import GradientUtils
-
-
-__Author__ = """By: Irony
-QQ: 892768447
-Email: 892768447@qq.com"""
-__Copyright__ = "Copyright (c) 2019 Irony"
-__Version__ = "Version 1.0"
 
 # 修改背景图片
 StylePictureTemplate = """
@@ -332,19 +325,21 @@ class ThemeManager:
         path = cls.stylePath('Default')
         AppLog.info('stylePath: {}'.format(path))
         try:
-            styleSheet = open(path, 'rb').read().decode(
-                'utf-8', errors='ignore')
+            styleSheet = open(path, 'rb').read().decode('utf-8',
+                                                        errors='ignore')
             # 需要替换部分样式
             colorstr = GradientUtils.styleSheetCode(color)
-            if isinstance(color, QLinearGradient) or isinstance(color, QRadialGradient) or isinstance(color, QConicalGradient):
+            if isinstance(color, QLinearGradient) or isinstance(
+                    color, QRadialGradient) or isinstance(
+                        color, QConicalGradient):
                 color = color.stops()[0][1]
             # 替换name
             templates = StyleGradientTemplate
             for name, value in replaces.items():
                 templates = templates.replace(name, value)
 
-            styleSheet += templates.format(
-                color.red(), color.green(), color.blue(), colorstr)
+            styleSheet += templates.format(color.red(), color.green(),
+                                           color.blue(), colorstr)
             widget = widget or QApplication.instance()
             widget.setStyleSheet(styleSheet)
         except Exception as e:
@@ -361,8 +356,8 @@ class ThemeManager:
         path = cls.stylePath('Default')
         AppLog.info('stylePath: {}'.format(path))
         try:
-            styleSheet = open(path, 'rb').read().decode(
-                'utf-8', errors='ignore')
+            styleSheet = open(path, 'rb').read().decode('utf-8',
+                                                        errors='ignore')
             # 需要替换部分样式
             if image and os.path.isfile(image):
                 # 获取图片主色调
@@ -375,8 +370,9 @@ class ThemeManager:
                 for name, value in replaces.items():
                     templates = templates.replace(name, value)
 
-                styleSheet += templates.format(os.path.abspath(
-                    image).replace('\\', '/')) + StyleColorTemplate.format(*color)
+                styleSheet += templates.format(
+                    os.path.abspath(image).replace(
+                        '\\', '/')) + StyleColorTemplate.format(*color)
             widget = widget or QApplication.instance()
             widget.setStyleSheet(styleSheet)
         except Exception as e:
@@ -402,15 +398,18 @@ class ThemeManager:
         :param cls:
         :return: 主题中 鼠标图片 的绝对路径
         """
-        return os.path.abspath(os.path.join(ThemeManager.ThemeDir, ThemeManager.ThemeName, 'cursor', name)).replace('\\', '/')
+        return os.path.abspath(
+            os.path.join(ThemeManager.ThemeDir, ThemeManager.ThemeName,
+                         'cursor', name)).replace('\\', '/')
 
     @classmethod
     def setPointerCursors(cls, widgets):
         """设置部分指定控件的鼠标样式
         :param cls:
         """
-        path = os.path.abspath(os.path.join(
-            ThemeManager.ThemeDir, ThemeManager.ThemeName, 'cursor', cls.CursorPointer)).replace('\\', '/')
+        path = os.path.abspath(
+            os.path.join(ThemeManager.ThemeDir, ThemeManager.ThemeName,
+                         'cursor', cls.CursorPointer)).replace('\\', '/')
         if os.path.exists(path):
             cursor = QCursor(QPixmap(path), 0, 0)
             for w in widgets:
@@ -422,7 +421,9 @@ class ThemeManager:
         :param cls:
         :return: 主题中 font.ttf 的绝对路径
         """
-        return os.path.abspath(os.path.join(ThemeManager.ThemeDir, ThemeManager.ThemeName, 'font.ttf')).replace('\\', '/')
+        return os.path.abspath(
+            os.path.join(ThemeManager.ThemeDir, ThemeManager.ThemeName,
+                         'font.ttf')).replace('\\', '/')
 
     @classmethod
     def stylePath(cls, path=''):
@@ -430,4 +431,6 @@ class ThemeManager:
         :param cls:
         :return: 主题中 style.qss 的绝对路径
         """
-        return os.path.abspath(os.path.join(ThemeManager.ThemeDir, path or ThemeManager.ThemeName, 'style.qss')).replace('\\', '/')
+        return os.path.abspath(
+            os.path.join(ThemeManager.ThemeDir, path or ThemeManager.ThemeName,
+                         'style.qss')).replace('\\', '/')

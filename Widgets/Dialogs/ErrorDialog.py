@@ -1,24 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on 2019年1月18日
 @author: Irony
-@site: https://pyqt5.com https://github.com/892768447
+@site: https://pyqt.site https://github.com/PyQt5
 @email: 892768447@qq.com
 @file: Dialogs.ErrorDialog
 @description: 
 """
+
 import os
 import re
 import sys
 
-from PyQt5.QtCore import Qt, pyqtSlot, QProcess
-
-from Widgets.Dialogs.MoveDialog import MoveDialog
+from PyQt5.QtCore import QProcess, Qt, pyqtSlot
 from UiFiles.Ui_ErrorDialog import Ui_FormErrorDialog
 from Utils.ThemeManager import ThemeManager
-
+from Widgets.Dialogs.MoveDialog import MoveDialog
 
 __Author__ = "Irony"
 __Copyright__ = "Copyright (c) 2019"
@@ -47,7 +45,8 @@ class ErrorDialog(MoveDialog, Ui_FormErrorDialog):
         self.widgetErrorBg.setCurrentIndex(1)
         if self.reqfile and os.path.isfile(self.reqfile):
             with open(self.reqfile, 'rb') as fp:
-                modules = fp.read().decode().replace('\r\n', ' ').replace('\n', ' ')
+                modules = fp.read().decode().replace('\r\n',
+                                                     ' ').replace('\n', ' ')
                 self.lineEditPip.setText(''.join(modules))
                 if modules:
                     self.lineEditPip.returnPressed.emit()
@@ -69,8 +68,8 @@ class ErrorDialog(MoveDialog, Ui_FormErrorDialog):
         process = QProcess(self)
         process.readyReadStandardError.connect(self.onReadyReadStandardError)
         process.readyReadStandardOutput.connect(self.onReadyReadStandardOutput)
-        process.start(sys.executable, [
-                      '-m', 'pip', 'install'] + text.split(' '))
+        process.start(sys.executable,
+                      ['-m', 'pip', 'install'] + text.split(' '))
 
     def onReadyReadStandardError(self):
         result = self.sender().readAllStandardError().data().decode()

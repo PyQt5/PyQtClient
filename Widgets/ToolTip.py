@@ -1,24 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on 2019年1月2日
 @author: Irony
-@site: https://pyqt5.com https://github.com/892768447
+@site: https://pyqt.site https://github.com/PyQt5
 @email: 892768447@qq.com
 @file: Widgets.ToolTip
 @description: 仿QToolTip
 """
-from PyQt5.QtCore import Qt, QTimer, QPoint, QEvent
+
+from PyQt5.QtCore import QEvent, QPoint, Qt, QTimer
 from PyQt5.QtGui import QHelpEvent
-from PyQt5.QtWidgets import QLabel, QWidget, QVBoxLayout
-
-
-__Author__ = """By: Irony
-QQ: 892768447
-Email: 892768447@qq.com"""
-__Copyright__ = 'Copyright (c) 2019 Irony'
-__Version__ = 1.0
+from PyQt5.QtWidgets import QLabel, QVBoxLayout, QWidget
 
 
 class ToolTip(QWidget):
@@ -28,8 +21,8 @@ class ToolTip(QWidget):
 
     def __init__(self, *args, **kwargs):
         super(ToolTip, self).__init__(*args, **kwargs)
-        self.setWindowFlags(self.windowFlags() |
-                            Qt.ToolTip | Qt.FramelessWindowHint)
+        self.setWindowFlags(self.windowFlags() | Qt.ToolTip |
+                            Qt.FramelessWindowHint)
         self.setAttribute(Qt.WA_TranslucentBackground, True)
         self.setVisible(False)
         layout = QVBoxLayout(self, spacing=0)
@@ -66,7 +59,7 @@ class ToolTip(QWidget):
         #                       pos.y() + int((widget.height() - self.height()) / 2))
         #             return True
         t = event.type()
-        if t == QEvent.Enter:           # 鼠标进入
+        if t == QEvent.Enter:  # 鼠标进入
             self.hide()
             self._hideTimer.stop()
             self.setText(widget.toolTip())
@@ -77,7 +70,7 @@ class ToolTip(QWidget):
                 pos = widget.mapToGlobal(QPoint(0, 0))
                 self.move(pos.x() + widget.width() + 30,
                           pos.y() + int((widget.height() - self.height()) / 2))
-        elif t == QEvent.Leave:         # 鼠标离开
+        elif t == QEvent.Leave:  # 鼠标离开
             self._hideTimer.stop()
             self.hide()
 

@@ -1,26 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on 2019年1月5日
 @author: Irony
-@site: https://pyqt5.com https://github.com/892768447
+@site: https://pyqt.site https://github.com/PyQt5
 @email: 892768447@qq.com
 @file: Dialogs.TwinkleDialog
 @description: windows 对话框边框闪烁
 """
+
 import os
 
 from PyQt5.QtWidgets import QDialog
 
 if os.name == 'nt':
     import ctypes.wintypes
-
-__Author__ = """By: Irony
-QQ: 892768447
-Email: 892768447@qq.com"""
-__Copyright__ = "Copyright (c) 2019 Irony"
-__Version__ = "Version 1.0"
 
 WM_NCACTIVATE = 0x0086
 
@@ -48,7 +42,8 @@ class TwinkleDialog:
 
         def nativeEvent(self, eventType, message):
             retval, result = QDialog.nativeEvent(self, eventType, message)
-            if eventType == 'windows_generic_MSG' and hasattr(self, '_targetWidget'):
+            if eventType == 'windows_generic_MSG' and hasattr(
+                    self, '_targetWidget'):
                 msg = ctypes.wintypes.MSG.from_address(message.__int__())
                 if msg.message == WM_NCACTIVATE:
                     # 绘制模态窗口的边框效果

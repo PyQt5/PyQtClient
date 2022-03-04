@@ -1,26 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on 2019年1月8日
 @author: Irony
-@site: https://pyqt5.com https://github.com/892768447
+@site: https://pyqt.site https://github.com/PyQt5
 @email: 892768447@qq.com
 @file: Widgets.ProgressButton
 @description: 
 """
-from PyQt5.QtCore import QObject, pyqtSignal, pyqtProperty, Qt, QRectF,\
-    QSequentialAnimationGroup, QPauseAnimation, QParallelAnimationGroup,\
-    QPropertyAnimation
+
+from PyQt5.QtCore import (QObject, QParallelAnimationGroup, QPauseAnimation,
+                          QPropertyAnimation, QRectF, QSequentialAnimationGroup,
+                          Qt, pyqtProperty, pyqtSignal)
 from PyQt5.QtGui import QColor, QPainter
 from PyQt5.QtWidgets import QPushButton
-
-
-__Author__ = """By: Irony
-QQ: 892768447
-Email: 892768447@qq.com"""
-__Copyright__ = "Copyright (c) 2019 Irony"
-__Version__ = "Version 1.0"
 
 
 class CircleItem(QObject):
@@ -91,11 +84,9 @@ class ProgressButton(QPushButton):
             painter.setBrush(color)
             diameter = 2 * self._circleRadius
             painter.drawRoundedRect(
-                QRectF(
-                    item.x / 100 * self.width() - diameter,
-                    (self.height() - self._circleRadius) / 2,
-                    diameter, diameter
-                ), self._circleRadius, self._circleRadius)
+                QRectF(item.x / 100 * self.width() - diameter,
+                       (self.height() - self._circleRadius) / 2, diameter,
+                       diameter), self._circleRadius, self._circleRadius)
             painter.restore()
 
     def _initAnimations(self):
@@ -113,26 +104,51 @@ class ProgressButton(QPushButton):
             # 加速,并行动画组1
             parAnimation1 = QParallelAnimationGroup(self)
             # 透明度
-            parAnimation1.addAnimation(QPropertyAnimation(
-                item, b'opacity', self, duration=400, startValue=0, endValue=1.0))
+            parAnimation1.addAnimation(
+                QPropertyAnimation(item,
+                                   b'opacity',
+                                   self,
+                                   duration=400,
+                                   startValue=0,
+                                   endValue=1.0))
             # x坐标
-            parAnimation1.addAnimation(QPropertyAnimation(
-                item, b'x', self, duration=400, startValue=0, endValue=25.0))
+            parAnimation1.addAnimation(
+                QPropertyAnimation(item,
+                                   b'x',
+                                   self,
+                                   duration=400,
+                                   startValue=0,
+                                   endValue=25.0))
             seqAnimation.addAnimation(parAnimation1)
             ##
 
             # 匀速
-            seqAnimation.addAnimation(QPropertyAnimation(
-                item, b'x', self, duration=2000, startValue=25.0, endValue=75.0))
+            seqAnimation.addAnimation(
+                QPropertyAnimation(item,
+                                   b'x',
+                                   self,
+                                   duration=2000,
+                                   startValue=25.0,
+                                   endValue=75.0))
 
             # 加速,并行动画组2
             parAnimation2 = QParallelAnimationGroup(self)
             # 透明度
-            parAnimation2.addAnimation(QPropertyAnimation(
-                item, b'opacity', self, duration=400, startValue=1.0, endValue=0))
+            parAnimation2.addAnimation(
+                QPropertyAnimation(item,
+                                   b'opacity',
+                                   self,
+                                   duration=400,
+                                   startValue=1.0,
+                                   endValue=0))
             # x坐标
-            parAnimation2.addAnimation(QPropertyAnimation(
-                item, b'x', self, duration=400, startValue=75.0, endValue=100.0))
+            parAnimation2.addAnimation(
+                QPropertyAnimation(item,
+                                   b'x',
+                                   self,
+                                   duration=400,
+                                   startValue=75.0,
+                                   endValue=100.0))
             seqAnimation.addAnimation(parAnimation2)
             ##
 

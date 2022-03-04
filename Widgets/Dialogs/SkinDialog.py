@@ -1,18 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on 2019年1月19日
 @author: Irony
-@site: https://pyqt5.com https://github.com/892768447
+@site: https://pyqt.site https://github.com/PyQt5
 @email: 892768447@qq.com
 @file: Dialogs.SkinDialog
 @description: 
 """
 
 from PyQt5.QtCore import Qt, QThreadPool
-from PyQt5.QtWidgets import QPushButton, QButtonGroup
-
+from PyQt5.QtWidgets import QButtonGroup, QPushButton
 from UiFiles.Ui_SkinDialog import Ui_FormSkinDialog
 from Utils.CommonUtil import Signals
 from Utils.ThemeManager import ThemeManager
@@ -20,7 +18,6 @@ from Widgets.Dialogs.MoveDialog import MoveDialog
 from Widgets.Layouts.FlowLayout import FlowLayout
 from Widgets.Skins.PictureWidget import PictureWidget
 from Widgets.Skins.PreviewWidget import PreviewWidget
-
 
 __Author__ = "Irony"
 __Copyright__ = "Copyright (c) 2019"
@@ -58,15 +55,15 @@ class SkinDialog(MoveDialog, Ui_FormSkinDialog):
         self.previewWidget.buttonPreviewPrevious.clicked.connect(
             self.onPreviewPrevious)
         # 下一个
-        self.previewWidget.buttonPreviewNext.clicked.connect(
-            self.onPreviewNext)
+        self.previewWidget.buttonPreviewNext.clicked.connect(self.onPreviewNext)
 
     def onPreviewPrevious(self):
         """上一个
         """
         w = self.tabWidgetSkinMain.currentWidget()
         if w == self.tabPicture:
-            self.categoryBtnGroups.checkedButton().property('widget').doPreviewPrevious()
+            self.categoryBtnGroups.checkedButton().property(
+                'widget').doPreviewPrevious()
         else:
             w.doPreviewPrevious()
 
@@ -75,7 +72,8 @@ class SkinDialog(MoveDialog, Ui_FormSkinDialog):
         """
         w = self.tabWidgetSkinMain.currentWidget()
         if w == self.tabPicture:
-            self.categoryBtnGroups.checkedButton().property('widget').doPreviewNext()
+            self.categoryBtnGroups.checkedButton().property(
+                'widget').doPreviewNext()
         else:
             w.doPreviewNext()
 
@@ -124,7 +122,8 @@ class SkinDialog(MoveDialog, Ui_FormSkinDialog):
         self.categoryLayout.setSpacing(10)
         self.categoryBtnGroups = QButtonGroup(self)
         self.categoryBtnGroups.buttonToggled.connect(self.onCategoryChanged)
-        for category in ('4K', '双屏', '美女', '动漫', '风景', '明星', '萌宠', '游戏', '科技', '其他'):
+        for category in ('4K', '双屏', '美女', '动漫', '风景', '明星', '萌宠', '游戏', '科技',
+                         '其他'):
             button = QPushButton(category, self.widgetCategories)
             button.setCheckable(True)
             self.categoryBtnGroups.addButton(button)

@@ -2,18 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """
-Created on 2019年1月14日
-@author: Irony
-@site: https://pyqt5.com https://github.com/892768447
-@email: 892768447@qq.com
-@file: Utils.ColorThief
-@description: 
-"""
-
-__Author__ = "Irony"
-__Copyright__ = "Copyright (c) 2019"
-
-"""
     colorthief
     ~~~~~~~~~~
 
@@ -24,10 +12,11 @@ __Copyright__ = "Copyright (c) 2019"
 """
 __version__ = '0.2.1'
 
+
 import math
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QImage, QColor
+from PyQt5.QtGui import QColor, QImage
 
 
 class cached_property(object):

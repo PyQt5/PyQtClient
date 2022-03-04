@@ -1,24 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on 2019年1月4日
 @author: Irony
-@site: https://pyqt5.com https://github.com/892768447
+@site: https://pyqt.site https://github.com/PyQt5
 @email: 892768447@qq.com
 @file: Utils.Application
 @description: 
 """
-from PyQt5.QtCore import pyqtSignal, Qt
-from PyQt5.QtNetwork import QLocalSocket, QLocalServer
+
+from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtNetwork import QLocalServer, QLocalSocket
 from PyQt5.QtWidgets import QApplication
-
-
-__Author__ = """By: Irony
-QQ: 892768447
-Email: 892768447@qq.com"""
-__Copyright__ = "Copyright (c) 2019 Irony"
-__Version__ = "Version 1.0"
 
 
 class QSingleApplication(QApplication):
@@ -66,7 +59,7 @@ class QSingleApplication(QApplication):
         try:
             self._activationWindow.setWindowState(
                 self._activationWindow.windowState() & ~Qt.WindowMinimized)
-#             self._activationWindow.raise_()
+            #             self._activationWindow.raise_()
             self._activationWindow.showNormal()
             self._activationWindow.activateWindow()
         except Exception as e:
@@ -79,8 +72,7 @@ class QSingleApplication(QApplication):
             message = str(message).encode()
         self._socketOut.write(message)
         if not self._socketOut.waitForBytesWritten(msecs):
-            raise Exception("Bytes not written within %ss" %
-                            (msecs / 1000.))
+            raise Exception("Bytes not written within %ss" % (msecs / 1000.))
         return True
 
     def _onNewConnection(self):

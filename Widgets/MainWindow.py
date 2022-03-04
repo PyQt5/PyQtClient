@@ -1,42 +1,37 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on 2019年1月3日
 @author: Irony
-@site: https://pyqt5.com https://github.com/892768447
+@site: https://pyqt.site https://github.com/PyQt5
 @email: 892768447@qq.com
 @file: Widgets.MainWindow
 @description:
 """
+
 import cgitb
 import os
-from random import randint
 import sys
+from random import randint
 
 from PyQt5 import QtCore
-from PyQt5.QtCore import QEvent, Qt, QTimer, pyqtSlot, QUrl, QProcess,\
-    QProcessEnvironment, QLibraryInfo, QCoreApplication
+from PyQt5.QtCore import (QCoreApplication, QEvent, QLibraryInfo, QProcess,
+                          QProcessEnvironment, Qt, QTimer, QUrl, pyqtSlot)
 from PyQt5.QtGui import QEnterEvent, QIcon
-
+from PyQt5.QtWidgets import QDialog, QVBoxLayout
+from PyQt5.uic import loadUi
 from UiFiles.Ui_MainWindow import Ui_FormMainWindow
 from Utils import Constants
 from Utils.Application import QSingleApplication
-from Utils.CommonUtil import initLog, AppLog, Setting
+from Utils.CommonUtil import AppLog, Setting, initLog
 from Utils.GitThread import CloneThread, UpgradeThread
+
 from Widgets.Dialogs.DonateDialog import DonateDialog
 from Widgets.Dialogs.ErrorDialog import ErrorDialog
 from Widgets.Dialogs.LoginDialog import LoginDialog
 from Widgets.Dialogs.UpdateDialog import UpdateDialog
 from Widgets.FramelessWindow import FramelessWindow
 from Widgets.MainWindowBase import MainWindowBase
-
-
-__Author__ = """By: Irony
-QQ: 892768447
-Email: 892768447@qq.com"""
-__Copyright__ = "Copyright (c) 2019 Irony"
-__Version__ = "Version 1.0"
 
 
 class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
@@ -59,8 +54,8 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         # 检测更新
         QTimer.singleShot(5000, UpgradeThread.start)
         # 显示捐赠窗口
-        QTimer.singleShot(
-            randint(1000 * 60 * 5, 2000 * 60 * 5), self._initDonate)
+        QTimer.singleShot(randint(1000 * 60 * 5, 2000 * 60 * 5),
+                          self._initDonate)
 
     def initLogin(self):
         dialog = LoginDialog(self)
@@ -72,8 +67,8 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
 
     def _initDonate(self):
         # 显示捐赠窗口
-        alipayImg = os.path.join(
-            Constants.DirProjects, 'Donate', 'zhifubao.png')
+        alipayImg = os.path.join(Constants.DirProjects, 'Donate',
+                                 'zhifubao.png')
         wechatImg = os.path.join(Constants.DirProjects, 'Donate', 'weixin.png')
         if os.path.exists(alipayImg) and os.path.exists(wechatImg):
             dialog = DonateDialog(alipayImg, wechatImg, self)
@@ -86,8 +81,8 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
 
     def _initCatalog(self):
         # 更新目录
-        self._showNotice(QCoreApplication.translate(
-            'MainWindow', 'Update Example Started'))
+        self._showNotice(
+            QCoreApplication.translate('MainWindow', 'Update Example Started'))
         CloneThread.start()
 
     @pyqtSlot(str)
@@ -121,7 +116,7 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         Constants.DirCurrent = os.path.dirname(path).replace('\\', '/')
         AppLog.debug('DirCurrent change to: {}'.format(Constants.DirCurrent))
         AppLog.debug('render: {}'.format(path))
-        Constants.CurrentReadme = path      # 记录打开的路径防止重复加载
+        Constants.CurrentReadme = path  # 记录打开的路径防止重复加载
         AppLog.debug('readme dir: {}'.format(Constants.DirCurrent))
         content = repr(open(path, 'rb').read().decode())
         self._runJs("updateText({});".format(content))
@@ -129,7 +124,8 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
     def _exposeInterface(self):
         """向Js暴露调用本地方法接口
         """
-        self.webViewContent.page().mainFrame().addToJavaScriptWindowObject('_mainWindow', self)
+        self.webViewContent.page().mainFrame().addToJavaScriptWindowObject(
+            '_mainWindow', self)
 
     def _runFile(self, file):
         """子进程运行文件
@@ -141,27 +137,41 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         process.readChannelFinished.connect(self.onReadChannelFinished)
 
         env = QProcessEnvironment.systemEnvironment()
-#         libpath = get_python_lib()
-#         env.insert('QT_QPA_PLATFORM_PLUGIN_PATH', os.path.join(
-#             libpath, 'PyQt5', 'Qt', 'plugins', 'platforms'))
-#         env.insert('QT_QPA_PLATFORM_PLUGIN_PATH',
-#                    os.path.abspath('platforms'))
+        #         libpath = get_python_lib()
+        #         env.insert('QT_QPA_PLATFORM_PLUGIN_PATH', os.path.join(
+        #             libpath, 'PyQt5', 'Qt', 'plugins', 'platforms'))
+        #         env.insert('QT_QPA_PLATFORM_PLUGIN_PATH',
+        #                    os.path.abspath('platforms'))
         env.insert('QML_IMPORT_PATH', os.path.abspath('qml'))
         env.insert('QML2_IMPORT_PATH', env.value('QML_IMPORT_PATH'))
         if os.name == 'nt':
             env.insert(
-                'PATH', QLibraryInfo.location(
-                    QLibraryInfo.BinariesPath) + os.pathsep + env.value('PATH')
-            )
+                'PATH',
+                QLibraryInfo.location(QLibraryInfo.BinariesPath) + os.pathsep +
+                env.value('PATH'))
         env.insert(
-            'PATH', os.path.dirname(
-                os.path.abspath(sys.argv[0])) + os.pathsep + env.value('PATH')
-        )
+            'PATH',
+            os.path.dirname(os.path.abspath(sys.argv[0])) + os.pathsep +
+            env.value('PATH'))
         process.setProcessEnvironment(env)
 
-#         if sys.executable.endswith('python.exe'):
+        #         if sys.executable.endswith('python.exe'):
         process.setWorkingDirectory(os.path.dirname(file))
         process.start(sys.executable, [file])
+
+    def _runUiFile(self, file):
+        """预览UI文件
+        :param file:    文件
+        """
+        try:
+            dialog = QDialog(self)
+            layout = QVBoxLayout(dialog)
+            layout.setSpacing(0)
+            layout.setContentsMargins(0, 0, 0, 0)
+            layout.addWidget(loadUi(file))
+            dialog.exec_()
+        except Exception as e:
+            AppLog.warn('run ui file failed: {}'.format(str(e)))
 
     def _runJs(self, code):
         """执行js
@@ -179,8 +189,8 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
             return
         if process.exitCode() != 0 and len(message.strip()) > 0:
             file = str(process.property('file'))
-            reqfile = os.path.abspath(os.path.join(
-                os.path.dirname(file), 'requirements.txt'))
+            reqfile = os.path.abspath(
+                os.path.join(os.path.dirname(file), 'requirements.txt'))
             AppLog.debug('reqfile: {}'.format(reqfile))
             dialog = ErrorDialog(message, self, reqfile=reqfile)
             dialog.exec_()
@@ -249,6 +259,7 @@ def main():
         # 激活窗口
         app.sendMessage('show', 1000)
     else:
+        app.setAttribute(Qt.AA_DisableWindowContextHelpButton)
         app.setQuitOnLastWindowClosed(True)
         app.setWindowIcon(QIcon('Resources/Images/app.ico'))
         # 第一次运行

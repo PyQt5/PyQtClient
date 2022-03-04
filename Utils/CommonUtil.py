@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on 2019年1月3日
 @author: Irony
-@site: https://pyqt5.com https://github.com/892768447
+@site: https://pyqt.site https://github.com/PyQt5
 @email: 892768447@qq.com
 @file: Utils.CommonUtil
 @description: 公共工具类
@@ -16,16 +15,10 @@ import os
 import platform
 import subprocess
 
-from PyQt5.QtCore import QSettings, QTextCodec, QObject, pyqtSignal
+from PyQt5.QtCore import QObject, QSettings, QTextCodec, pyqtSignal
 
-from Utils.Constants import LogName, LogFormatterDebug, LogFormatter, ConfigFile
-
-
-__Author__ = """By: Irony
-QQ: 892768447
-Email: 892768447@qq.com"""
-__Copyright__ = "Copyright (c) 2019 Irony"
-__Version__ = "Version 1.0"
+from Utils.Constants import (ConfigFile, LogFormatter, LogFormatterDebug,
+                             LogName)
 
 
 def qBound(miv, cv, mxv):
@@ -42,8 +35,7 @@ def openFolder(path):
             path = path.replace('/', '\\')
             ctypes.windll.ole32.CoInitialize(None)
             pidl = ctypes.windll.shell32.ILCreateFromPathW(path)
-            ctypes.windll.shell32.SHOpenFolderAndSelectItems(
-                pidl, 0, None, 0)
+            ctypes.windll.shell32.SHOpenFolderAndSelectItems(pidl, 0, None, 0)
             ctypes.windll.shell32.ILFree(pidl)
             ctypes.windll.ole32.CoUninitialize()
         except:
@@ -74,8 +66,8 @@ def initLog(name, file=None, level=logging.DEBUG, formatter=None):
     :param formatter:       log formatter
     """
 
-    formatter = formatter or logging.Formatter(
-        LogFormatterDebug if level == logging.DEBUG else LogFormatter)
+    formatter = formatter or logging.Formatter(LogFormatterDebug if level ==
+                                               logging.DEBUG else LogFormatter)
 
     logger = logging.getLogger(name)
     logger.setLevel(level)
@@ -145,6 +137,8 @@ class _Signals(QObject):
     urlLoaded = pyqtSignal(str)
     # 运行例子信号
     runExampled = pyqtSignal(str)
+    # 预览UI文件
+    runUiFile = pyqtSignal(str)
     # 过滤筛选目录
     filterChanged = pyqtSignal(str)
     # 更新进度条(当前值,最大值)

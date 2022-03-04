@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on 2019年1月1日
 @author: Irony
-@site: https://pyqt5.com https://github.com/892768447
+@site: https://pyqt.site https://github.com/PyQt5
 @email: 892768447@qq.com
 @file: PyQtClient
 @description:
@@ -15,13 +14,6 @@ import os
 import sys
 import traceback
 
-
-__Author__ = """By: Irony
-QQ: 892768447
-Email: 892768447@qq.com"""
-__Copyright__ = 'Copyright (c) 2019 Irony'
-__Version__ = 1.0
-
 sys.path.append(os.path.abspath('Library.zip'))
 
 libpath = get_python_lib()
@@ -31,10 +23,10 @@ os.environ['QML_IMPORT_PATH'] = os.path.join(libpath, 'Qt', 'qml')
 os.environ['QML2_IMPORT_PATH'] = os.environ['QML_IMPORT_PATH']
 
 if os.name == 'nt':
-    os.environ['PATH'] = os.path.join(
-        libpath, 'PyQt5', 'Qt', 'bin') + os.pathsep + os.environ['PATH']
-os.environ['PATH'] = os.path.dirname(
-    os.path.abspath(sys.argv[0])) + os.pathsep + os.environ['PATH']
+    os.environ['PATH'] = os.path.join(libpath, 'PyQt5', 'Qt',
+                                      'bin') + os.pathsep + os.environ['PATH']
+os.environ['PATH'] = os.path.dirname(os.path.abspath(
+    sys.argv[0])) + os.pathsep + os.environ['PATH']
 
 print(os.environ['PATH'])
 
@@ -84,13 +76,10 @@ def do_analysis():
         config = Config()
         config.trace_filter = GlobbingFilter(
             include=['Widgets.*', 'Utils.*'],
-            exclude=['pycallgraph2.*', '*.secret_function']
-        )
-        with PyCallGraph(
-                GraphvizOutput(
-                    tool='D:/soft/Graphviz/bin/dot',
-                    output_file='call_detail.png'),
-                config=config):
+            exclude=['pycallgraph2.*', '*.secret_function'])
+        with PyCallGraph(GraphvizOutput(tool='dot',
+                                        output_file='call_detail.png'),
+                         config=config):
             MainWindow.main()
     except:
         MainWindow.main()

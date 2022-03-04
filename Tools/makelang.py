@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on 2018年3月29日
 @author: Irony
@@ -9,14 +8,8 @@ Created on 2018年3月29日
 @file: 生成多语言文件
 @description: 
 """
+
 import os
-
-
-__Author__ = """By: Irony
-QQ: 892768447
-Email: 892768447@qq.com"""
-__Copyright__ = "Copyright (c) 2018 Irony"
-__Version__ = "Version 1.0"
 
 os.chdir('../')
 

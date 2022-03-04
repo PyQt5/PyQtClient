@@ -1,26 +1,24 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on 2019年1月30日
 @author: Irony
-@site: https://pyqt5.com https://github.com/892768447
+@site: https://pyqt.site https://github.com/PyQt5
 @email: 892768447@qq.com
 @file: Widgets.Skins.PreviewWidget
 @description: 主题预览
 """
+
 import os
 
-from PyQt5.QtCore import Qt, pyqtSlot, QTimer
-from PyQt5.QtGui import QPixmap, QColor
-from PyQt5.QtWidgets import QWidget, QGraphicsDropShadowEffect
-
+from PyQt5.QtCore import Qt, QTimer, pyqtSlot
+from PyQt5.QtGui import QColor, QPixmap
+from PyQt5.QtWidgets import QGraphicsDropShadowEffect, QWidget
 from UiFiles.Ui_MainWindow import Ui_FormMainWindow
 from UiFiles.Ui_PreviewWidget import Ui_FormPreviewWidget
 from Utils.CommonUtil import Setting
 from Utils.GradientUtils import GradientUtils
 from Utils.ThemeManager import ThemeManager
-
 
 __Author__ = 'Irony'
 __Copyright__ = 'Copyright (c) 2019'
@@ -50,8 +48,8 @@ class PreviewWidget(QWidget, Ui_FormPreviewWidget):
                                 ThemeManager.CursorPointer)
         ThemeManager.loadCursor(self.buttonPreviewNext,
                                 ThemeManager.CursorPointer)
-        ThemeManager.loadCursor(
-            self.buttonPreviewPrevious, ThemeManager.CursorPointer)
+        ThemeManager.loadCursor(self.buttonPreviewPrevious,
+                                ThemeManager.CursorPointer)
 
     def setTitle(self, title):
         """设置标题
@@ -75,26 +73,27 @@ class PreviewWidget(QWidget, Ui_FormPreviewWidget):
             # 修改名字防止受app的style影响
             ui.widgetMain.setObjectName('widgetMain1')
             self._UiMainWindow.setAttribute(Qt.WA_TranslucentBackground, True)
-            self._UiMainWindow.setWindowFlags(
-                self.windowFlags() | Qt.FramelessWindowHint)
+            self._UiMainWindow.setWindowFlags(self.windowFlags() |
+                                              Qt.FramelessWindowHint)
             self._UiMainWindow.hide()
         if which == self.Theme:
             self.labelPreviewImage.setPixmap(
                 QPixmap(poc).scaledToWidth(400, Qt.SmoothTransformation))
             return
         elif which == self.Color:
-            ThemeManager.loadColourfulTheme(poc, self._UiMainWindow, {
-                                            'widgetMain': 'widgetMain1'})
+            ThemeManager.loadColourfulTheme(poc, self._UiMainWindow,
+                                            {'widgetMain': 'widgetMain1'})
         elif which == self.Picture:
-            ThemeManager.loadPictureTheme(poc, self._UiMainWindow, {
-                                          'widgetMain': 'widgetMain1'})
+            ThemeManager.loadPictureTheme(poc, self._UiMainWindow,
+                                          {'widgetMain': 'widgetMain1'})
         # 对隐藏窗口截图
         # 至于为什么要加延迟, 设置样式后可能UI还没刷新
         self._UiMainWindow.repaint()
         QTimer.singleShot(100, self._updatePixmap)
 
     def _updatePixmap(self):
-        poc = self._UiMainWindow.grab().scaledToWidth(400, Qt.SmoothTransformation)
+        poc = self._UiMainWindow.grab().scaledToWidth(400,
+                                                      Qt.SmoothTransformation)
         self.labelPreviewImage.setPixmap(poc)
 
     @pyqtSlot()

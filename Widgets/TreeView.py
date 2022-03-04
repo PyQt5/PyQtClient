@@ -1,24 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on 2019年1月13日
 @author: Irony
-@site: https://pyqt5.com https://github.com/892768447
+@site: https://pyqt.site https://github.com/PyQt5
 @email: 892768447@qq.com
 @file: Widgets.TreeView
 @description: 
 """
+
 import os
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QStandardItemModel, QStandardItem
+from PyQt5.QtGui import QStandardItem, QStandardItemModel
 from PyQt5.QtWidgets import QTreeView
-
 from Utils import Constants
 from Utils.CommonUtil import AppLog, Signals
 from Utils.SortFilterModel import SortFilterModel
-
 
 __Author__ = "Irony"
 __Copyright__ = "Copyright (c) 2019"
@@ -58,11 +56,10 @@ class TreeView(QTreeView):
         items = self.findItems(name)
         if not items:
             return
-        index = self._fmodel.mapFromSource(
-            self._dmodel.indexFromItem(items[0]))
+        index = self._fmodel.mapFromSource(self._dmodel.indexFromItem(items[0]))
         self.setCurrentIndex(index)
         self.expand(index)
-#         # 显示readme
+        #         # 显示readme
         Signals.urlLoaded.emit(name)
 
     def listSubDir(self, pitem, path):
@@ -91,14 +88,14 @@ class TreeView(QTreeView):
             file = os.path.join(path, name).replace('\\', '/')
             item = QStandardItem(name)
             # 添加自定义的数据
-            item.setData(False, Constants.RoleRoot)       # 不是根目录
+            item.setData(False, Constants.RoleRoot)  # 不是根目录
             item.setData(file, Constants.RolePath)
             try:
-                item.setData(open(file, 'rb').read().decode(
-                    errors='ignore'), Constants.RoleCode)
+                item.setData(
+                    open(file, 'rb').read().decode(errors='ignore'),
+                    Constants.RoleCode)
             except Exception as e:
-                AppLog.warn(
-                    'read file({}) code error: {}'.format(file, str(e)))
+                AppLog.warn('read file({}) code error: {}'.format(file, str(e)))
             pitem.appendRow(item)
 
     def initCatalog(self):
@@ -110,11 +107,11 @@ class TreeView(QTreeView):
         pitem = self._dmodel.invisibleRootItem()
         # 只遍历根目录
         for name in os.listdir(Constants.DirProjects):
-            file = os.path.join(Constants.DirProjects,
-                                name).replace('\\', '/')
+            file = os.path.join(Constants.DirProjects, name).replace('\\', '/')
             if os.path.isfile(file):  # 跳过文件
                 continue
-            if name.startswith('.') or name == 'Donate' or name == 'Test':  # 不显示.开头的文件夹
+            if name.startswith(
+                    '.') or name == 'Donate' or name == 'Test':  # 不显示.开头的文件夹
                 continue
             items = self.findItems(name)
             if items:
@@ -125,8 +122,9 @@ class TreeView(QTreeView):
                 # 用于绘制进度条的item标识
                 item.setData(True, Constants.RoleRoot)
                 # 目录或者文件的绝对路径
-                item.setData(os.path.abspath(os.path.join(
-                    Constants.DirProjects, name)), Constants.RolePath)
+                item.setData(
+                    os.path.abspath(os.path.join(Constants.DirProjects, name)),
+                    Constants.RolePath)
                 pitem.appendRow(item)
             # 遍历子目录
             self.listSubDir(item, file)
@@ -164,6 +162,8 @@ class TreeView(QTreeView):
         if not root and os.path.isfile(path):
             # 运行代码
             Signals.runExampled.emit(path)
+
+
 #         if root and os.path.isdir(path):
 #             # 显示readme
 #             Signals.showReadmed.emit(os.path.join(path, 'README.md'))

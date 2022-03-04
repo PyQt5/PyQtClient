@@ -1,21 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on 2019年1月15日
 @author: Irony
-@site: https://pyqt5.com https://github.com/892768447
+@site: https://pyqt.site https://github.com/PyQt5
 @email: 892768447@qq.com
 @file: Test.TestTreeView
 @description: 
 """
+
 from PyQt5.QtCore import QSortFilterProxyModel
-from PyQt5.QtGui import QStandardItemModel, QStandardItem
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QTreeView, QTreeWidget,\
-    QTreeWidgetItem
-
+from PyQt5.QtGui import QStandardItem, QStandardItemModel
+from PyQt5.QtWidgets import (QHBoxLayout, QTreeView, QTreeWidget,
+                             QTreeWidgetItem, QWidget)
 from Widgets.TreeView import TreeView
-
 
 __Author__ = "Irony"
 __Copyright__ = "Copyright (c) 2019"
@@ -48,9 +46,9 @@ class Window(QWidget):
 
 
 if __name__ == '__main__':
-    import sys
-    import os
     import cgitb
+    import os
+    import sys
     os.chdir('../')
     sys.excepthook = cgitb.enable(1, None, 5, '')
     from PyQt5.QtWidgets import QApplication

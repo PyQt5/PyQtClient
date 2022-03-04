@@ -1,39 +1,32 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on 2019年1月5日
 @author: Irony
-@site: https://pyqt5.com https://github.com/892768447
+@site: https://pyqt.site https://github.com/PyQt5
 @email: 892768447@qq.com
 @file: Utils.GitThread
 @description: Git操作线程
 """
-from contextlib import closing
+
 import os
-from pathlib import Path
 import shutil
 import stat
+from contextlib import closing
+from pathlib import Path
 from time import time
 from zipfile import ZipFile
 
-from PyQt5.QtCore import Qt, QCoreApplication, QThread, QObject
-from PyQt5.QtGui import QImage
 import pygit2
-from pygit2.remote import RemoteCallbacks
 import requests
+from pygit2.remote import RemoteCallbacks
+from PyQt5.QtCore import QCoreApplication, QObject, Qt, QThread
+from PyQt5.QtGui import QImage
 from requests.auth import HTTPBasicAuth
 from requests.exceptions import ConnectTimeout
 
 from Utils import Constants, Version
-from Utils.CommonUtil import Signals, AppLog
-
-
-__Author__ = """By: Irony
-QQ: 892768447
-Email: 892768447@qq.com"""
-__Copyright__ = "Copyright (c) 2019 Irony"
-__Version__ = "Version 1.0"
+from Utils.CommonUtil import AppLog, Signals
 
 
 class LoginThread(QObject):
@@ -46,7 +39,7 @@ class LoginThread(QObject):
         super(LoginThread, self).__init__(*args, **kwargs)
         self.account = account
         self.password = password
-    
+
     @classmethod
     def quit(cls):
         """退出线程
@@ -75,13 +68,12 @@ class LoginThread(QObject):
         try:
             req = requests.get(avatar_url)
             if req.status_code == 200:
-                imgformat = req.headers.get(
-                    'content-type', 'image/jpg').split('/')[1]
+                imgformat = req.headers.get('content-type',
+                                            'image/jpg').split('/')[1]
                 Constants.ImageAvatar = os.path.join(
                     Constants.ImageDir, str(uid)).replace('\\', '/') + '.jpg'
                 AppLog.debug('image type: {}'.format(imgformat))
-                AppLog.debug(
-                    'content length: {}'.format(len(req.content)))
+                AppLog.debug('content length: {}'.format(len(req.content)))
 
                 image = QImage()
                 if image.loadFromData(req.content):
@@ -102,18 +94,20 @@ class LoginThread(QObject):
     def run(self):
         AppLog.info('start login github')
         try:
-            req = requests.get(self.Url, auth=HTTPBasicAuth(
-                self.account, self.password))
+            req = requests.get(self.Url,
+                               auth=HTTPBasicAuth(self.account, self.password))
             retval = req.json()
             if retval.get('message', '') == 'Bad credentials':
-                Signals.loginErrored.emit(QCoreApplication.translate(
-                    'Repository', 'Incorrect account or password'))
+                Signals.loginErrored.emit(
+                    QCoreApplication.translate('Repository',
+                                               'Incorrect account or password'))
                 AppLog.warn('Incorrect account or password')
                 LoginThread.quit()
                 return
             if 'login' not in retval:
-                Signals.loginErrored.emit(QCoreApplication.translate(
-                    'Repository', 'Login failed, Unknown reason'))
+                Signals.loginErrored.emit(
+                    QCoreApplication.translate('Repository',
+                                               'Login failed, Unknown reason'))
                 AppLog.warn('Login failed, Unknown reason')
                 LoginThread.quit()
                 return
@@ -130,16 +124,16 @@ class LoginThread(QObject):
                 self.get_avatar(uid, avatar_url)
             Signals.loginSuccessed.emit(str(uid), name)
         except ConnectTimeout as e:
-            Signals.loginErrored.emit(QCoreApplication.translate(
-                'Repository', 'Connect Timeout'))
+            Signals.loginErrored.emit(
+                QCoreApplication.translate('Repository', 'Connect Timeout'))
             AppLog.exception(e)
         except ConnectionError as e:
-            Signals.loginErrored.emit(QCoreApplication.translate(
-                'Repository', 'Connection Error'))
+            Signals.loginErrored.emit(
+                QCoreApplication.translate('Repository', 'Connection Error'))
             AppLog.exception(e)
         except Exception as e:
-            Signals.loginErrored.emit(QCoreApplication.translate(
-                'Repository', 'Unknown Error'))
+            Signals.loginErrored.emit(
+                QCoreApplication.translate('Repository', 'Unknown Error'))
             AppLog.exception(e)
 
         AppLog.info('login thread end')
@@ -151,10 +145,10 @@ class ProgressCallback(RemoteCallbacks):
     """
 
     def transfer_progress(self, stats):
-        Signals.progressUpdated.emit(
-            stats.received_objects, stats.total_objects)
-        AppLog.debug('total: {}, received: {}'.format(
-            stats.total_objects, stats.received_objects))
+        Signals.progressUpdated.emit(stats.received_objects,
+                                     stats.total_objects)
+        AppLog.debug('total: {}, received: {}'.format(stats.total_objects,
+                                                      stats.received_objects))
 
 
 class CloneThread(QObject):
@@ -162,7 +156,7 @@ class CloneThread(QObject):
     """
 
     Url = 'git://github.com/PyQt5/PyQt.git'
-    
+
     @classmethod
     def quit(cls):
         """退出线程
@@ -206,8 +200,8 @@ class CloneThread(QObject):
                 elif merge_result & pygit2.GIT_MERGE_ANALYSIS_FASTFORWARD:
                     repo.checkout_tree(repo.get(remote_master_id))
                     try:
-                        master_ref = repo.lookup_reference(
-                            'refs/heads/%s' % (branch))
+                        master_ref = repo.lookup_reference('refs/heads/%s' %
+                                                           (branch))
                         master_ref.set_target(remote_master_id)
                     except KeyError:
                         repo.create_branch(branch, repo.get(remote_master_id))
@@ -222,8 +216,7 @@ class CloneThread(QObject):
 
                     user = repo.default_signature
                     tree = repo.index.write_tree()
-                    repo.create_commit('HEAD', user, user,
-                                       'Merge!', tree,
+                    repo.create_commit('HEAD', user, user, 'Merge!', tree,
                                        [repo.head.target, remote_master_id])
                     # We need to do this or git CLI will think we are still
                     # merging.
@@ -239,8 +232,9 @@ class CloneThread(QObject):
 
     def clone(self):
         """克隆项目"""
-        pygit2.clone_repository(
-            self.Url, Constants.DirProjects, callbacks=ProgressCallback())
+        pygit2.clone_repository(self.Url,
+                                Constants.DirProjects,
+                                callbacks=ProgressCallback())
 
     def run(self):
         try:
@@ -289,9 +283,9 @@ class UpgradeThread(QObject):
     Url = 'https://raw.githubusercontent.com/PyQt5/PyQtClient/master/.Update/Upgrade.json'
     ZipUrl = 'https://raw.githubusercontent.com/PyQt5/PyQtClient/master/.Update/Upgrade.{}.zip'
 
-#     Url = 'https://raw.githubusercontent.com/IronyYou/test/master/Update/Upgrade.json'
-#     ZipUrl = 'https://raw.githubusercontent.com/IronyYou/test/master/Update/Upgrade.{}.zip'
-    
+    #     Url = 'https://raw.githubusercontent.com/IronyYou/test/master/Update/Upgrade.json'
+    #     ZipUrl = 'https://raw.githubusercontent.com/IronyYou/test/master/Update/Upgrade.{}.zip'
+
     @classmethod
     def quit(cls):
         """退出线程
@@ -331,6 +325,8 @@ class UpgradeThread(QObject):
                 if os.path.isfile(tpath):
                     os.rename(tpath, tpath + str(time()) + '.old')
             zipfile.extract(zipinfo, path)
+
+
 #             zipfile.extractall(os.path.abspath('.'))
         zipfile.close()
 
@@ -371,10 +367,10 @@ class UpgradeThread(QObject):
                         Signals.updateDialogShowed.emit()
                         QThread.msleep(1000)
                     show = False
-                    Signals.updateTextChanged.emit(
-                        str(Version.version), str(version), text)
-                    self.download(Constants.UpgradeFile.format(
-                        version), self.ZipUrl.format(version))
+                    Signals.updateTextChanged.emit(str(Version.version),
+                                                   str(version), text)
+                    self.download(Constants.UpgradeFile.format(version),
+                                  self.ZipUrl.format(version))
             Signals.updateFinished.emit(self.tr('update completed'))
         except Exception as e:
             Signals.updateFinished.emit(

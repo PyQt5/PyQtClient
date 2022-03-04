@@ -1,31 +1,30 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on 2019年1月9日
 @author: Irony
-@site: https://pyqt5.com https://github.com/892768447
+@site: https://pyqt.site https://github.com/PyQt5
 @email: 892768447@qq.com
 @file: Widgets.MainWindowBase
 @description: 
 """
+
 import os
 import webbrowser
 
-from PyQt5.QtCore import pyqtSlot, QUrl, QLocale, QTranslator, QCoreApplication
+from PyQt5.QtCore import QCoreApplication, QLocale, QTranslator, QUrl, pyqtSlot
 from PyQt5.QtGui import QColor, QCursor
 from PyQt5.QtWebKit import QWebSettings
 from PyQt5.QtWebKitWidgets import QWebPage
-from PyQt5.QtWidgets import QApplication, QMenu, QAction
-
+from PyQt5.QtWidgets import QAction, QApplication, QMenu
 from Utils import Constants
-from Utils.CommonUtil import Signals, Setting, AppLog, openFolder
+from Utils.CommonUtil import AppLog, Setting, Signals, openFolder
 from Utils.GradientUtils import GradientUtils
 from Utils.NetworkAccessManager import NetworkAccessManager
 from Utils.ThemeManager import ThemeManager
+
 from Widgets.Dialogs.SkinDialog import SkinDialog
 from Widgets.ToolTip import ToolTip
-
 
 __Author__ = "Irony"
 __Copyright__ = "Copyright (c) 2019"
@@ -43,13 +42,13 @@ class MainWindowBase:
         # 加载鼠标样式
         ThemeManager.loadCursor(self.widgetMain)
         ThemeManager.setPointerCursors([
-            self.buttonHead,            # 主界面头像
-            self.buttonClear,           # 主界面清空按钮
-            self.buttonGithub,          # Github按钮
-            self.buttonQQ,              # QQ按钮
-            self.buttonGroup,           # 群按钮
-            self.buttonBackToUp,        # 返回顶部按钮
-            self.buttonHome             # 显示主页readme
+            self.buttonHead,  # 主界面头像
+            self.buttonClear,  # 主界面清空按钮
+            self.buttonGithub,  # Github按钮
+            self.buttonQQ,  # QQ按钮
+            self.buttonGroup,  # 群按钮
+            self.buttonBackToUp,  # 返回顶部按钮
+            self.buttonHome  # 显示主页readme
         ])
         # 安装事件过滤器用于还原鼠标样式
         self.widgetMain.installEventFilter(self)
@@ -86,9 +85,10 @@ class MainWindowBase:
         Signals.showReadmed.connect(self.renderReadme)
         Signals.urlLoaded.connect(self.onUrlLoaded)
         Signals.runExampled.connect(self._runFile)
+        Signals.runUiFile.connect(self._runUiFile)
         Signals.cloneFinished.connect(lambda: self._showNotice(
-            QCoreApplication.translate(
-                'MainWindowBase', 'Update Example Finished')))
+            QCoreApplication.translate('MainWindowBase',
+                                       'Update Example Finished')))
         Signals.cloneFinished.connect(self.treeViewCatalogs.initCatalog)
         Signals.cloneFinished.connect(self.renderReadme)
         Signals.progressStoped.connect(self.widgetCatalogs.stop)
@@ -98,7 +98,8 @@ class MainWindowBase:
     def _initLanguage(self):
         """加载国际化翻译
         """
-        if QLocale.system().language() in (QLocale.China, QLocale.Chinese, QLocale.Taiwan, QLocale.HongKong):
+        if QLocale.system().language() in (QLocale.China, QLocale.Chinese,
+                                           QLocale.Taiwan, QLocale.HongKong):
             # 加载中文
             translator = QTranslator(self)
             translator.load('Resources/pyqtclient_zh_CN.qm')
@@ -108,17 +109,21 @@ class MainWindowBase:
     def _initWebView(self):
         """初始化网页"""
         # 右键菜单
-        self._webviewMenu = QMenu(QCoreApplication.translate(
-            'MainWindowBase', 'Menu'), self.webViewContent)
-        self._webviewactRun = QAction(
-            QCoreApplication.translate(
-                'MainWindowBase', 'Run'), self._webviewMenu, triggered=self._doActRun)
-        self._webviewactView = QAction(
-            QCoreApplication.translate(
-                'MainWindowBase', 'View'), self._webviewMenu, triggered=self._doActView)
-        self._webviewactFolder = QAction(
-            QCoreApplication.translate(
-                'MainWindowBase', 'Open'), self._webviewMenu, triggered=self._doActOpen)
+        self._webviewMenu = QMenu(
+            QCoreApplication.translate('MainWindowBase', 'Menu'),
+            self.webViewContent)
+        self._webviewactRun = QAction(QCoreApplication.translate(
+            'MainWindowBase', 'Run'),
+                                      self._webviewMenu,
+                                      triggered=self._doActRun)
+        self._webviewactView = QAction(QCoreApplication.translate(
+            'MainWindowBase', 'View'),
+                                       self._webviewMenu,
+                                       triggered=self._doActView)
+        self._webviewactFolder = QAction(QCoreApplication.translate(
+            'MainWindowBase', 'Open'),
+                                         self._webviewMenu,
+                                         triggered=self._doActOpen)
         self._webviewMenu.addAction(self._webviewactRun)
         self._webviewMenu.addAction(self._webviewactView)
         self._webviewMenu.addAction(self._webviewactFolder)
@@ -138,8 +143,8 @@ class MainWindowBase:
         page.setNetworkAccessManager(NetworkAccessManager(self.webViewContent))
 
         # 加载readme
-        self.webViewContent.load(QUrl.fromLocalFile(
-            os.path.abspath(Constants.HomeFile)))
+        self.webViewContent.load(
+            QUrl.fromLocalFile(os.path.abspath(Constants.HomeFile)))
 
     def _doActRun(self):
         """右键菜单运行代码
@@ -174,8 +179,7 @@ class MainWindowBase:
             names = path.split('Markdown/')
             if len(names) == 1:
                 return
-            path = os.path.abspath(os.path.join(
-                Constants.DirCurrent, names[1]))
+            path = os.path.abspath(os.path.join(Constants.DirCurrent, names[1]))
             AppLog.debug('path: {}'.format(path))
             AppLog.debug('isdir: {}'.format(os.path.isdir(path)))
             self._webviewactRun.setData(path)

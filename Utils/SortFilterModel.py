@@ -1,22 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on 2019年1月9日
 @author: Irony
-@site: https://pyqt5.com https://github.com/892768447
+@site: https://pyqt.site https://github.com/PyQt5
 @email: 892768447@qq.com
 @file: Utils.SortFilterModel
 @description: 过滤排序Model
 """
+
 from PyQt5.QtCore import QSortFilterProxyModel, Qt
-
-
-__Author__ = """By: Irony
-QQ: 892768447
-Email: 892768447@qq.com"""
-__Copyright__ = "Copyright (c) 2019 Irony"
-__Version__ = "Version 1.0"
 
 
 class SortFilterModel(QSortFilterProxyModel):
@@ -30,6 +23,7 @@ class SortFilterModel(QSortFilterProxyModel):
         # 自动
         self.setDynamicSortFilter(True)
 
+
 #     def lessThan(self, source_left, source_right):
 #         # 按照文字长度和字母比较排序
 #         if not source_left.isValid() or not source_right.isValid():
@@ -42,8 +36,8 @@ class SortFilterModel(QSortFilterProxyModel):
 
     def filterAcceptsRow(self, sourceRow, sourceParent):
         # 过滤
-        result = super(SortFilterModel, self).filterAcceptsRow(
-            sourceRow, sourceParent)
+        result = super(SortFilterModel,
+                       self).filterAcceptsRow(sourceRow, sourceParent)
         if result:
             return result
         else:
