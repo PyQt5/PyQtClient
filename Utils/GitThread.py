@@ -280,11 +280,19 @@ class UpgradeThread(QObject):
     """自动更新
     """
 
-    Url = 'https://raw.githubusercontent.com/PyQt5/PyQtClient/master/.Update/Upgrade.json'
-    ZipUrl = 'https://raw.githubusercontent.com/PyQt5/PyQtClient/master/.Update/Upgrade.{}.zip'
-
-    #     Url = 'https://raw.githubusercontent.com/IronyYou/test/master/Update/Upgrade.json'
-    #     ZipUrl = 'https://raw.githubusercontent.com/IronyYou/test/master/Update/Upgrade.{}.zip'
+    UpdateUrl = [
+        ('https://github.com/PyQt5/PyQtClient/raw/master/.Update/Upgrade.json',
+         'https://github.com/PyQt5/PyQtClient/raw/master/.Update/Upgrade.{}.zip'
+        ),
+        ('https://gitee.com/PyQt5/PyQtClient/raw/master/.Update/Upgrade.json',
+         'https://gitee.com/PyQt5/PyQtClient/raw/master/.Update/Upgrade.{}.zip'
+        ),
+        ('https://pyqt.site/PyQt5/PyQtClient/raw/master/.Update/Upgrade.json',
+         'https://pyqt.site/PyQt5/PyQtClient/raw/master/.Update/Upgrade.{}.zip'
+        ),
+        ('https://pyqt5.com/PyQt5/PyQtClient/raw/master/.Update/Upgrade.json',
+         'https://pyqt5.com/PyQt5/PyQtClient/raw/master/.Update/Upgrade.{}.zip')
+    ]
 
     @classmethod
     def quit(cls):
@@ -352,29 +360,32 @@ class UpgradeThread(QObject):
         AppLog.debug('download {} end'.format(file))
 
     def run(self):
-        show = True
-        try:
-            req = requests.get(self.Url)
-            AppLog.info(req.text)
-            if req.status_code != 200:
-                AppLog.info('update thread end')
-                UpgradeThread.quit()
-                return
-            content = req.json()
-            for version, text in content:
-                if Version.version < version:
-                    if show:
-                        Signals.updateDialogShowed.emit()
-                        QThread.msleep(1000)
-                    show = False
-                    Signals.updateTextChanged.emit(str(Version.version),
-                                                   str(version), text)
-                    self.download(Constants.UpgradeFile.format(version),
-                                  self.ZipUrl.format(version))
-            Signals.updateFinished.emit(self.tr('update completed'))
-        except Exception as e:
-            Signals.updateFinished.emit(
-                self.tr('update failed: {}').format(str(e)))
-            AppLog.exception(e)
+        for url_ver, url_zip in self.UpdateUrl:
+            try:
+                show = True
+                req = requests.get(url_ver)
+                AppLog.info(req.text)
+                if req.status_code != 200:
+                    AppLog.info('update thread end')
+                    UpgradeThread.quit()
+                    return
+                content = req.json()
+                for version, text in content:
+                    if Version.version < version:
+                        if show:
+                            Signals.updateDialogShowed.emit()
+                            QThread.msleep(1000)
+                        show = False
+                        Signals.updateTextChanged.emit(str(Version.version),
+                                                    str(version), text)
+                        self.download(Constants.UpgradeFile.format(version),
+                                      url_zip.format(version))
+                Signals.updateFinished.emit(self.tr('update completed'))
+                break
+            except Exception as e:
+                Signals.updateFinished.emit(
+                    self.tr('update failed: {}').format(str(e)))
+                AppLog.exception(e)
+
         AppLog.info('update thread end')
         UpgradeThread.quit()
