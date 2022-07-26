@@ -9,11 +9,12 @@ Created on 2019年1月1日
 @description:
 """
 
-from distutils.sysconfig import get_python_lib
 import os
 import sys
 import traceback
+from distutils.sysconfig import get_python_lib
 
+sys.path.append(os.path.dirname(sys.argv[0]))
 sys.path.append(os.path.abspath('Library.zip'))
 
 libpath = get_python_lib()
@@ -28,8 +29,6 @@ if os.name == 'nt':
 os.environ['PATH'] = os.path.dirname(os.path.abspath(
     sys.argv[0])) + os.pathsep + os.environ['PATH']
 
-print(os.environ['PATH'])
-
 
 def escape(s):
     s = s.replace("&", "&amp;")
@@ -43,9 +42,9 @@ def escape(s):
 
 
 def showError(message):
-    from PyQt5.QtWidgets import QApplication, QErrorMessage, QCheckBox, \
-        QPushButton, QLabel, QStyle
     from PyQt5.QtCore import Qt
+    from PyQt5.QtWidgets import (QApplication, QCheckBox, QErrorMessage, QLabel,
+                                 QPushButton, QStyle)
     app = QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(True)
     # 设置内置错误图标
@@ -72,6 +71,7 @@ def do_analysis():
         from pycallgraph2.globbing_filter import GlobbingFilter
         from pycallgraph2.output.graphviz import GraphvizOutput
         from pycallgraph2.pycallgraph import PyCallGraph
+
         # 函数流程图调用
         config = Config()
         config.trace_filter = GlobbingFilter(

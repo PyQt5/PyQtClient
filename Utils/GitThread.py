@@ -19,7 +19,6 @@ from zipfile import ZipFile
 
 import pygit2
 import requests
-from pygit2.remote import RemoteCallbacks
 from PyQt5.QtCore import QCoreApplication, QObject, Qt, QThread
 from PyQt5.QtGui import QImage
 from requests.auth import HTTPBasicAuth
@@ -140,7 +139,7 @@ class LoginThread(QObject):
         LoginThread.quit()
 
 
-class ProgressCallback(RemoteCallbacks):
+class ProgressCallback(pygit2.RemoteCallbacks):
     """clone过程中的进度条
     """
 
@@ -155,7 +154,8 @@ class CloneThread(QObject):
     """获取项目源码
     """
 
-    Url = 'git://github.com/PyQt5/PyQt.git'
+    UrlGithub = 'https://github.com/PyQt5/PyQt.git'
+    UrlGitee = 'https://gitee.com/PyQt5/PyQt.git'
 
     @classmethod
     def quit(cls):
@@ -179,7 +179,7 @@ class CloneThread(QObject):
         cls._thread.start()
         AppLog.info('clone thread started')
 
-    def pull(self, repo, remote_name='origin', branch='master'):
+    def pull(self, repo, remote_name='github,gitee', branch='master'):
         """ pull changes for the specified remote (defaults to origin).
 
         Code from MichaelBoselowitz at:
@@ -187,8 +187,11 @@ class CloneThread(QObject):
             68e889e50a592d30ab4105a2e7b9f28fac7324c8/examples.py#L58
         licensed under the MIT license.
         """
+        repo.remotes.set_url('gitee', self.UrlGitee)
+        repo.remotes.set_url('github', self.UrlGithub)
         for remote in repo.remotes:
-            if remote.name == remote_name:
+            if remote.name in remote_name:
+                AppLog.info('update from: {}'.format(remote.name))
                 remote.fetch()
                 remote_master_id = repo.lookup_reference(
                     'refs/remotes/origin/%s' % (branch)).target
@@ -206,12 +209,16 @@ class CloneThread(QObject):
                     except KeyError:
                         repo.create_branch(branch, repo.get(remote_master_id))
                     repo.head.set_target(remote_master_id)
+                    return
                 elif merge_result & pygit2.GIT_MERGE_ANALYSIS_NORMAL:
                     repo.merge(remote_master_id)
 
                     if repo.index.conflicts is not None:
                         for conflict in repo.index.conflicts:
-                            print('Conflicts found in:', conflict[0].path)
+                            for c in conflict:
+                                if not c:
+                                    continue
+                                AppLog.error('Conflicts found in: %s', c.path)
                         raise AssertionError('Conflicts, ahhhhh!!')
 
                     user = repo.default_signature
@@ -221,6 +228,7 @@ class CloneThread(QObject):
                     # We need to do this or git CLI will think we are still
                     # merging.
                     repo.state_cleanup()
+                    return
                 else:
                     raise AssertionError('Unknown merge analysis result')
 
@@ -230,37 +238,46 @@ class CloneThread(QObject):
             path.chmod(stat.S_IWRITE)
         shutil.rmtree(Constants.DirProjects, ignore_errors=True)
 
-    def clone(self):
+    def clone(self, url):
         """克隆项目"""
-        pygit2.clone_repository(self.Url,
+        AppLog.info('clone from: {}'.format(url))
+        pygit2.clone_repository(url,
                                 Constants.DirProjects,
                                 callbacks=ProgressCallback())
 
-    def run(self):
-        try:
-            path = pygit2.discover_repository(Constants.DirProjects)
-            if not path:
+    def _clone(self):
+        ok = False
+        for url in (self.UrlGithub, self.UrlGitee):
+            try:
                 # 本地项目不存在
                 if os.path.exists(Constants.DirProjects):
                     # 如果文件夹存在则删除
                     AppLog.info('remove dir: {}'.format(Constants.DirProjects))
                     self.remove()
                 AppLog.info('clone into dir: {}'.format(Constants.DirProjects))
-                self.clone()
+                Signals.progressUpdated.emit(5, 100)
+                self.clone(url)
+                ok = True
+                break
+            except Exception as e:
+                AppLog.error(str(e))
+        if not ok:
+            raise Exception('clone failed')
+
+    def run(self):
+        try:
+            path = pygit2.discover_repository(Constants.DirProjects)
+            if not path:
+                self._clone()
             else:
                 repo = pygit2.Repository(path)
                 if repo.is_empty:  # 如果项目为空
-                    if os.path.exists(Constants.DirProjects):
-                        # 如果文件夹存在则删除
-                        AppLog.info('remove dir: {}'.format(
-                            Constants.DirProjects))
-                        self.remove()
-                    AppLog.info('clone into dir: {}'.format(
-                        Constants.DirProjects))
-                    self.clone()
+                    self._clone()
                 else:
                     # 重置并pull
                     AppLog.info('reset dir: {}'.format(Constants.DirProjects))
+                    AppLog.info('reset target: {}'.format(repo.head.target))
+                    repo.state_cleanup()
                     repo.reset(repo.head.target, pygit2.GIT_RESET_HARD)
                     Signals.progressUpdated.emit(5, 100)
                     AppLog.info('pull into dir: {}'.format(
@@ -377,7 +394,7 @@ class UpgradeThread(QObject):
                             QThread.msleep(1000)
                         show = False
                         Signals.updateTextChanged.emit(str(Version.version),
-                                                    str(version), text)
+                                                       str(version), text)
                         self.download(Constants.UpgradeFile.format(version),
                                       url_zip.format(version))
                 Signals.updateFinished.emit(self.tr('update completed'))

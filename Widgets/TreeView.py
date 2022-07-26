@@ -105,31 +105,37 @@ class TreeView(QTreeView):
         if not os.path.exists(Constants.DirProjects):
             return
         pitem = self._dmodel.invisibleRootItem()
-        # 只遍历根目录
-        for name in os.listdir(Constants.DirProjects):
-            file = os.path.join(Constants.DirProjects, name).replace('\\', '/')
-            if os.path.isfile(file):  # 跳过文件
-                continue
-            if name.startswith(
-                    '.') or name == 'Donate' or name == 'Test':  # 不显示.开头的文件夹
-                continue
-            items = self.findItems(name)
-            if items:
-                item = items[0]
-            else:
-                item = QStandardItem(name)
-                # 添加自定义的数据
-                # 用于绘制进度条的item标识
-                item.setData(True, Constants.RoleRoot)
-                # 目录或者文件的绝对路径
-                item.setData(
-                    os.path.abspath(os.path.join(Constants.DirProjects, name)),
-                    Constants.RolePath)
-                pitem.appendRow(item)
-            # 遍历子目录
-            self.listSubDir(item, file)
-        # 排序
-        self._fmodel.sort(0, Qt.AscendingOrder)
+        try:
+            # 只遍历根目录
+            for name in os.listdir(Constants.DirProjects):
+                file = os.path.join(Constants.DirProjects,
+                                    name).replace('\\', '/')
+                if os.path.isfile(file):  # 跳过文件
+                    continue
+                if name.startswith(
+                        '.'
+                ) or name == 'Donate' or name == 'Test':  # 不显示.开头的文件夹
+                    continue
+                items = self.findItems(name)
+                if items:
+                    item = items[0]
+                else:
+                    item = QStandardItem(name)
+                    # 添加自定义的数据
+                    # 用于绘制进度条的item标识
+                    item.setData(True, Constants.RoleRoot)
+                    # 目录或者文件的绝对路径
+                    item.setData(
+                        os.path.abspath(
+                            os.path.join(Constants.DirProjects, name)),
+                        Constants.RolePath)
+                    pitem.appendRow(item)
+                # 遍历子目录
+                self.listSubDir(item, file)
+            # 排序
+            self._fmodel.sort(0, Qt.AscendingOrder)
+        except Exception as e:
+            AppLog.error(str(e))
 
     def onClicked(self, modelIndex):
         """Item单击
