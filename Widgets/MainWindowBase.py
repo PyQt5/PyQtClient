@@ -130,11 +130,13 @@ class MainWindowBase:
 
         self.webViewContent.customContextMenuRequested.connect(
             self._showWebMenu)
-        settings = self.webViewContent.settings()
+        settings = QWebSettings.globalSettings()
         # 设置默认编码
         settings.setDefaultTextEncoding('UTF-8')
         # 开启开发人员工具
         settings.setAttribute(QWebSettings.DeveloperExtrasEnabled, True)
+        if hasattr(settings, 'ErrorPageEnabled'):
+            settings.setAttribute(QWebSettings.ErrorPageEnabled, False)
 
         page = self.webViewContent.page()
         # 设置链接可以点击

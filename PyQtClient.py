@@ -11,8 +11,10 @@ Created on 2019年1月1日
 
 import os
 import sys
-import traceback
 from distutils.sysconfig import get_python_lib
+
+from rich.console import Console
+from rich.terminal_theme import NIGHT_OWLISH
 
 sys.path.append(os.path.dirname(sys.argv[0]))
 sys.path.append(os.path.abspath('Library.zip'))
@@ -30,28 +32,18 @@ os.environ['PATH'] = os.path.dirname(os.path.abspath(
     sys.argv[0])) + os.pathsep + os.environ['PATH']
 
 
-def escape(s):
-    s = s.replace("&", "&amp;")
-    s = s.replace("<", "&lt;")
-    s = s.replace(">", "&gt;")
-    s = s.replace('"', "&quot;")
-    s = s.replace('\'', "&#x27;")
-    s = s.replace('\n', '<br/>')
-    s = s.replace(' ', '&nbsp;')
-    return s
-
-
 def showError(message):
     from PyQt5.QtCore import Qt
-    from PyQt5.QtWidgets import (QApplication, QCheckBox, QErrorMessage, QLabel,
-                                 QPushButton, QStyle)
+    from PyQt5.QtWidgets import (QApplication, QCheckBox, QErrorMessage, QFrame,
+                                 QLabel, QPushButton, QStyle, QTextEdit)
     app = QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(True)
     # 设置内置错误图标
     app.setWindowIcon(app.style().standardIcon(QStyle.SP_MessageBoxCritical))
     w = QErrorMessage()
+    w.setStyleSheet('QErrorMessage { background-color: white; }')
     w.finished.connect(lambda _: app.quit)
-    w.resize(600, 400)
+    w.resize(950, 790)
     # 去掉右上角?
     w.setWindowFlags(w.windowFlags() & ~Qt.WindowContextHelpButtonHint)
     w.setWindowTitle(w.tr('Error'))
@@ -59,7 +51,11 @@ def showError(message):
     w.findChild(QLabel, '').setVisible(False)
     w.findChild(QCheckBox, '').setVisible(False)
     w.findChild(QPushButton, '').setVisible(False)
-    w.showMessage(escape(message))
+    edit = w.findChild(QTextEdit, '')
+    edit.setFrameShape(QFrame.NoFrame)
+    edit.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+    edit.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+    w.showMessage(message)
     sys.exit(app.exec_())
 
 
@@ -81,7 +77,7 @@ def do_analysis():
                                         output_file='call_detail.png'),
                          config=config):
             MainWindow.main()
-    except:
+    except Exception:
         MainWindow.main()
 
 
@@ -93,5 +89,7 @@ try:
         MainWindow.main()
 except SystemExit:
     pass
-except:
-    showError(traceback.format_exc())
+except Exception:
+    console = Console(record=True)
+    console.print_exception(max_frames=5)
+    showError(console.export_html(theme=NIGHT_OWLISH, inline_styles=True))
