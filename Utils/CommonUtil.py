@@ -149,6 +149,8 @@ class _Signals(QObject):
     cloneFinished = pyqtSignal(str)
     # 跳转到item
     itemJumped = pyqtSignal(str)
+    # 跳转到锚点
+    anchorJumped = pyqtSignal(str)
 
     # 显示更新对话框
     updateDialogShowed = pyqtSignal()

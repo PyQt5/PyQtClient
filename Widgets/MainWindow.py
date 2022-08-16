@@ -203,6 +203,14 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         url.setQuery('name={}'.format(name))
         self.webViewContent.load(url)
 
+    def onAnchorJumped(self, word):
+        """锚点跳转
+        :param word:
+        """
+        if not word:
+            return
+        self._runJs('$("h2:contains({})")[0].scrollIntoView();'.format(word))
+
     def onLinkClicked(self, url):
         """加载网址
         :param url:

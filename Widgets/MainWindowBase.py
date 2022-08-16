@@ -84,6 +84,7 @@ class MainWindowBase:
         Signals.showCoded.connect(self.renderCode)
         Signals.showReadmed.connect(self.renderReadme)
         Signals.urlLoaded.connect(self.onUrlLoaded)
+        Signals.anchorJumped.connect(self.onAnchorJumped)
         Signals.runExampled.connect(self._runFile)
         Signals.runUiFile.connect(self._runUiFile)
         Signals.cloneFinished.connect(lambda: self._showNotice(

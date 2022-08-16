@@ -50,6 +50,12 @@ class NetworkAccessManager(QNetworkAccessManager):
         elif self.whitelist.search(surl):
             return super(NetworkAccessManager,
                          self).createRequest(op, originalReq, outgoingData)
+        elif surl.find('#') > -1:
+            originalReq.setUrl(QUrl())
+            Signals.anchorJumped.emit(
+                re.split(r'#\d+[,.，。、]|#\d+', surl, 1)[-1].strip())
+            return super(NetworkAccessManager,
+                         self).createRequest(op, originalReq, outgoingData)
 
         if url.scheme() == 'tencent':
             # 调用tx的app
