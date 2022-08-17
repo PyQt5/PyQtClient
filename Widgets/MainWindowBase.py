@@ -95,6 +95,7 @@ class MainWindowBase:
         Signals.progressStoped.connect(self.widgetCatalogs.stop)
         Signals.progressUpdated.connect(self.widgetCatalogs.setValue)
         Signals.updateDialogShowed.connect(self._initUpdate)
+        Signals.showDonate.connect(self._initDonate)
 
     def _initLanguage(self):
         """加载国际化翻译

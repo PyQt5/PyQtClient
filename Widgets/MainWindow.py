@@ -192,8 +192,11 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
             reqfile = os.path.abspath(
                 os.path.join(os.path.dirname(file), 'requirements.txt'))
             AppLog.debug('reqfile: {}'.format(reqfile))
-            dialog = ErrorDialog(message, self, reqfile=reqfile)
-            dialog.exec_()
+            AppLog.debug(message)
+            if message.find('ModuleNotFound') > -1 or message.find(
+                    'No module named') > -1:
+                dialog = ErrorDialog(message, self, reqfile=reqfile)
+                dialog.exec_()
 
     def onUrlLoaded(self, name):
         """加载带参数网址

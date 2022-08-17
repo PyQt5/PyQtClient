@@ -151,6 +151,8 @@ class _Signals(QObject):
     itemJumped = pyqtSignal(str)
     # 跳转到锚点
     anchorJumped = pyqtSignal(str)
+    # 显示捐赠对话框
+    showDonate = pyqtSignal()
 
     # 显示更新对话框
     updateDialogShowed = pyqtSignal()

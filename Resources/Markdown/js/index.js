@@ -12,7 +12,7 @@ md.renderer.rules.table_open = function() {
 };
 
 md.options.html = true;
-md.options.breaks = true;
+md.options.breaks = false;
 md.options.linkify = true;
 md.options.typographer = true;
 md.options.highlight = function(str, lang) {

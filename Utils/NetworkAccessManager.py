@@ -39,6 +39,7 @@ class NetworkAccessManager(QNetworkAccessManager):
         if surl.endswith('Donate'):
             # 点击了打赏
             originalReq.setUrl(QUrl())
+            Signals.showDonate.emit()
             return super(NetworkAccessManager,
                          self).createRequest(op, originalReq, outgoingData)
         elif surl.endswith('k=5QVVEdF'):
