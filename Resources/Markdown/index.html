@@ -1,54 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <link rel="stylesheet" href="css/bootstrap.min.css">
-        <link rel="stylesheet" href="css/github.min.css">
-        <link rel="stylesheet" href="css/app.css">
-        <script src="js/jquery.min.js"></script>
-        <script src="js/highlight.pack.js"></script>
-        <script src="js/markdown-it.min.js"></script>
-        <script src="js/layer.js"></script>
-        <script src="js/index.js"></script>
-    </head>
-    <body>
-        <div class="container">
-            <h1></h1>
+
+<head>
+    <meta charset="utf-8">
+    <title>PyQt Demo</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/github.min.css">
+    <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="css/waifu.min.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css" media="all" />
+    <script src="js/jquery.min.js"></script>
+    <script src="js/highlight.pack.js"></script>
+    <script src="js/markdown-it.min.js"></script>
+    <script src="js/layer.js"></script>
+    <script src="js/index.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <h1></h1>
+    </div>
+    <div class="container full-height">
+        <div class="row full-height">
+            <section class="col-xs-12 full-height">
+                <div id="result" class="result"></div>
+                <div id="codediv" style="display:none;">
+                    <pre style="border:none;"><code id="code" class="python"></code></pre>
+                </div>
+            </section>
         </div>
-        <div class="container full-height">
-            <div class="row full-height">
-                <section class="col-xs-12 full-height">
-                    <div id="result" class="result"></div>
-                    <div id="codediv" style="display:none;">
-                        <pre style="border:none;"><code id="code" class="python"></code></pre>
-                    </div>
-                </section>
+    </div>
+    <div class="container">
+        <h1></h1>
+    </div>
+    <div id="loading" class="loading">
+        <div class="spinner">
+            <div class="spinner-container container1">
+                <div class="circle1"></div>
+                <div class="circle2"></div>
+                <div class="circle3"></div>
+                <div class="circle4"></div>
+            </div>
+            <div class="spinner-container container2">
+                <div class="circle1"></div>
+                <div class="circle2"></div>
+                <div class="circle3"></div>
+                <div class="circle4"></div>
+            </div>
+            <div class="spinner-container container3">
+                <div class="circle1"></div>
+                <div class="circle2"></div>
+                <div class="circle3"></div>
+                <div class="circle4"></div>
             </div>
         </div>
-        <div class="container">
-            <h1></h1>
-        </div>
-        <div id="loading" class="loading">
-            <div class="spinner">
-                <div class="spinner-container container1">
-                    <div class="circle1"></div>
-                    <div class="circle2"></div>
-                    <div class="circle3"></div>
-                    <div class="circle4"></div>
-                </div>
-                <div class="spinner-container container2">
-                    <div class="circle1"></div>
-                    <div class="circle2"></div>
-                    <div class="circle3"></div>
-                    <div class="circle4"></div>
-                </div>
-                <div class="spinner-container container3">
-                    <div class="circle1"></div>
-                    <div class="circle2"></div>
-                    <div class="circle3"></div>
-                    <div class="circle4"></div>
-                </div>
+    </div>
+
+    <footer>
+        <div class="waifu">
+            <div class="waifu-tips"></div>
+            <canvas id="live2d" width="220" height="250" class="live2d"></canvas>
+            <div class="waifu-tool">
+                <span class="fa fa-home"></span>
+                <span class="fa fa-comments"></span>
+                <span class="fa fa-drivers-license-o"></span>
+                <span class="fa fa-street-view"></span>
+                <!-- <span class="fa fa-camera"></span> -->
+                <span class="fa fa-info-circle"></span>
+                <span class="fa fa-close"></span>
             </div>
         </div>
-    </body>
+        <script type="text/javascript" src="js/live2d.js"></script>
+        <script type="text/javascript" src="js/waifu-tips.js"></script>
+    </footer>
+</body>
+
 </html>

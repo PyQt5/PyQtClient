@@ -24,7 +24,7 @@ class NetworkAccessManager(QNetworkAccessManager):
 
     def __init__(self, *args, **kwargs):
         super(NetworkAccessManager, self).__init__(*args, **kwargs)
-        self.whitelist = re.compile(r'codebeat.co|shields.io')
+        self.whitelist = re.compile(r'codebeat.co|shields.io|hitokoto')
 
     def createRequest(self, op, originalReq, outgoingData):
         """创建请求

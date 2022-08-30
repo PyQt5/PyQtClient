@@ -12,7 +12,8 @@ Created on 2019年1月9日
 import os
 import webbrowser
 
-from PyQt5.QtCore import QCoreApplication, QLocale, QTranslator, QUrl, pyqtSlot
+from PyQt5.QtCore import (QCoreApplication, QLocale, Qt, QTranslator, QUrl,
+                          pyqtSlot)
 from PyQt5.QtGui import QColor, QCursor
 from PyQt5.QtWebKit import QWebSettings
 from PyQt5.QtWebKitWidgets import QWebPage
@@ -130,8 +131,13 @@ class MainWindowBase:
         self._webviewMenu.addAction(self._webviewactView)
         self._webviewMenu.addAction(self._webviewactFolder)
 
-        self.webViewContent.customContextMenuRequested.connect(
-            self._showWebMenu)
+        if 'DEBUG_MENU' in os.environ:
+            # self._webviewMenu.addAction(
+            #     self.webViewContent.pageAction(QWebPage.InspectElement))
+            self.webViewContent.setContextMenuPolicy(Qt.DefaultContextMenu)
+        else:
+            self.webViewContent.customContextMenuRequested.connect(
+                self._showWebMenu)
         settings = QWebSettings.globalSettings()
         # 设置默认编码
         settings.setDefaultTextEncoding('UTF-8')
