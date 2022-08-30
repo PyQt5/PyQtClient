@@ -132,9 +132,8 @@ class MainWindowBase:
         self._webviewMenu.addAction(self._webviewactFolder)
 
         if 'DEBUG_MENU' in os.environ:
-            # self._webviewMenu.addAction(
-            #     self.webViewContent.pageAction(QWebPage.InspectElement))
-            self.webViewContent.setContextMenuPolicy(Qt.DefaultContextMenu)
+            self._webviewMenu.addAction(
+                self.webViewContent.pageAction(QWebPage.InspectElement))
         else:
             self.webViewContent.customContextMenuRequested.connect(
                 self._showWebMenu)
@@ -143,6 +142,20 @@ class MainWindowBase:
         settings.setDefaultTextEncoding('UTF-8')
         # 开启开发人员工具
         settings.setAttribute(QWebSettings.DeveloperExtrasEnabled, True)
+        settings.setAttribute(QWebSettings.PluginsEnabled, True)
+        settings.setAttribute(QWebSettings.JavascriptCanOpenWindows, True)
+        settings.setAttribute(QWebSettings.JavascriptCanCloseWindows, True)
+        settings.setAttribute(QWebSettings.JavascriptCanAccessClipboard, True)
+        settings.setAttribute(QWebSettings.OfflineStorageDatabaseEnabled, True)
+        settings.setAttribute(QWebSettings.OfflineWebApplicationCacheEnabled,
+                              True)
+        settings.setAttribute(QWebSettings.LocalStorageEnabled, True)
+        settings.setAttribute(QWebSettings.LocalContentCanAccessRemoteUrls,
+                              True)
+        settings.setAttribute(QWebSettings.LocalContentCanAccessFileUrls, True)
+        settings.setAttribute(QWebSettings.ScrollAnimatorEnabled, True)
+        settings.setAttribute(QWebSettings.CaretBrowsingEnabled, True)
+        settings.setAttribute(QWebSettings.WebSecurityEnabled, True)
         if hasattr(settings, 'ErrorPageEnabled'):
             settings.setAttribute(QWebSettings.ErrorPageEnabled, False)
 
@@ -203,7 +216,11 @@ class MainWindowBase:
                 self._webviewactRun.setVisible(True)
                 self._webviewactView.setVisible(True)
                 self._webviewactFolder.setVisible(True)
-            self._webviewMenu.exec_(QCursor.pos())
+        else:
+            self._webviewactRun.setVisible(False)
+            self._webviewactView.setVisible(False)
+            self._webviewactFolder.setVisible(False)
+        self._webviewMenu.exec_(QCursor.pos())
 
     def _showNotice(self, message, timeout=2000):
         """底部显示提示
