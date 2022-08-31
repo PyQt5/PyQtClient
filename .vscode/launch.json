@@ -11,7 +11,8 @@
         "console": "integratedTerminal",
         "cwd": "${workspaceFolder}",
         "env": {
-            "PYTHONPATH": "${workspaceFolder}"
+            "PYTHONPATH": "${workspaceFolder}",
+            "DEBUG_MENU": "1"
         }
     }]
 }

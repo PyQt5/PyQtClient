@@ -35,6 +35,7 @@ class MainWindowBase:
 
     def _initUi(self):
         """初始UI"""
+        self.tips2233 = {}
         self.setupUi(self)
         # 隐藏还原按钮
         self.buttonNormal.setVisible(False)
@@ -51,8 +52,10 @@ class MainWindowBase:
             self.buttonBackToUp,  # 返回顶部按钮
             self.buttonHome  # 显示主页readme
         ])
-        # 安装事件过滤器用于还原鼠标样式
-        self.widgetMain.installEventFilter(self)
+        # 安装事件过滤器
+        self._initEventFilter()
+        # 初始化2233提示语
+        self._init2233Tips()
         # 绑定返回顶部提示框
         ToolTip.bind(self.buttonBackToUp)
         ToolTip.bind(self.buttonHome)
@@ -76,6 +79,54 @@ class MainWindowBase:
                     GradientUtils.toGradient(colourful))
         else:
             ThemeManager.loadTheme()
+
+    def _init2233Tips(self):
+        """初始化2233提示语"""
+        self.tips2233 = {
+            self.buttonHead:
+                QCoreApplication.translate('MainWindowBase', '登录才可以看到头像哦~'),
+            self.lineEditSearch:
+                QCoreApplication.translate('MainWindowBase', '找不到想要的？试试搜索吧！'),
+            self.buttonGithub:
+                QCoreApplication.translate('MainWindowBase', 'GayHub！求关注喵！'),
+            self.buttonQQ:
+                QCoreApplication.translate('MainWindowBase', '这是我的QQ~，还是加群吧！'),
+            self.buttonGroup:
+                QCoreApplication.translate('MainWindowBase', '加入PY交流！我是新手！'),
+            self.buttonHome:
+                QCoreApplication.translate('MainWindowBase', '点它就可以回到首页啦！'),
+            self.buttonBackToUp:
+                QCoreApplication.translate('MainWindowBase', '要回到开始的地方么？'),
+            self.buttonSkin:
+                QCoreApplication.translate('MainWindowBase', '要更换biu特佛的主题么？'),
+            self.buttonIssues:
+                QCoreApplication.translate('MainWindowBase', '要说点什么吗？'),
+            self.buttonMinimum:
+                QCoreApplication.translate('MainWindowBase', '点我可以最小化哦！'),
+            self.buttonMaximum:
+                QCoreApplication.translate('MainWindowBase', '点我可以最大化哦！'),
+            self.buttonNormal:
+                QCoreApplication.translate('MainWindowBase', '点我可以还原哦！'),
+            self.buttonClose:
+                QCoreApplication.translate('MainWindowBase', '点我就拜拜啦！'),
+        }
+
+    def _initEventFilter(self):
+        """安装事件过滤器"""
+        self.widgetMain.installEventFilter(self)
+        self.buttonHead.installEventFilter(self)
+        self.lineEditSearch.installEventFilter(self)
+        self.buttonGithub.installEventFilter(self)
+        self.buttonQQ.installEventFilter(self)
+        self.buttonGroup.installEventFilter(self)
+        self.buttonHome.installEventFilter(self)
+        self.buttonBackToUp.installEventFilter(self)
+        self.buttonSkin.installEventFilter(self)
+        self.buttonIssues.installEventFilter(self)
+        self.buttonMinimum.installEventFilter(self)
+        self.buttonMaximum.installEventFilter(self)
+        self.buttonNormal.installEventFilter(self)
+        self.buttonClose.installEventFilter(self)
 
     def _initSignals(self):
         """初始化信号槽"""
@@ -134,12 +185,15 @@ class MainWindowBase:
         if 'DEBUG_MENU' in os.environ:
             self._webviewMenu.addAction(
                 self.webViewContent.pageAction(QWebPage.InspectElement))
-        else:
-            self.webViewContent.customContextMenuRequested.connect(
-                self._showWebMenu)
+        self.webViewContent.customContextMenuRequested.connect(
+            self._showWebMenu)
         settings = QWebSettings.globalSettings()
         # 设置默认编码
         settings.setDefaultTextEncoding('UTF-8')
+        # 设置缓存路径
+        settings.setLocalStoragePath('Resources/Cache')
+        settings.setOfflineStoragePath('Resources/Cache')
+        settings.setOfflineWebApplicationCachePath('Resources/Cache')
         # 开启开发人员工具
         settings.setAttribute(QWebSettings.DeveloperExtrasEnabled, True)
         settings.setAttribute(QWebSettings.PluginsEnabled, True)
@@ -154,7 +208,6 @@ class MainWindowBase:
                               True)
         settings.setAttribute(QWebSettings.LocalContentCanAccessFileUrls, True)
         settings.setAttribute(QWebSettings.ScrollAnimatorEnabled, True)
-        settings.setAttribute(QWebSettings.CaretBrowsingEnabled, True)
         settings.setAttribute(QWebSettings.WebSecurityEnabled, True)
         if hasattr(settings, 'ErrorPageEnabled'):
             settings.setAttribute(QWebSettings.ErrorPageEnabled, False)
@@ -216,11 +269,13 @@ class MainWindowBase:
                 self._webviewactRun.setVisible(True)
                 self._webviewactView.setVisible(True)
                 self._webviewactFolder.setVisible(True)
+            self._webviewMenu.exec_(QCursor.pos())
         else:
-            self._webviewactRun.setVisible(False)
-            self._webviewactView.setVisible(False)
-            self._webviewactFolder.setVisible(False)
-        self._webviewMenu.exec_(QCursor.pos())
+            if 'DEBUG_MENU' in os.environ:
+                self._webviewactRun.setVisible(False)
+                self._webviewactView.setVisible(False)
+                self._webviewactFolder.setVisible(False)
+                self._webviewMenu.exec_(QCursor.pos())
 
     def _showNotice(self, message, timeout=2000):
         """底部显示提示

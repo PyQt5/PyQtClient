@@ -17,7 +17,7 @@ from random import randint
 from PyQt5 import QtCore
 from PyQt5.QtCore import (QCoreApplication, QEvent, QLibraryInfo, QProcess,
                           QProcessEnvironment, Qt, QTimer, QUrl, pyqtSlot)
-from PyQt5.QtGui import QEnterEvent, QIcon
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDialog, QVBoxLayout
 from PyQt5.uic import loadUi
 from UiFiles.Ui_MainWindow import Ui_FormMainWindow
@@ -91,6 +91,12 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         """
         content = repr(code)
         self._runJs("updateCode({});".format(content))
+
+    @pyqtSlot()
+    def goHome(self):
+        """返回主页
+        """
+        self.on_buttonHome_clicked()
 
     @pyqtSlot(str)
     def renderReadme(self, path=''):
@@ -227,9 +233,20 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
 
     def eventFilter(self, obj, event):
         # 事件过滤器
-        if obj == self.widgetMain and isinstance(event, QEnterEvent):
+        if obj == self.widgetMain and event.type() == QEvent.Enter:
             # 用于解决鼠标进入其它控件后还原为标准鼠标样式
             self.setCursor(Qt.ArrowCursor)
+
+        if event.type() == QEvent.Enter:
+            # 鼠标进入提示
+            if obj in self.tips2233:
+                self._runJs("showMessage('{}');".format(
+                    self.tips2233.get(obj, '')))
+        elif obj == self.lineEditSearch and event.type() == QEvent.FocusIn:
+            # 搜索框获取焦点
+            self._runJs("showMessage('{}');".format(
+                QCoreApplication.translate('MainWindow',
+                                           '输入你想搜索的关键词再按Enter键就可以搜索啦！')))
         return FramelessWindow.eventFilter(self, obj, event)
 
     def changeEvent(self, event):
