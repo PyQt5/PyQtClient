@@ -201,13 +201,19 @@ jQuery(document).ready(function ($) {
         showMessage('到了要说再见的时候了吗');
     });
     $(document).on("click", "li a", function () {
-        showMessage('加载<span style="color:#0099cc;">『' + $(this).text() + '』</span>中...请稍候', 600);
+        var text = $(this).text();
+        if (text == '') return;
+        showMessage('加载<span style="color:#0099cc;">『' + text + '』</span>中...请稍候', 600);
     });
     $(document).on("mouseover", "li a", function () {
-        showMessage('要看看<span style="color:#0099cc;">『' + $(this).text() + '』</span>么？');
+        var text = $(this).text();
+        if (text == '') return;
+        showMessage('要看看<span style="color:#0099cc;">『' + text + '』</span>么？');
     });
     $(document).on("click", "p a", function () {
-        showMessage('加载<span style="color:#0099cc;">『' + $(this).text() + '』</span>中...请稍候', 600);
+        var text = $(this).text();
+        if (text == '') return;
+        showMessage('加载<span style="color:#0099cc;">『' + text + '』</span>中...请稍候', 600);
     });
     $(document).on("mouseover", "p a", function () {
         var text = $(this).text();
@@ -216,7 +222,7 @@ jQuery(document).ready(function ($) {
             showMessage('要<span style="color:#0099cc;">『' + text + '』</span>么？');
         else if (alt == '微信' || alt == '支付宝')
             showMessage('这是我的' + alt + '二维码~，要赞助一下么？');
-        else
+        else if (text != '')
             showMessage('要看看<span style="color:#0099cc;">『' + text + '』</span>么？');
     });
     $(document).on("mouseover", ".prev", function () {

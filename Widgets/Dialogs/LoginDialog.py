@@ -9,14 +9,13 @@ Created on 2019年1月5日
 @description: 登录对话框
 """
 
-import base64
 import os
 
 from PyQt5.QtCore import Qt, QTimer, QVariant, pyqtSlot
 from PyQt5.QtWidgets import QCompleter
 from UiFiles.Ui_LoginDialog import Ui_FormLoginDialog
 from Utils import Constants
-from Utils.CommonUtil import AppLog, Setting, Signals
+from Utils.CommonUtil import AppLog, Setting, Signals, get_avatar_path
 from Utils.GitThread import LoginThread
 from Utils.ThemeManager import ThemeManager
 from Widgets.Dialogs.MoveDialog import MoveDialog
@@ -44,7 +43,7 @@ class LoginDialog(MoveDialog, TwinkleDialog, Ui_FormLoginDialog):
         self._isLogin = False
         Signals.loginErrored.connect(self.onLoginErrored)
         Signals.loginSuccessed.connect(self.onLoginSuccessed)
-        QTimer.singleShot(100, self.initAccount)
+        QTimer.singleShot(200, self.initAccount)
 
     def initAccount(self):
         # 自动填充账号密码
@@ -66,17 +65,8 @@ class LoginDialog(MoveDialog, TwinkleDialog, Ui_FormLoginDialog):
         """
         if account not in self._accounts:  # 不存在
             return
-        # 填充密码
-        try:
-            self.lineEditPassword.setText(
-                base64.b85decode(self._accounts[account][1].encode()).decode())
-        except Exception as e:
-            self.lineEditPassword.setText('')
-            AppLog.exception(e)
         # 更新头像
-        path = os.path.join(Constants.ImageDir,
-                            self._accounts[account][0]).replace('\\',
-                                                                '/') + '.jpg'
+        path = get_avatar_path(account)
         if os.path.exists(path) and self.buttonHead.image != path:
             # 更换头像
             self.buttonHead.image = path
@@ -90,45 +80,41 @@ class LoginDialog(MoveDialog, TwinkleDialog, Ui_FormLoginDialog):
         if message:
             self.labelNotice.setText(message)
 
-    def onLoginSuccessed(self, uid, name):
+    def onLoginSuccessed(self, account, status, emoji):
         AppLog.debug('onLoginSuccessed')
         self._isLogin = False
         self.buttonLogin.showWaiting(False)
         self.setEnabled(True)
         # 用账号密码实例化github访问对象
         account = self.lineEditAccount.text().strip()
-        password = self.lineEditPassword.text().strip()
         Constants._Account = account
-        Constants._Password = password
-        Constants._Username = name
+        Constants._Username = account
+        Constants._Status = status
+        Constants._Emoji = emoji
         # 储存账号密码
         Setting.setValue('account', account)
-        if account not in self._accounts:
-            # 更新账号数组
-            self._accounts[account] = [
-                uid, base64.b85encode(password.encode()).decode()
-            ]
-            Setting.setValue('accounts', self._accounts)
+        if account in self._accounts:
+            _, s, e = self._accounts[account]
+            status = status or s
+            emoji = emoji or e
+        # 更新账号数组
+        self._accounts[account] = [account, status, emoji]
+        Setting.setValue('accounts', self._accounts)
         self.accept()
 
     def setEnabled(self, enabled):
         self.buttonClose.setEnabled(enabled)
         self.lineEditAccount.setEnabled(enabled)
-        self.lineEditPassword.setEnabled(enabled)
         self.buttonLogin.setEnabled(enabled)
 
     @pyqtSlot()
     def on_buttonLogin_clicked(self):
         # 登录点击
         account = self.lineEditAccount.text().strip()
-        password = self.lineEditPassword.text().strip()
         if not account:
             self.labelNotice.setText(self.tr('Incorrect account'))
-            return
-        if not password:
-            self.labelNotice.setText(self.tr('Incorrect password'))
             return
         self.labelNotice.setText('')
         self.setEnabled(False)
         self.buttonLogin.showWaiting(True)
-        LoginThread.start(account, password)
+        LoginThread.start(account, '')

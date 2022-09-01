@@ -34,7 +34,8 @@ class NetworkAccessManager(QNetworkAccessManager):
         """
         url = originalReq.url()
         surl = url.toString()
-        AppLog.debug('access url: {}'.format(surl))
+        if not (surl.endswith('.mtn') or surl.find('hitokoto') > -1):
+            AppLog.debug('access url: {}'.format(surl))
 
         if surl.endswith('Donate'):
             # 点击了打赏

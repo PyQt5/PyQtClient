@@ -13,13 +13,14 @@ import os
 import webbrowser
 
 from PyQt5.QtCore import (QCoreApplication, QLocale, Qt, QTranslator, QUrl,
-                          pyqtSlot)
+                          QVariant, pyqtSlot)
 from PyQt5.QtGui import QColor, QCursor
 from PyQt5.QtWebKit import QWebSettings
 from PyQt5.QtWebKitWidgets import QWebPage
 from PyQt5.QtWidgets import QAction, QApplication, QMenu
 from Utils import Constants
-from Utils.CommonUtil import AppLog, Setting, Signals, openFolder
+from Utils.CommonUtil import (AppLog, Setting, Signals, get_avatar_path,
+                              openFolder)
 from Utils.GradientUtils import GradientUtils
 from Utils.NetworkAccessManager import NetworkAccessManager
 from Utils.ThemeManager import ThemeManager
@@ -160,6 +161,22 @@ class MainWindowBase:
             QApplication.instance().installTranslator(translator)
             AppLog.info('install local language')
 
+    def _initUser(self):
+        """初始化用户信息"""
+        account = Setting.value('account', '', str)
+        if not account:
+            return
+        accounts = Setting.value('accounts', {}, QVariant)
+        path = get_avatar_path(account)
+        if os.path.exists(path):
+            Constants.ImageAvatar = path
+        if account in accounts and not Constants.ImageAvatar.endswith(
+                'avatar.png'):
+            Constants._Account, Constants._Status, Constants._Emoji = accounts[
+                account]
+            Constants._Username = account
+        self._setHeadImage()
+
     def _initWebView(self):
         """初始化网页"""
         # 右键菜单
@@ -295,6 +312,14 @@ class MainWindowBase:
         )
         self._tip._hideTimer.timeout.connect(self._tip.close)
         self._tip._hideTimer.start(timeout)
+
+    def _setHeadImage(self):
+        """设置头像"""
+        self.buttonHead.image = Constants.ImageAvatar
+        tip = Constants._Username
+        if Constants._Status or Constants._Emoji:
+            tip += ': {} {}'.format(Constants._Emoji, Constants._Status)
+        self.buttonHead.setToolTip(tip)
 
     @pyqtSlot()
     def on_buttonSkin_clicked(self):

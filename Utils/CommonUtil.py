@@ -17,8 +17,8 @@ import subprocess
 
 from PyQt5.QtCore import QObject, QSettings, QTextCodec, pyqtSignal
 
-from Utils.Constants import (ConfigFile, LogFormatter, LogFormatterDebug,
-                             LogName)
+from Utils.Constants import (ConfigFile, ImageDir, LogFormatter,
+                             LogFormatterDebug, LogName)
 
 
 def qBound(miv, cv, mxv):
@@ -56,6 +56,15 @@ def git_blob_hash(path):
     data = open(path, 'rb').read().replace(b'\r\n', b'\n')
     data = b'blob ' + str(len(data)).encode() + b'\0' + data
     return hashlib.sha1(data).hexdigest()
+
+
+def get_avatar_path(account):
+    """获取头像路径
+    :param account:     账号
+    """
+    return os.path.join(ImageDir,
+                        hashlib.md5(account.encode()).hexdigest()).replace(
+                            '\\', '/') + '.png'
 
 
 def initLog(name, file=None, level=logging.DEBUG, formatter=None):
@@ -109,9 +118,9 @@ class Setting:
         :param typ:        类型
         """
         cls.init()
-        if default != None and typ != None:
+        if default is not None and typ is not None:
             return cls._Setting.value(key, default, typ)
-        if default != None:
+        if default is not None:
             return cls._Setting.value(key, default)
         return cls._Setting.value(key)
 
@@ -166,7 +175,7 @@ class _Signals(QObject):
     # 登录失败
     loginErrored = pyqtSignal(str)
     # 登录成功发送用户的id和昵称
-    loginSuccessed = pyqtSignal(str, str)
+    loginSuccessed = pyqtSignal(str, str, str)
 
     # 添加多彩item
     colourfulItemAdded = pyqtSignal(int, int, str, object)

@@ -10,6 +10,7 @@ Created on 2019年1月5日
 """
 
 import os
+import re
 import shutil
 import stat
 from contextlib import closing
@@ -25,19 +26,21 @@ from requests.auth import HTTPBasicAuth
 from requests.exceptions import ConnectTimeout
 
 from Utils import Constants, Version
-from Utils.CommonUtil import AppLog, Signals
+from Utils.CommonUtil import AppLog, Signals, get_avatar_path
 
 
 class LoginThread(QObject):
     """登录Github,获取头像
     """
 
-    Url = 'https://api.github.com/user'
+    Url = 'https://github.com/{0}.png?size=130'
 
     def __init__(self, account, password, *args, **kwargs):
         super(LoginThread, self).__init__(*args, **kwargs)
         self.account = account
         self.password = password
+        self.status = ''
+        self.emoji = ''
 
     @classmethod
     def quit(cls):
@@ -49,7 +52,7 @@ class LoginThread(QObject):
             AppLog.info('login thread quit')
 
     @classmethod
-    def start(cls, account, password, parent=None):
+    def start(cls, account, password='', parent=None):
         """启动登录线程
         :param cls:
         :param account:        账号
@@ -63,77 +66,84 @@ class LoginThread(QObject):
         cls._thread.start()
         AppLog.info('login thread started')
 
-    def get_avatar(self, uid, avatar_url):
+    def save_avatar(self, data):
+        """保存头像
+        :param data: 头像数据
+        """
+        Constants.ImageAvatar = get_avatar_path(self.account)
+        image = QImage()
+        if image.loadFromData(data):
+            # 缩放图片
+            if not image.isNull():
+                if image.width() != 130 or image.height() != 130:
+                    AppLog.warn('scaled avatar image size to 130x130')
+                    image = image.scaled(130, 130, Qt.IgnoreAspectRatio,
+                                         Qt.SmoothTransformation)
+                AppLog.debug('save to: {}'.format(Constants.ImageAvatar))
+                return image.save(Constants.ImageAvatar)
+            else:
+                AppLog.warn('avatar image is null')
+        else:
+            AppLog.warn('can not load from image data')
+        return False
+
+    def get_avatar(self, url):
+        """获取头像
+        :param url: 头像url
+        """
         try:
-            req = requests.get(avatar_url)
-            if req.status_code == 200:
-                imgformat = req.headers.get('content-type',
-                                            'image/jpg').split('/')[1]
-                Constants.ImageAvatar = os.path.join(
-                    Constants.ImageDir, str(uid)).replace('\\', '/') + '.jpg'
+            req = requests.get(url)
+            if req.status_code == 200 and req.headers.get(
+                    'Content-Type').startswith('image/'):
+                imgformat = req.headers.get('Content-Type', '').split('/')[-1]
                 AppLog.debug('image type: {}'.format(imgformat))
                 AppLog.debug('content length: {}'.format(len(req.content)))
-
-                image = QImage()
-                if image.loadFromData(req.content):
-                    # 缩放图片
-                    if not image.isNull():
-                        image = image.scaled(130, 130, Qt.IgnoreAspectRatio,
-                                             Qt.SmoothTransformation)
-                        AppLog.debug('save to: {}'.format(
-                            Constants.ImageAvatar))
-                        image.save(Constants.ImageAvatar)
-                    else:
-                        AppLog.warn('avatar image is null')
-                else:
-                    AppLog.warn('can not load from image data')
+                return self.save_avatar(req.content)
         except Exception as e:
-            AppLog.exception(e)
+            AppLog.warning(str(e))
+        return False
 
     def run(self):
         AppLog.info('start login github')
+
+        # 方式一从url直接获取
+        av_ok = self.get_avatar(self.Url.format(self.account))
+
+        # 方式二从网页提取
         try:
-            req = requests.get(self.Url,
-                               auth=HTTPBasicAuth(self.account, self.password))
-            retval = req.json()
-            if retval.get('message', '') == 'Bad credentials':
-                Signals.loginErrored.emit(
-                    QCoreApplication.translate('Repository',
-                                               'Incorrect account or password'))
-                AppLog.warn('Incorrect account or password')
-                LoginThread.quit()
-                return
-            if 'login' not in retval:
-                Signals.loginErrored.emit(
-                    QCoreApplication.translate('Repository',
-                                               'Login failed, Unknown reason'))
-                AppLog.warn('Login failed, Unknown reason')
-                LoginThread.quit()
-                return
-            # 用户ID
-            uid = retval.get('id', 0)
-            AppLog.debug('user id: {}'.format(uid))
-            # 用户昵称
-            name = retval.get('name', 'Unknown')
-            AppLog.debug('user name: {}'.format(name))
-            # 用户头像地址
-            avatar_url = retval.get('avatar_url', '')
-            if avatar_url:
-                # 获取头像
-                self.get_avatar(uid, avatar_url)
-            Signals.loginSuccessed.emit(str(uid), name)
-        except ConnectTimeout as e:
-            Signals.loginErrored.emit(
-                QCoreApplication.translate('Repository', 'Connect Timeout'))
-            AppLog.exception(e)
-        except ConnectionError as e:
-            Signals.loginErrored.emit(
-                QCoreApplication.translate('Repository', 'Connection Error'))
-            AppLog.exception(e)
+            req = requests.get(
+                self.Url.format(self.account).split('.png?size')[0])
+            if req.status_code == 200:
+                # 获取头像url
+                aurls = re.findall(
+                    r'<meta property="og:image"\s*content="(.*?)"\s*/>'.encode(
+                    ), req.content)
+                # 获取状态
+                status = re.findall(
+                    r'<div class="user-status-message-wrapper.*?"\s*>\s*<div>\s*(.*?)\s*</div>'
+                    .encode(), req.content)
+                if status:
+                    self.status = status[0].decode()
+                # 获取状态图标
+                emoji = re.findall(
+                    r'<g-emoji.*?fallback-src="(.*?)"\s*>(.*?)</g-emoji>'.
+                    encode(), req.content)
+                if emoji:
+                    self.emoji = emoji[0][-1].decode()
+                    if self.emoji.startswith('http'):
+                        self.emoji = ''
+                # 下载头像
+                if not av_ok and len(aurls) > 0:
+                    av_ok = self.get_avatar(aurls[0])
         except Exception as e:
+            AppLog.warning(str(e))
+
+        if av_ok:
+            Signals.loginSuccessed.emit(self.account, self.status, self.emoji)
+        else:
             Signals.loginErrored.emit(
-                QCoreApplication.translate('Repository', 'Unknown Error'))
-            AppLog.exception(e)
+                QCoreApplication.translate('Repository',
+                                           'Login failed, Unknown reason'))
 
         AppLog.info('login thread end')
         LoginThread.quit()

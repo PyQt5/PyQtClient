@@ -48,9 +48,11 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
             self.restoreGeometry(geometry)
         # 200毫秒后显示登录对话框
         QTimer.singleShot(200, self._initCatalog)
-        QTimer.singleShot(500, self.treeViewCatalogs.initCatalog)
+        QTimer.singleShot(400, self.treeViewCatalogs.initCatalog)
+        # 初始化用户信息
+        QTimer.singleShot(600, self._initUser)
         # 初始化网页
-        QTimer.singleShot(500, self._initWebView)
+        QTimer.singleShot(800, self._initWebView)
         # 检测更新
         QTimer.singleShot(5000, UpgradeThread.start)
         # 显示捐赠窗口
@@ -61,9 +63,8 @@ class MainWindow(FramelessWindow, MainWindowBase, Ui_FormMainWindow):
         dialog = LoginDialog(self)
         dialog.exec_()
         # 刷新头像样式
-        if Constants._Account != '' and Constants._Password != '':
-            self.buttonHead.image = Constants.ImageAvatar
-            self.buttonHead.setToolTip(Constants._Username)
+        if Constants._Account != '':
+            self._setHeadImage()
 
     def _initDonate(self):
         # 显示捐赠窗口
